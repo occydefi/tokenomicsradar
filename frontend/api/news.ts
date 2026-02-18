@@ -137,18 +137,22 @@ function parseRSS(xml: string, defaultSource?: string): NewsItem[] {
 }
 
 async function fetchRSS(url: string, defaultSource?: string): Promise<NewsItem[]> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 5000);
   try {
     const response = await fetch(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; TokenomicsRadar/1.0; +https://tokenomicsradar.vercel.app)',
         'Accept': 'application/rss+xml, application/xml, text/xml, */*',
       },
-      signal: AbortSignal.timeout(5000),
+      signal: controller.signal,
     });
+    clearTimeout(timer);
     if (!response.ok) return [];
     const xml = await response.text();
     return parseRSS(xml, defaultSource);
   } catch {
+    clearTimeout(timer);
     return [];
   }
 }
@@ -192,7 +196,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // 1. CoinDesk tag RSS (for major tokens)
     if (COINDESK_TAGS[cleanTicker]) {
       const tag = COINDESK_TAGS[cleanTicker];
-      promises.push(fetchRSS(`https://www.coindesk.com/arc/outboundfeeds/rss/category/markets/`, 'CoinDesk'));
       promises.push(fetchRSS(`https://www.coindesk.com/tag/${tag}/feed/`, 'CoinDesk'));
     }
 
