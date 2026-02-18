@@ -4,6 +4,7 @@ import TokenHeader from './components/TokenHeader';
 import CompareView from './components/CompareView';
 import AnalysisTabs from './components/AnalysisTabs';
 import OccyWidget from './components/OccyWidget';
+import Background from './components/Background';
 import type { AnalysisResult } from './types';
 import { searchToken } from './services/coingecko';
 import { analyzeToken } from './utils/analyzer';
@@ -69,7 +70,11 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#070d07' }}>
+    <div className="min-h-screen relative" style={{ backgroundColor: '#070d07' }}>
+      <Background />
+      {/* Content wrapper — above background */}
+      <div className="relative" style={{ zIndex: 1 }}>
+
       {/* Header */}
       <header
         className="border-b sticky top-0 z-50 backdrop-blur-sm"
@@ -269,6 +274,7 @@ function App() {
       <OccyWidget />
 
       {/* Footer */}
+
       <footer className="border-t mt-20 py-8" style={{ borderColor: '#1a2e1a' }}>
         <div className="max-w-6xl mx-auto px-4 text-center font-mono" style={{ color: '#4a7a4a' }}>
           <p className="text-sm">
@@ -303,6 +309,7 @@ function App() {
           </div>
         </div>
       </footer>
+      </div>{/* /content wrapper */}
     </div>
   );
 }
