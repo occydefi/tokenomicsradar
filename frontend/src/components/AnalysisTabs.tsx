@@ -23,43 +23,77 @@ interface Props {
 }
 
 const TABS = [
-  { id: 'overview',   label: 'Visão Geral', icon: '📊' },
-  { id: 'tokenomics', label: 'Tokenomics',  icon: '🔢' },
-  { id: 'risk',       label: 'Risco',        icon: '⚠️' },
-  { id: 'onchain',    label: 'On-Chain',     icon: '📡' },
+  { id: 'overview',   label: 'OVERVIEW',    icon: '🧌', cmd: 'scan --full' },
+  { id: 'tokenomics', label: 'TOKENOMICS',  icon: '⛓️', cmd: 'supply --deep' },
+  { id: 'risk',       label: 'RISCO',       icon: '💀', cmd: 'threat --level=all' },
+  { id: 'onchain',    label: 'ON-CHAIN',    icon: '🔮', cmd: 'chain --live' },
 ];
 
 export default function AnalysisTabs({ analysis, activeTab, onTabChange }: Props) {
   return (
     <div className="space-y-6">
-      {/* Tab bar */}
+      {/* Tab bar — cyberpunk terminal style */}
       <div
         className="rounded-xl border overflow-x-auto"
-        style={{ backgroundColor: '#0d1a0d', borderColor: '#1a2e1a' }}
+        style={{
+          backgroundColor: '#060d06',
+          borderColor: '#1a2e1a',
+          boxShadow: 'inset 0 0 20px #00000060',
+        }}
       >
         <div className="flex min-w-max">
-          {TABS.map((tab) => {
+          {TABS.map((tab, i) => {
             const isActive = activeTab === tab.id;
             return (
               <button
                 key={tab.id}
                 onClick={() => onTabChange(tab.id)}
-                className="flex items-center gap-2 px-6 py-4 text-sm font-semibold transition-colors whitespace-nowrap border-b-2"
+                className="group flex flex-col items-start px-5 py-3 transition-all whitespace-nowrap relative"
                 style={{
-                  color: isActive ? '#39d353' : '#4a7a4a',
-                  borderBottomColor: isActive ? '#39d353' : 'transparent',
-                  backgroundColor: 'transparent',
-                  boxShadow: isActive ? '0 2px 8px rgba(57,211,83,0.25)' : 'none',
+                  backgroundColor: isActive ? 'rgba(57,211,83,0.06)' : 'transparent',
+                  borderRight: i < 3 ? '1px solid #1a2e1a' : 'none',
+                  borderBottom: isActive ? '2px solid #39d353' : '2px solid transparent',
+                  minWidth: 120,
                 }}
                 onMouseEnter={(e) => {
-                  if (!isActive) (e.currentTarget as HTMLButtonElement).style.color = '#39d353';
+                  if (!isActive) (e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(57,211,83,0.03)';
                 }}
                 onMouseLeave={(e) => {
-                  if (!isActive) (e.currentTarget as HTMLButtonElement).style.color = '#4a7a4a';
+                  if (!isActive) (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
                 }}
               >
-                <span>{tab.icon}</span>
-                <span>{tab.label}</span>
+                {/* Command label */}
+                <span
+                  className="text-xs font-mono mb-1"
+                  style={{ color: isActive ? '#39d35360' : '#1a2e1a', letterSpacing: '0.5px' }}
+                >
+                  &gt; {tab.cmd}
+                </span>
+                {/* Icon + label */}
+                <div className="flex items-center gap-2">
+                  <span
+                    className="text-lg"
+                    style={{ filter: isActive ? 'drop-shadow(0 0 6px #39d353)' : 'none' }}
+                  >
+                    {tab.icon}
+                  </span>
+                  <span
+                    className="text-sm font-bold font-mono tracking-widest"
+                    style={{
+                      color: isActive ? '#39d353' : '#4a7a4a',
+                      textShadow: isActive ? '0 0 8px rgba(57,211,83,0.6)' : 'none',
+                    }}
+                  >
+                    {tab.label}
+                  </span>
+                </div>
+                {/* Active dot */}
+                {isActive && (
+                  <span
+                    className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full animate-pulse"
+                    style={{ backgroundColor: '#39d353', boxShadow: '0 0 4px #39d353' }}
+                  />
+                )}
               </button>
             );
           })}
