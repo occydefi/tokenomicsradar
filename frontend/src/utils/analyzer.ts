@@ -81,6 +81,7 @@ export const TOKEN_METADATA: Record<string, {
   'pepe': { team: 0, investors: 0, community: 93, treasury: 7, stakingAvailable: false, governancePower: false, feeBurning: false, neededToUse: false, vestingYears: 0, treasuryUSD: 0, note: 'Memecoin — 93.1% burned/LP, 6.9% reserved for CEX listings/bridges. 420.69T fixed supply.', teamTransparency: 'anonymous', teamNote: 'Time completamente anônimo. Sem identidades públicas conhecidas. Risco máximo de anonimato para investidores.' },
   'dogwifcoin': { team: 0, investors: 0, community: 100, treasury: 0, stakingAvailable: false, governancePower: false, feeBurning: false, neededToUse: false, vestingYears: 0, treasuryUSD: 0, note: 'Memecoin — Solana dog-hat meme. Fair launch with no team/VC allocation. 998.9M fixed supply.' },
   'bonk': { team: 5, investors: 0, community: 95, treasury: 0, stakingAvailable: false, governancePower: false, feeBurning: true, neededToUse: false, vestingYears: 0, treasuryUSD: 0, note: 'Memecoin — community airdrop to Solana ecosystem participants. ~5% to team/contributors. BonkBurn mechanism.' },
+  'pump-fun': { team: 20, investors: 10, community: 70, treasury: 0, stakingAvailable: false, governancePower: false, feeBurning: false, neededToUse: false, vestingYears: 1, treasuryUSD: 0, note: 'Memecoin — token da plataforma pump.fun (Solana). Token de especulação sem utilidade no protocolo. A pump.fun em si gera receita enorme (~$500M+) mas o token PUMP não captura essa receita diretamente.', teamTransparency: 'anonymous', teamNote: 'Time anonimo. A pump.fun é operada por equipe sem identidades públicas confirmadas.' },
   // ── The Open Network ──────────────────────────────────────────────────────
   'the-open-network': { team: 0, investors: 0, community: 100, treasury: 0, stakingAvailable: true, governancePower: false, feeBurning: true, neededToUse: true, vestingYears: 0, treasuryUSD: 0, note: 'Originally created by Telegram team, then abandoned and relaunched by open community. Fair distribution.' },
   // ── DeFi Layer ─────────────────────────────────────────────────────────────
@@ -284,31 +285,59 @@ export function analyzeToken(token: TokenData): AnalysisResult {
   // ─── Regulatory Entry ─────────────────────────────────────────
   const regulatoryEntry = REGULATORY_DATA[token.id] ?? null;
 
+  // ─── Token Category Detection ────────────────────────────────
+  // Determines scoring weights and caps based on token type
+  const tokenNote = (meta?.note ?? '').toLowerCase();
+  const cgCats = token.categories?.map(c => c.toLowerCase()) || [];
+
+  const isMemeToken = (
+    tokenNote.includes('memecoin') ||
+    cgCats.some(c => c.includes('meme')) ||
+    ['dogecoin', 'shiba-inu', 'pepe', 'dogwifcoin', 'bonk', 'floki',
+     'baby-doge-coin', 'samoyedcoin', 'myro', 'popcat', 'mog-coin',
+     'book-of-meme', 'cat-in-a-dogs-world', 'just-a-coke',
+     'pump-fun', 'based-brett'].includes(token.id)
+  );
+
+  const isStablecoin = cgCats.some(c => c.includes('stablecoin')) ||
+    ['tether', 'usd-coin', 'dai', 'true-usd', 'frax', 'usdd', 'first-digital-usd'].includes(token.id);
+
   // ─── Scoring ──────────────────────────────────────────────────
+
   // Supply score (25%)
   let supplyScore = 5;
   if (isFixed) supplyScore += 3;
+  else if (isMemeToken) supplyScore -= 1; // No hard cap memecoin is worse than no-cap utility token
   if (circulatingPct > 80) supplyScore += 1.5;
   else if (circulatingPct > 50) supplyScore += 0.5;
-  if (inflationRate < 5) supplyScore += 1;
+  if (inflationRate < 2) supplyScore += 1.5;
+  else if (inflationRate < 5) supplyScore += 1;
   else if (inflationRate > 20) supplyScore -= 2;
+  else if (inflationRate > 10) supplyScore -= 1;
   supplyScore = Math.max(0, Math.min(10, supplyScore));
 
   // Distribution score (25%)
+  // Fair launch bonus only applies to real utility/infra tokens — not memecoins
+  // (a memecoin "fair launch" means zero effort, not a feature)
   let distScore = 10;
   distScore -= Math.max(0, (distribution.team - 10) * 0.3);
   distScore -= Math.max(0, (distribution.investors - 15) * 0.3);
   if (distribution.community > 50) distScore += 1;
-  if (distribution.team === 0 && distribution.investors === 0) distScore = 10; // Bitcoin-like fair launch
+  if (distribution.team === 0 && distribution.investors === 0 && !isMemeToken) {
+    distScore = 10; // Bitcoin-like fair launch for real projects
+  }
   distScore = Math.max(0, Math.min(10, distScore));
 
   // Vesting score (20%)
+  // For memecoins: no vesting is expected (no team/VC), so it's neutral — not a bonus
   let vestingScore = 5;
-  if (lockedPct < 20) vestingScore += 3;
-  else if (lockedPct < 35) vestingScore += 1;
-  else if (lockedPct > 50) vestingScore -= 2;
-  if (vestingYears >= 4) vestingScore += 1;
-  else if (vestingYears < 2 && lockedPct > 25) vestingScore -= 2;
+  if (!isMemeToken) {
+    if (lockedPct < 20) vestingScore += 3;
+    else if (lockedPct < 35) vestingScore += 1;
+    else if (lockedPct > 50) vestingScore -= 2;
+    if (vestingYears >= 4) vestingScore += 1;
+    else if (vestingYears < 2 && lockedPct > 25) vestingScore -= 2;
+  }
   vestingScore = Math.max(0, Math.min(10, vestingScore));
 
   // Utility score (20%) - already calculated
@@ -322,18 +351,28 @@ export function analyzeToken(token: TokenData): AnalysisResult {
     else if (treasuryData.runwayMonths > 12) treasScore = 5;
     else treasScore = 3;
   }
+  if (isMemeToken) treasScore = Math.min(treasScore, 3); // No meaningful treasury = penalized
 
   // ─── Regulatory / Team / Community are informational ONLY ────
   // They appear as visual sections but do NOT affect the tokenomics score.
   // The platform focus is pure tokenomics quality, not external risk factors.
 
-  const totalScore = Math.max(0, Math.min(10,
+  let totalScore = Math.max(0, Math.min(10,
     supplyScore * 0.25 +
     distScore * 0.25 +
     vestingScore * 0.20 +
     utilScore * 0.20 +
     treasScore * 0.10
   ));
+
+  // ─── Category Score Cap ───────────────────────────────────────
+  // Memecoins: hard cap at 4.5 regardless of tokenomics structure.
+  // A "fair launch + fixed supply" memecoin cannot score the same as a real protocol.
+  // Utility = 0 is the defining characteristic — it's not an investment-grade asset.
+  if (isMemeToken) totalScore = Math.min(totalScore, 4.5);
+
+  // Stablecoins: cap at 6.0 — by design pegged to fiat, not investment-grade
+  if (isStablecoin) totalScore = Math.min(totalScore, 6.0);
 
   const scores = {
     supply: Math.round(supplyScore * 10) / 10,
@@ -387,8 +426,12 @@ export function analyzeToken(token: TokenData): AnalysisResult {
   const tokenName = token.name;
   let conclusion = '';
 
-  // Base conclusion from tokenomics verdict
-  if (verdict === 'Excelente') {
+  // Base conclusion — category-aware
+  if (isMemeToken) {
+    conclusion = `${tokenName} é um memecoin — ativo puramente especulativo sem utilidade real no protocolo. Memecoins podem apresentar distribuição "justa" e oferta fixa, mas carecem dos fundamentos que sustentam valorização de longo prazo: utilidade, governança, receita de protocolo e roadmap técnico. O score reflete essa realidade: pode ser um trade, não é um investimento fundamentalista.`;
+  } else if (isStablecoin) {
+    conclusion = `${tokenName} é uma stablecoin — projetada para manter paridade com o dólar, não para apreciação de valor. A análise tokenômica reflete sua estrutura de colateralização e riscos de depeg, não potencial de valorização.`;
+  } else if (verdict === 'Excelente') {
     conclusion = `${tokenName} apresenta fundamentos tokenômicos sólidos, com excelente pontuação em distribuição, utilidade e oferta. Trata-se de um token bem estruturado que demonstra comprometimento com sustentabilidade de longo prazo.`;
   } else if (verdict === 'Bom') {
     conclusion = `${tokenName} tem bons fundamentos tokenômicos com algumas áreas de melhoria. A estrutura geral favorece holders de longo prazo, embora existam pontos de atenção que merecem monitoramento.`;
