@@ -244,6 +244,124 @@ export default function CompareView({ analysis1, analysis2 }: Props) {
       <p className="text-xs mt-4" style={{ color: '#374151' }}>
         ✓ = Melhor nesta métrica &nbsp;|&nbsp; Comparação baseada em critérios tokenômicos objetivos
       </p>
+
+      {/* ── Market Cap Simulator ── */}
+      {mc1 > 0 && mc2 > 0 && (
+        <div
+          className="mt-6 rounded-2xl border p-5 relative overflow-hidden"
+          style={{
+            backgroundColor: '#060d06',
+            borderColor: '#39d35330',
+            boxShadow: '0 0 20px rgba(57,211,83,0.06)',
+          }}
+        >
+          {/* Corner accents */}
+          <div className="absolute top-0 left-0 w-5 h-5 border-t border-l rounded-tl-2xl" style={{ borderColor: '#39d353' }} />
+          <div className="absolute top-0 right-0 w-5 h-5 border-t border-r rounded-tr-2xl" style={{ borderColor: '#39d353' }} />
+
+          <div className="flex items-center gap-2 mb-4">
+            <span style={{ filter: 'drop-shadow(0 0 6px #39d353)' }}>🔮</span>
+            <h4 className="font-bold font-mono text-sm tracking-widest" style={{ color: '#39d353' }}>
+              MARKET CAP SIMULATOR
+            </h4>
+            <span className="text-xs font-mono ml-auto" style={{ color: '#2a4a2a' }}>
+              &gt; se... então...
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Scenario A → market cap of B */}
+            {(() => {
+              const price1 = t1.market_data.current_price?.usd ?? 0;
+              const targetPrice1 = price1 * (mc2 / mc1);
+              const mult1 = mc2 / mc1;
+              const isUp1 = mult1 >= 1;
+              const color1 = isUp1 ? '#39d353' : '#ff6d00';
+              return (
+                <div
+                  className="p-4 rounded-xl"
+                  style={{ backgroundColor: 'rgba(57,211,83,0.04)', border: '1px solid rgba(57,211,83,0.15)' }}
+                >
+                  <p className="text-xs font-mono mb-3" style={{ color: '#4a7a4a' }}>
+                    se <strong style={{ color: '#e8f5e8' }}>{t1.symbol?.toUpperCase()}</strong> alcançar market cap de <strong style={{ color: '#e8f5e8' }}>{t2.symbol?.toUpperCase()}</strong>
+                  </p>
+                  <div className="flex items-end gap-3">
+                    <div>
+                      <p className="text-xs font-mono mb-0.5" style={{ color: '#4a7a4a' }}>preço seria</p>
+                      <p className="text-2xl font-bold font-mono" style={{ color: color1 }}>
+                        ${targetPrice1 < 0.001
+                          ? targetPrice1.toExponential(2)
+                          : targetPrice1 < 1
+                          ? targetPrice1.toFixed(4)
+                          : targetPrice1.toLocaleString('en-US', { maximumFractionDigits: 2 })}
+                      </p>
+                    </div>
+                    <div className="mb-1">
+                      <span
+                        className="text-sm font-mono font-bold px-2 py-1 rounded"
+                        style={{ backgroundColor: `${color1}15`, color: color1, border: `1px solid ${color1}40` }}
+                      >
+                        {isUp1 ? '▲' : '▼'} {mult1.toFixed(2)}x
+                      </span>
+                    </div>
+                  </div>
+                  <p className="text-xs font-mono mt-2" style={{ color: '#2a4a2a' }}>
+                    atual: ${price1 < 0.001 ? price1.toExponential(2) : price1.toLocaleString('en-US', { maximumFractionDigits: 4 })}
+                    &nbsp;· mc atual: {formatNumber(mc1)}
+                  </p>
+                </div>
+              );
+            })()}
+
+            {/* Scenario B → market cap of A */}
+            {(() => {
+              const price2 = t2.market_data.current_price?.usd ?? 0;
+              const targetPrice2 = price2 * (mc1 / mc2);
+              const mult2 = mc1 / mc2;
+              const isUp2 = mult2 >= 1;
+              const color2 = isUp2 ? '#39d353' : '#ff6d00';
+              return (
+                <div
+                  className="p-4 rounded-xl"
+                  style={{ backgroundColor: 'rgba(168,85,247,0.04)', border: '1px solid rgba(168,85,247,0.15)' }}
+                >
+                  <p className="text-xs font-mono mb-3" style={{ color: '#6a3a8a' }}>
+                    se <strong style={{ color: '#e8f5e8' }}>{t2.symbol?.toUpperCase()}</strong> alcançar market cap de <strong style={{ color: '#e8f5e8' }}>{t1.symbol?.toUpperCase()}</strong>
+                  </p>
+                  <div className="flex items-end gap-3">
+                    <div>
+                      <p className="text-xs font-mono mb-0.5" style={{ color: '#6a3a8a' }}>preço seria</p>
+                      <p className="text-2xl font-bold font-mono" style={{ color: color2 }}>
+                        ${targetPrice2 < 0.001
+                          ? targetPrice2.toExponential(2)
+                          : targetPrice2 < 1
+                          ? targetPrice2.toFixed(4)
+                          : targetPrice2.toLocaleString('en-US', { maximumFractionDigits: 2 })}
+                      </p>
+                    </div>
+                    <div className="mb-1">
+                      <span
+                        className="text-sm font-mono font-bold px-2 py-1 rounded"
+                        style={{ backgroundColor: `${color2}15`, color: color2, border: `1px solid ${color2}40` }}
+                      >
+                        {isUp2 ? '▲' : '▼'} {mult2.toFixed(2)}x
+                      </span>
+                    </div>
+                  </div>
+                  <p className="text-xs font-mono mt-2" style={{ color: '#2a4a2a' }}>
+                    atual: ${price2 < 0.001 ? price2.toExponential(2) : price2.toLocaleString('en-US', { maximumFractionDigits: 4 })}
+                    &nbsp;· mc atual: {formatNumber(mc2)}
+                  </p>
+                </div>
+              );
+            })()}
+          </div>
+
+          <p className="text-xs font-mono mt-3" style={{ color: '#1a2e1a' }}>
+            ⚠ simulação baseada em market cap atual · não considera inflação de supply · não é conselho financeiro
+          </p>
+        </div>
+      )}
     </div>
   );
 }
