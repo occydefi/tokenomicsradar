@@ -6,7 +6,7 @@ interface Props {
 }
 
 export default function TokenHeader({ analysis }: Props) {
-  const { token, scores, verdict } = analysis;
+  const { token, scores, verdict, tokenomicsLastUpdated } = analysis;
   const md = token.market_data;
   const scoreColor = getScoreColor(scores.total);
 
@@ -132,6 +132,9 @@ export default function TokenHeader({ analysis }: Props) {
             style={{ color: verdictColors[verdict], backgroundColor: `${verdictColors[verdict]}20` }}
           >
             {verdict}
+          </span>
+          <span className="mt-1 text-xs" style={{ color: '#4b5563' }} title="Data da última revisão manual dos dados de tokenomics">
+            📋 {tokenomicsLastUpdated}
           </span>
         </div>
       </div>

@@ -10,6 +10,9 @@ import type {
 import { REGULATORY_DATA } from './regulatoryData';
 
 // Known token metadata for better analysis
+// Date of the last manual review of the entire token database
+export const DATA_LAST_UPDATED = '2026-02-18';
+
 export const TOKEN_METADATA: Record<string, {
   team?: number;
   investors?: number;
@@ -24,6 +27,7 @@ export const TOKEN_METADATA: Record<string, {
   note?: string;
   teamTransparency?: 'high' | 'medium' | 'low' | 'anonymous';
   teamNote?: string;
+  lastUpdated?: string; // override per-token when individually updated
 }> = {
   // ── Layer 1 — Bitcoin & forks ────────────────────────────────────────────
   'bitcoin': { team: 0, investors: 0, community: 100, treasury: 0, stakingAvailable: false, governancePower: false, feeBurning: false, neededToUse: true, vestingYears: 0, treasuryUSD: 0, note: 'Fair launch — no pre-mine. Fixed 21M supply with halving every ~4 years.', teamTransparency: 'anonymous', teamNote: 'Satoshi Nakamoto é anônimo. O protocolo é 100% open source e descentralizado — caso único no mercado.' },
@@ -426,6 +430,8 @@ export function analyzeToken(token: TokenData): AnalysisResult {
     conclusion += ' ' + contextParts.join(' ');
   }
 
+  const tokenomicsLastUpdated = meta?.lastUpdated ?? DATA_LAST_UPDATED;
+
   return {
     token,
     scores,
@@ -442,6 +448,7 @@ export function analyzeToken(token: TokenData): AnalysisResult {
     conclusion,
     pros: pros.slice(0, 5),
     cons: cons.slice(0, 5),
+    tokenomicsLastUpdated,
     fetchedAt: now,
   };
 }

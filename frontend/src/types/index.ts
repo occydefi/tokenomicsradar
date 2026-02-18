@@ -71,6 +71,7 @@ export interface AnalysisResult {
   conclusion: string;
   pros: string[];
   cons: string[];
+  tokenomicsLastUpdated: string; // date of last manual review of tokenomics data
   fetchedAt: Date;
 }
 
