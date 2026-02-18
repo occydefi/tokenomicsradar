@@ -238,12 +238,24 @@ export function analyzeToken(token: TokenData): AnalysisResult {
     score: 0,
   };
   
-  const utilityScore = [
+  // Utility scoring: 4 standard dimensions + store-of-value bonus for monetary assets
+  // Standard DeFi framework doesn't capture BTC/LTC-style monetary utility
+  const storeOfValueTokens = ['bitcoin', 'litecoin', 'bitcoin-cash', 'monero', 'zcash'];
+  const isStoreOfValue = storeOfValueTokens.includes(token.id);
+
+  let utilityScore = [
     utilityData.neededToUse,
     utilityData.stakingAvailable,
     utilityData.governancePower,
     utilityData.feeBurning,
   ].filter(Boolean).length / 4 * 10;
+
+  // Store-of-value bonus: monetary network utility doesn't require staking/governance
+  // BTC: largest, most secure, most decentralized monetary network = high utility
+  if (isStoreOfValue) {
+    utilityScore = Math.min(10, utilityScore + 3.0);
+  }
+
   utilityData.score = utilityScore;
 
   // ─── Treasury Data ─────────────────────────────────────────────
@@ -467,6 +479,7 @@ export function analyzeToken(token: TokenData): AnalysisResult {
   if (utilityData.feeBurning) pros.push('Mecanismo de queima de fees — pressão deflacionária no token');
   if (utilityData.stakingAvailable) pros.push('Staking disponível — incentiva holders de longo prazo');
   if (utilityData.governancePower) pros.push('Poder de governança — token confere voz no protocolo');
+  if (isStoreOfValue) pros.push('Reserva de valor digital — utilidade monetária comprovada como ativo de escassez programada');
   if (utilityData.neededToUse) pros.push('Token essencial para usar o protocolo — demanda orgânica garantida');
 
   if (!utilityData.feeBurning) cons.push('Sem mecanismo de queima — sem pressão deflacionária');
