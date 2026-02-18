@@ -242,6 +242,8 @@ export function analyzeToken(token: TokenData): AnalysisResult {
   // Standard DeFi framework doesn't capture BTC/LTC-style monetary utility
   const storeOfValueTokens = ['bitcoin', 'litecoin', 'bitcoin-cash', 'monero', 'zcash'];
   const isStoreOfValue = storeOfValueTokens.includes(token.id);
+  // isStablecoin early check (before cgCats is declared) — uses id list only
+  const isStablecoinEarly = ['tether', 'usd-coin', 'dai', 'true-usd', 'frax', 'usdd', 'first-digital-usd'].includes(token.id);
 
   let utilityScore = [
     utilityData.neededToUse,
@@ -258,7 +260,7 @@ export function analyzeToken(token: TokenData): AnalysisResult {
 
   // Stablecoin medium-of-exchange bonus: USDT/USDC are the backbone of DeFi
   // High utility as collateral, trading pairs, and settlement layer — just not investment-grade
-  if (isStablecoin) {
+  if (isStablecoinEarly) {
     utilityScore = Math.min(8.0, utilityScore + 4.0); // boost utility but score still capped at 6.0 total
   }
 
