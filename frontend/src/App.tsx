@@ -16,6 +16,7 @@ import TeamTransparencySection from './components/TeamTransparencySection';
 import CommunitySection from './components/CommunitySection';
 import CompareView from './components/CompareView';
 import NewsSection from './components/NewsSection';
+import OnChainMetrics from './components/OnChainMetrics';
 import OccyWidget from './components/OccyWidget';
 import type { AnalysisResult } from './types';
 import { searchToken } from './services/coingecko';
@@ -232,6 +233,7 @@ function App() {
             <TreasurySection analysis={analysis} />
             <TeamTransparencySection analysis={analysis} />
             <CommunitySection analysis={analysis} />
+            <OnChainMetrics ticker={analysis.token.symbol} />
             <NewsSection ticker={analysis.token.symbol} />
             <ProsConsSection analysis={analysis} />
             <AIAnalysisSection analysis={analysis} />
