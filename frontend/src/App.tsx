@@ -18,6 +18,7 @@ import CompareView from './components/CompareView';
 import NewsSection from './components/NewsSection';
 import OnChainMetrics from './components/OnChainMetrics';
 import OccyWidget from './components/OccyWidget';
+import TLDRCard from './components/TLDRCard';
 import type { AnalysisResult } from './types';
 import { searchToken } from './services/coingecko';
 import { analyzeToken } from './utils/analyzer';
@@ -219,6 +220,7 @@ function App() {
         {!compareMode && analysis && !loading && (
           <div className="mt-10 fade-in space-y-6">
             <TokenHeader analysis={analysis} />
+            <TLDRCard analysis={analysis} />
             <LinksSection analysis={analysis} />
             <RedFlagsSection analysis={analysis} />
             <RegulatorySection analysis={analysis} />

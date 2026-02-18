@@ -7,4 +7,14 @@ export default defineConfig({
   // For GitHub Pages deployment, use repo name as base
   // For Vercel, this is overridden (Vercel serves from root)
   base: process.env.GITHUB_PAGES === 'true' ? '/tokenomicsradar/' : '/',
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          'chart-vendor': ['recharts'],
+        },
+      },
+    },
+  },
 })

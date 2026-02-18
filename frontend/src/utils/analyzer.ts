@@ -29,6 +29,10 @@ export const TOKEN_METADATA: Record<string, {
   teamNote?: string;
   lastUpdated?: string; // override per-token when individually updated
   sources?: { label: string; url: string }[]; // specific sources for tokenomics data
+  // Centralization fields
+  controlledPct?: number;        // % effectively controlled by one entity (team + treasury if same entity)
+  centralizedControl?: boolean;  // true when team+treasury >40% AND same entity controls both
+  executionRisk?: boolean;       // true when project has significant execution gap (promised >> delivered)
 }> = {
   // ── Layer 1 — Bitcoin & forks ────────────────────────────────────────────
   'bitcoin': { team: 0, investors: 0, community: 100, treasury: 0, stakingAvailable: false, governancePower: false, feeBurning: true, neededToUse: true, vestingYears: 0, treasuryUSD: 0, note: 'Já deflacionário na prática: emissão pós-halving 2024 caiu para ~0.85% ao ano, e moedas perdidas (Satoshi + wallets inacessíveis) superam a emissão nova. Supply efetivo diminui. Cap fixo de 21M — caso único de escassez programada.', teamTransparency: 'anonymous', teamNote: 'Satoshi Nakamoto é anônimo. O protocolo é 100% open source e descentralizado — caso único no mercado.', sources: [{ label: 'Bitcoin Whitepaper', url: 'https://bitcoin.org/bitcoin.pdf' }, { label: 'bitcoin.org', url: 'https://bitcoin.org' }] },
@@ -41,11 +45,11 @@ export const TOKEN_METADATA: Record<string, {
   'dogecoin': { team: 0, investors: 0, community: 100, treasury: 0, stakingAvailable: false, governancePower: false, feeBurning: false, neededToUse: false, vestingYears: 0, treasuryUSD: 0, note: 'Memecoin — inflationary with ~5B DOGE minted annually forever. No hard cap.', teamTransparency: 'medium', teamNote: 'Projeto comunitário sem time central. Billy Markus e Jackson Palmer (co-criadores) são públicos mas não envolvidos ativamente.' },
   // ── Layer 1 — Smart contract platforms ───────────────────────────────────
   'ethereum': { team: 12, investors: 8, community: 55, treasury: 25, stakingAvailable: true, governancePower: false, feeBurning: true, neededToUse: true, vestingYears: 0, treasuryUSD: 1500000000, note: 'EIP-1559 base fee burn. ~72M ETH pre-mine (ICO 2014). EF holds ~$1.5B treasury.', teamTransparency: 'high', teamNote: 'Vitalik Buterin é público e altamente visível. Ethereum Foundation tem equipe amplamente identificada e verificável.', sources: [{ label: 'Ethereum Docs', url: 'https://ethereum.org/en/developers/docs/' }, { label: 'EF Allocation Report', url: 'https://ethereum.foundation/report-2022.pdf' }] },
-  'binancecoin': { team: 40, investors: 10, community: 50, treasury: 0, stakingAvailable: true, governancePower: false, feeBurning: true, neededToUse: true, vestingYears: 1, treasuryUSD: 0, note: 'Quarterly BNB Auto-Burn targets 100M total burned (half of 200M initial). Team held 40% initially.', teamTransparency: 'high', teamNote: 'CZ (Changpeng Zhao) era extremamente público. Reputação comprometida após condenação criminal em 2023. Richard Teng assumiu como CEO.', sources: [{ label: 'BNB Whitepaper', url: 'https://www.binance.com/en/bnb' }, { label: 'BNB Auto-Burn', url: 'https://www.binance.com/en/blog/ecosystem/bnb-auto-burn-421499824684902657' }] },
+  'binancecoin': { team: 40, investors: 10, community: 50, treasury: 0, stakingAvailable: true, governancePower: false, feeBurning: true, neededToUse: true, vestingYears: 1, treasuryUSD: 0, centralizedControl: true, note: 'Quarterly BNB Auto-Burn targets 100M total burned (half of 200M initial). Team held 40% initially. Binance/CZ controls majority of supply.', teamTransparency: 'high', teamNote: 'CZ (Changpeng Zhao) era extremamente público. Reputação comprometida após condenação criminal em 2023. Richard Teng assumiu como CEO.', sources: [{ label: 'BNB Whitepaper', url: 'https://www.binance.com/en/bnb' }, { label: 'BNB Auto-Burn', url: 'https://www.binance.com/en/blog/ecosystem/bnb-auto-burn-421499824684902657' }] },
   'solana': { team: 13, investors: 37, community: 38, treasury: 12, stakingAvailable: true, governancePower: false, feeBurning: false, neededToUse: true, vestingYears: 4, treasuryUSD: 800000000, note: 'High VC concentration (~37% to insiders). Solana Foundation holds 12%.', teamTransparency: 'high', teamNote: 'Anatoly Yakovenko (co-fundador) é público e ativo. Equipe da Solana Labs amplamente verificável no LinkedIn e GitHub.', sources: [{ label: 'Solana Tokenomics', url: 'https://solana.com/news/solana-token-distribution' }, { label: 'Solana Foundation', url: 'https://solana.org' }] },
-  'cardano': { team: 9, investors: 7, community: 57, treasury: 27, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 0, treasuryUSD: 1000000000, note: '~77% supply already circulating. On-chain treasury for ecosystem funding.', teamTransparency: 'high', teamNote: 'Charles Hoskinson é público e muito ativo. IOHK, Emurgo e Cardano Foundation têm equipes identificadas e histórico verificável.', sources: [{ label: 'Cardano Docs', url: 'https://docs.cardano.org/explore-cardano/monetary-policy/ada-distribution' }, { label: 'Cardano Foundation', url: 'https://cardanofoundation.org' }] },
-  'avalanche-2': { team: 10, investors: 9, community: 50, treasury: 31, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 4, treasuryUSD: 1200000000, note: 'Avalanche Foundation controls 31% staking incentives. Fixed 720M max supply.', teamTransparency: 'high', teamNote: 'Emin Gün Sirer (professor Cornell) é público e verificável. Ava Labs tem equipe amplamente identificada e acadêmica.' },
-  'tron': { team: 34, investors: 16, community: 40, treasury: 10, stakingAvailable: true, governancePower: true, feeBurning: true, neededToUse: true, vestingYears: 2, treasuryUSD: 200000000, note: 'Justin Sun / Tron Foundation holds ~34% of supply. High insider concentration.', teamTransparency: 'high', teamNote: 'Justin Sun é extremamente público mas controverso. Múltiplos processos regulatórios e acusações de manipulação de mercado.' },
+  'cardano': { team: 9, investors: 7, community: 64, treasury: 20, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 0, treasuryUSD: 1000000000, executionRisk: true, note: '~80% supply already circulating. On-chain treasury (20%) but Cardano Foundation retains significant influence. ⚠️ Execution gap: smart contracts (Plutus) launched 2021 but DeFi ecosystem still lags ETH/SOL significantly. Voltaire governance still maturing.', teamTransparency: 'high', teamNote: 'Charles Hoskinson é público e muito ativo. IOHK, Emurgo e Cardano Foundation têm equipes identificadas e histórico verificável.', sources: [{ label: 'Cardano Docs', url: 'https://docs.cardano.org/explore-cardano/monetary-policy/ada-distribution' }, { label: 'Cardano Foundation', url: 'https://cardanofoundation.org' }] },
+  'avalanche-2': { team: 10, investors: 9, community: 50, treasury: 31, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 4, treasuryUSD: 1200000000, note: 'Fixed 720M max supply. ⚠️ Ava Labs (a private company) controls 31% treasury — this is CENTRALIZATION disguised as "ecosystem fund". Combined Ava Labs control (team 10% + treasury 31%) = 41% under single entity. Comparable to VC-backed projects.', teamTransparency: 'high', teamNote: 'Emin Gün Sirer (professor Cornell) é público e verificável. Ava Labs tem equipe amplamente identificada e acadêmica.' },
+  'tron': { team: 34, investors: 16, community: 40, treasury: 10, stakingAvailable: true, governancePower: true, feeBurning: true, neededToUse: true, vestingYears: 2, treasuryUSD: 200000000, centralizedControl: true, note: 'Justin Sun / Tron Foundation holds ~34% of supply. Treasury controlled by same entity. High insider concentration — effectively a single-entity controlled chain.', teamTransparency: 'high', teamNote: 'Justin Sun é extremamente público mas controverso. Múltiplos processos regulatórios e acusações de manipulação de mercado.' },
   'cosmos': { team: 10, investors: 5, community: 67, treasury: 18, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 2, treasuryUSD: 500000000, note: 'IBC protocol hub. Interchain Foundation treasury funds ecosystem development.' },
   'polkadot': { team: 30, investors: 10, community: 50, treasury: 10, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 2, treasuryUSD: 500000000, note: 'W3F/Parity hold ~30%. Parachain auction system recycles locked DOT.', teamTransparency: 'high', teamNote: 'Gavin Wood (co-fundador Ethereum) é público e verificável. Web3 Foundation e Parity Technologies têm equipes amplamente identificadas.' },
   'near': { team: 17, investors: 17, community: 40, treasury: 26, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 4, treasuryUSD: 600000000, note: 'NEAR Foundation holds 26% for ecosystem grants. 5% annual inflation.', teamTransparency: 'high', teamNote: 'Illia Polosukhin (ex-Google) e Alex Skidanov são públicos e verificáveis. NEAR Inc. tem equipe amplamente identificada.' },
@@ -71,7 +75,7 @@ export const TOKEN_METADATA: Record<string, {
   'stellar': { team: 0, investors: 0, community: 95, treasury: 5, stakingAvailable: false, governancePower: false, feeBurning: false, neededToUse: true, vestingYears: 0, treasuryUSD: 0, note: 'SDF distributed 95% of XLM to public. No mining — federated Byzantine agreement consensus.' },
   'hedera-hashgraph': { team: 9, investors: 5, community: 52, treasury: 34, stakingAvailable: true, governancePower: false, feeBurning: false, neededToUse: true, vestingYears: 4, treasuryUSD: 300000000, note: 'Hedera council (Google, IBM, etc.) governs. 50B HBAR max supply. Treasury held by Hedera Foundation.' },
   // ── Ripple ───────────────────────────────────────────────────────────────
-  'ripple': { team: 20, investors: 5, community: 40, treasury: 35, stakingAvailable: false, governancePower: false, feeBurning: true, neededToUse: true, vestingYears: 0, treasuryUSD: 0, note: 'Ripple Labs holds ~40B XRP in escrow (released 1B/month). Centralized supply control. Fee burn is tiny.', teamTransparency: 'high', teamNote: 'Brad Garlinghouse (CEO) é público e verificável. Ripple Labs tem equipe amplamente identificada, apesar do processo SEC em andamento.', sources: [{ label: 'XRP Ledger Docs', url: 'https://xrpl.org/xrp-overview.html' }, { label: 'Ripple XRP Markets', url: 'https://ripple.com/xrp/' }] },
+  'ripple': { team: 20, investors: 5, community: 40, treasury: 35, stakingAvailable: false, governancePower: false, feeBurning: true, neededToUse: true, vestingYears: 0, treasuryUSD: 0, controlledPct: 55, centralizedControl: true, note: 'Ripple Labs holds ~40B XRP in escrow (released 1B/month). ⚠️ EFFECTIVE CONTROL: team 20% + treasury 35% = 55% controlled by Ripple Labs — majority of total supply under one entity. Fee burn is negligible. Not a decentralized asset.', teamTransparency: 'high', teamNote: 'Brad Garlinghouse (CEO) é público e verificável. Ripple Labs tem equipe amplamente identificada, apesar do processo SEC em andamento.', sources: [{ label: 'XRP Ledger Docs', url: 'https://xrpl.org/xrp-overview.html' }, { label: 'Ripple XRP Markets', url: 'https://ripple.com/xrp/' }] },
   // ── Stablecoins ──────────────────────────────────────────────────────────
   'tether': { team: 0, investors: 0, community: 0, treasury: 100, stakingAvailable: false, governancePower: false, feeBurning: false, neededToUse: false, vestingYears: 0, treasuryUSD: 0, note: 'Stablecoin — collateral-backed 1:1 by USD reserves. Issued/redeemed on demand. No fixed max supply.' },
   'usd-coin': { team: 0, investors: 0, community: 0, treasury: 100, stakingAvailable: false, governancePower: false, feeBurning: false, neededToUse: false, vestingYears: 0, treasuryUSD: 0, note: 'Stablecoin — Circle/Coinbase regulated USD-backed. Monthly reserve attestations. No fixed max supply.' },
@@ -113,7 +117,7 @@ export const TOKEN_METADATA: Record<string, {
   'sei-network': { team: 20, investors: 20, community: 40, treasury: 20, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 3, treasuryUSD: 100000000, note: 'SEI — Exchange-optimized L1 with parallelized EVM. Fast finality for trading use cases.' },
   'celestia': { team: 26, investors: 27, community: 47, treasury: 0, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 4, treasuryUSD: 100000000, note: 'TIA — Modular blockchain for data availability. High insider allocation (53%). Pioneered data availability sampling.' },
   'wormhole': { team: 12, investors: 17, community: 47, treasury: 24, stakingAvailable: false, governancePower: true, feeBurning: false, neededToUse: false, vestingYears: 4, treasuryUSD: 150000000, note: 'W — Cross-chain messaging protocol. ~47% to community via airdrop and ecosystem grants.' },
-  'hyperliquid': { team: 24, investors: 0, community: 76, treasury: 0, stakingAvailable: true, governancePower: true, feeBurning: true, neededToUse: true, vestingYears: 4, treasuryUSD: 200000000, note: 'HYPE — Notable: no VC funding. 76% to community (airdrop + ecosystem). Perp DEX L1 with native staking.', teamTransparency: 'medium', teamNote: 'Jeff Yan (fundador) usa pseudônimo mas tem reputação forte. Time pseudônimo com histórico de execução técnica verificável pelo produto.' },
+  'hyperliquid': { team: 24, investors: 0, community: 76, treasury: 0, stakingAvailable: true, governancePower: true, feeBurning: true, neededToUse: true, vestingYears: 4, treasuryUSD: 200000000, note: 'HYPE — Maior airdrop sem VC da história cripto (76% comunidade). Zero investidores externos. Fee burn real com receita de protocolo massiva (~$500M+ em revenue). Perp DEX L1 com staking nativo. Modelo de fee burn direto ao token holders.', teamTransparency: 'medium', teamNote: 'Jeff Yan (fundador) usa pseudônimo mas tem reputação forte. Time pseudônimo com histórico de execução técnica verificável pelo produto.' },
   'filecoin': { team: 15, investors: 10, community: 70, treasury: 5, stakingAvailable: true, governancePower: false, feeBurning: false, neededToUse: true, vestingYears: 6, treasuryUSD: 50000000, note: 'FIL — Required to pay for decentralized storage. 6-year vesting for team. Protocol Labs controls 15%.' },
   'blockstack': { team: 30, investors: 25, community: 45, treasury: 0, stakingAvailable: true, governancePower: false, feeBurning: false, neededToUse: true, vestingYears: 2, treasuryUSD: 50000000, note: 'STX — Stacks blockchain; BTC-anchored smart contracts. "Stacking" earns BTC rewards. High insider share.' },
   // ── Oracle / Infrastructure ───────────────────────────────────────────────
@@ -316,6 +320,30 @@ export function analyzeToken(token: TokenData): AnalysisResult {
   else if (inflationRate > 10) supplyScore -= 1;
   supplyScore = Math.max(0, Math.min(10, supplyScore));
 
+  // ─── FDV Pressure Penalty ─────────────────────────────────────
+  // If FDV >> MarketCap, large unlocks ahead = future selling pressure
+  const fdvValue = md.fully_diluted_valuation?.usd;
+  const marketCapValue = md.market_cap?.usd;
+  const fdvRatio = fdvValue && marketCapValue && marketCapValue > 0
+    ? fdvValue / marketCapValue
+    : 1;
+  let fdvPenalty = 0;
+  if (fdvRatio > 10) fdvPenalty = 1.5;
+  else if (fdvRatio > 5) fdvPenalty = 1.0;
+  else if (fdvRatio > 3) fdvPenalty = 0.5;
+  supplyScore = Math.max(0, supplyScore - fdvPenalty);
+
+  // ─── Controlled Supply Penalty ────────────────────────────────
+  // If a single entity effectively controls a large % of total supply,
+  // the "fixed supply" narrative is misleading — penalize supply quality.
+  if (meta?.controlledPct && meta.controlledPct > 50) {
+    supplyScore = Math.max(0, supplyScore - 5); // Majority single-entity control: severe
+  } else if (meta?.controlledPct && meta.controlledPct > 40) {
+    supplyScore = Math.max(0, supplyScore - 3); // Significant control: moderate penalty
+  } else if (meta?.controlledPct && meta.controlledPct > 30) {
+    supplyScore = Math.max(0, supplyScore - 1); // Notable control: mild penalty
+  }
+
   // Distribution score (25%)
   // Fair launch bonus only applies to real utility/infra tokens — not memecoins
   // (a memecoin "fair launch" means zero effort, not a feature)
@@ -323,9 +351,13 @@ export function analyzeToken(token: TokenData): AnalysisResult {
   distScore -= Math.max(0, (distribution.team - 10) * 0.3);
   distScore -= Math.max(0, (distribution.investors - 15) * 0.3);
   if (distribution.community > 50) distScore += 1;
+  if (distribution.investors === 0 && !isMemeToken) distScore += 1; // No VC = genuine bonus for real projects
   if (distribution.team === 0 && distribution.investors === 0 && !isMemeToken) {
     distScore = 10; // Bitcoin-like fair launch for real projects
   }
+  // ─── Centralization Penalty ───────────────────────────────────
+  // Same entity controls team + treasury (e.g. Ripple, Justin Sun, Binance)
+  if (meta?.centralizedControl) distScore = Math.max(0, distScore - 2);
   distScore = Math.max(0, Math.min(10, distScore));
 
   // Vesting score (20%)
@@ -340,8 +372,10 @@ export function analyzeToken(token: TokenData): AnalysisResult {
   }
   vestingScore = Math.max(0, Math.min(10, vestingScore));
 
-  // Utility score (20%) - already calculated
-  const utilScore = utilityData.score;
+  // Utility score (20%)
+  let utilScore = utilityData.score;
+  // Execution risk: token/project promised features not delivered → utility is overestimated
+  if (meta?.executionRisk) utilScore = Math.max(0, utilScore - 2);
 
   // Treasury score (10%)
   let treasScore = 5;
@@ -352,6 +386,10 @@ export function analyzeToken(token: TokenData): AnalysisResult {
     else treasScore = 3;
   }
   if (isMemeToken) treasScore = Math.min(treasScore, 3); // No meaningful treasury = penalized
+  // Centralized treasury = not really an ecosystem asset, cap its contribution
+  if (meta?.centralizedControl && distribution.treasury > 20) {
+    treasScore = Math.min(treasScore, 3);
+  }
 
   // ─── Regulatory / Team / Community are informational ONLY ────
   // They appear as visual sections but do NOT affect the tokenomics score.
@@ -373,6 +411,10 @@ export function analyzeToken(token: TokenData): AnalysisResult {
 
   // Stablecoins: cap at 6.0 — by design pegged to fiat, not investment-grade
   if (isStablecoin) totalScore = Math.min(totalScore, 6.0);
+
+  // Execution risk cap: despite good tokenomics structure, the project underdelivers
+  // Cap at 5.5 ("Regular") — structure is fine but execution gap is disqualifying for Bom+
+  if (meta?.executionRisk) totalScore = Math.min(totalScore, 5.5);
 
   const scores = {
     supply: Math.round(supplyScore * 10) / 10,
@@ -401,9 +443,27 @@ export function analyzeToken(token: TokenData): AnalysisResult {
   if (circulatingPct > 80) pros.push(`${circulatingPct.toFixed(0)}% da oferta já em circulação — baixo risco de dumping futuro`);
   else if (circulatingPct < 40) cons.push(`Apenas ${circulatingPct.toFixed(0)}% em circulação — grande potencial de pressão vendedora futura`);
 
-  if (distribution.team + distribution.investors < 25) pros.push('Distribuição equilibrada — baixa concentração em equipe e investidores');
-  else if (distribution.team + distribution.investors > 40) cons.push(`${distribution.team + distribution.investors}% com equipe/investidores — alta concentração de poder`);
+  if (meta?.centralizedControl) {
+    cons.push(`⚠️ Controle centralizado: equipe + tesouraria sob a mesma entidade — risco real de decisões unilaterais`);
+  } else if (distribution.team + distribution.investors < 25) {
+    pros.push('Distribuição equilibrada — baixa concentração em equipe e investidores');
+  } else if (distribution.team + distribution.investors > 40) {
+    cons.push(`${distribution.team + distribution.investors}% com equipe/investidores — alta concentração de poder`);
+  }
 
+  if (meta?.controlledPct && meta.controlledPct > 50) {
+    cons.push(`${meta.controlledPct}% da oferta sob controle efetivo de uma única entidade — descentralização é um mito`);
+  }
+
+  if (meta?.executionRisk) {
+    cons.push('Gap de execução: o projeto prometeu muito mais do que entregou até agora');
+  }
+
+  if (fdvPenalty > 0) {
+    cons.push(`FDV ${fdvRatio.toFixed(1)}x maior que Market Cap — grandes desbloqueios futuros = pressão vendedora estrutural`);
+  }
+
+  if (distribution.investors === 0 && !isMemeToken) pros.push('Zero alocação para VCs — sem pressão vendedora de investidores institucionais');
   if (utilityData.feeBurning) pros.push('Mecanismo de queima de fees — pressão deflacionária no token');
   if (utilityData.stakingAvailable) pros.push('Staking disponível — incentiva holders de longo prazo');
   if (utilityData.governancePower) pros.push('Poder de governança — token confere voz no protocolo');
