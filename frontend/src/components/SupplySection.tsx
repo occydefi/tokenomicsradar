@@ -11,9 +11,10 @@ interface ProgressBarProps {
   max?: number;
   color?: string;
   suffix?: string;
+  legend?: string;
 }
 
-function ProgressBar({ label, value, max = 100, color = '#4f8eff', suffix = '%' }: ProgressBarProps) {
+function ProgressBar({ label, value, max = 100, color = '#4f8eff', suffix = '%', legend }: ProgressBarProps) {
   const pct = Math.min((value / max) * 100, 100);
   return (
     <div className="mb-4">
@@ -29,6 +30,9 @@ function ProgressBar({ label, value, max = 100, color = '#4f8eff', suffix = '%' 
           style={{ width: `${pct}%`, backgroundColor: color }}
         />
       </div>
+      {legend && (
+        <p className="text-xs italic mt-1" style={{ color: '#4b5563' }}>{legend}</p>
+      )}
     </div>
   );
 }
@@ -66,14 +70,17 @@ export default function SupplySection({ analysis }: Props) {
         <div className="p-3 rounded-xl" style={{ backgroundColor: '#0a0e1a' }}>
           <p className="text-xs mb-1" style={{ color: '#6b7280' }}>Oferta Circulante</p>
           <p className="font-bold text-white font-mono text-sm">{formatTokenAmount(circulatingSupply)}</p>
+          <p className="text-xs italic mt-1" style={{ color: '#4b5563' }}>Tokens em circulação hoje vs o total máximo.</p>
         </div>
         <div className="p-3 rounded-xl" style={{ backgroundColor: '#0a0e1a' }}>
           <p className="text-xs mb-1" style={{ color: '#6b7280' }}>Oferta Máxima</p>
           <p className="font-bold text-white font-mono text-sm">{formatTokenAmount(maxSupply) || '∞'}</p>
+          <p className="text-xs italic mt-1" style={{ color: '#4b5563' }}>Quantidade máxima de tokens que jamais existirão. Fixo = deflacionário.</p>
         </div>
         <div className="p-3 rounded-xl" style={{ backgroundColor: '#0a0e1a' }}>
           <p className="text-xs mb-1" style={{ color: '#6b7280' }}>Oferta Total</p>
           <p className="font-bold text-white font-mono text-sm">{formatTokenAmount(totalSupply)}</p>
+          <p className="text-xs italic mt-1" style={{ color: '#4b5563' }}>Total emitido, incluindo os não-circulantes.</p>
         </div>
         <div className="p-3 rounded-xl" style={{ backgroundColor: '#0a0e1a' }}>
           <p className="text-xs mb-1" style={{ color: '#6b7280' }}>Score Oferta</p>
@@ -88,12 +95,14 @@ export default function SupplySection({ analysis }: Props) {
         label="% da Oferta em Circulação"
         value={circulatingPct}
         color={circulatingPct > 70 ? '#00c853' : circulatingPct > 40 ? '#ffd600' : '#ff3d3d'}
+        legend="Quanto mais próximo de 100%, menor o risco de tokens futuros pressionar o preço."
       />
       <ProgressBar
         label="Taxa de Inflação Anual Estimada"
         value={Math.min(inflationRate, 100)}
         color={inflationColor}
         suffix="%"
+        legend="% de novos tokens criados por ano. Quanto menor, melhor."
       />
 
       {supplyMetrics.burnedPct !== null && supplyMetrics.burnedPct > 0 && (
@@ -101,6 +110,7 @@ export default function SupplySection({ analysis }: Props) {
           label="Tokens Queimados"
           value={supplyMetrics.burnedPct}
           color="#00e5ff"
+          legend="Tokens destruídos permanentemente. Reduz a oferta total, criando deflação."
         />
       )}
 

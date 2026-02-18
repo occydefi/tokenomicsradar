@@ -10,27 +10,33 @@ interface BoolItemProps {
   icon: string;
   trueLabel?: string;
   falseLabel?: string;
+  legend?: string;
 }
 
-function BoolItem({ label, value, icon, trueLabel = 'Sim', falseLabel = 'Não' }: BoolItemProps) {
+function BoolItem({ label, value, icon, trueLabel = 'Sim', falseLabel = 'Não', legend }: BoolItemProps) {
   return (
     <div
-      className="flex items-center justify-between p-3 rounded-xl"
+      className="p-3 rounded-xl"
       style={{ backgroundColor: '#0a0e1a' }}
     >
-      <div className="flex items-center gap-2">
-        <span>{icon}</span>
-        <span className="text-sm" style={{ color: '#d1d5db' }}>{label}</span>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span>{icon}</span>
+          <span className="text-sm" style={{ color: '#d1d5db' }}>{label}</span>
+        </div>
+        <span
+          className="text-sm font-bold px-3 py-1 rounded-full"
+          style={{
+            color: value ? '#00c853' : '#ff3d3d',
+            backgroundColor: value ? 'rgba(0,200,83,0.1)' : 'rgba(255,61,61,0.1)',
+          }}
+        >
+          {value ? `✓ ${trueLabel}` : `✗ ${falseLabel}`}
+        </span>
       </div>
-      <span
-        className="text-sm font-bold px-3 py-1 rounded-full"
-        style={{
-          color: value ? '#00c853' : '#ff3d3d',
-          backgroundColor: value ? 'rgba(0,200,83,0.1)' : 'rgba(255,61,61,0.1)',
-        }}
-      >
-        {value ? `✓ ${trueLabel}` : `✗ ${falseLabel}`}
-      </span>
+      {legend && (
+        <p className="text-xs italic mt-2" style={{ color: '#4b5563' }}>{legend}</p>
+      )}
     </div>
   );
 }
@@ -64,16 +70,19 @@ export default function UtilitySection({ analysis }: Props) {
           label="Token necessário para usar o protocolo"
           value={utilityData.neededToUse}
           icon="🔧"
+          legend="Token tem uso real além de especulação? Essencial para pagar taxas ou acessar o serviço."
         />
         <BoolItem
           label="Staking disponível"
           value={utilityData.stakingAvailable}
           icon="💎"
+          legend="Pode travar tokens para ganhar recompensas? Incentiva holders de longo prazo."
         />
         <BoolItem
           label="Poder de governança"
           value={utilityData.governancePower}
           icon="🗳️"
+          legend="Holders votam em decisões do protocolo? Confere participação real no projeto."
         />
         <BoolItem
           label="Mecanismo de queima de fees"
@@ -81,6 +90,7 @@ export default function UtilitySection({ analysis }: Props) {
           icon="🔥"
           trueLabel="Deflacionário"
           falseLabel="Sem queima"
+          legend="Taxas destroem tokens, criando deflação? Reduz oferta com o uso do protocolo."
         />
       </div>
 

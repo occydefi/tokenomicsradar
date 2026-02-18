@@ -34,8 +34,18 @@ export default function DistributionSection({ analysis }: Props) {
     ...(distribution.other > 0 ? [{ name: 'Outros', value: distribution.other, color: '#00e5ff' }] : []),
   ].filter(d => d.value > 0);
 
-  const ProgressRow = ({ label, value, color }: { label: string; value: number; color: string }) => (
-    <div className="mb-3">
+  const ProgressRow = ({
+    label,
+    value,
+    color,
+    legend,
+  }: {
+    label: string;
+    value: number;
+    color: string;
+    legend?: string;
+  }) => (
+    <div className="mb-4">
       <div className="flex justify-between text-sm mb-1">
         <span style={{ color: '#9ca3af' }}>{label}</span>
         <span className="font-mono font-bold text-white">{value.toFixed(1)}%</span>
@@ -43,6 +53,9 @@ export default function DistributionSection({ analysis }: Props) {
       <div className="h-2 rounded-full" style={{ backgroundColor: '#1e2a45' }}>
         <div className="h-2 rounded-full" style={{ width: `${Math.min(value, 100)}%`, backgroundColor: color }} />
       </div>
+      {legend && (
+        <p className="text-xs italic mt-1" style={{ color: '#4b5563' }}>{legend}</p>
+      )}
     </div>
   );
 
@@ -91,11 +104,31 @@ export default function DistributionSection({ analysis }: Props) {
         </ResponsiveContainer>
       </div>
 
-      {/* Progress bars */}
-      <ProgressRow label="🔴 Equipe/Fundadores" value={distribution.team} color="#ff6b6b" />
-      <ProgressRow label="🟡 VC/Investidores" value={distribution.investors} color="#ffd600" />
-      <ProgressRow label="🟢 Comunidade/Público" value={distribution.community} color="#00c853" />
-      <ProgressRow label="🔵 Tesouraria/Reserva" value={distribution.treasury} color="#4f8eff" />
+      {/* Progress bars with legends */}
+      <ProgressRow
+        label="🔴 Equipe/Fundadores"
+        value={distribution.team}
+        color="#ff6b6b"
+        legend="% alocada para a equipe. Ideal abaixo de 20% com vesting longo."
+      />
+      <ProgressRow
+        label="🟡 VC/Investidores"
+        value={distribution.investors}
+        color="#ffd600"
+        legend="Investidores privados com entrada barata. Alto % = risco de dump."
+      />
+      <ProgressRow
+        label="🟢 Comunidade/Público"
+        value={distribution.community}
+        color="#00c853"
+        legend="Quanto maior, mais descentralizado e distribuído o token."
+      />
+      <ProgressRow
+        label="🔵 Tesouraria/Reserva"
+        value={distribution.treasury}
+        color="#4f8eff"
+        legend="Reserva do projeto para desenvolvimento e operações futuras."
+      />
 
       {/* Warning if team+VC > 40% */}
       {distribution.team + distribution.investors > 40 && (

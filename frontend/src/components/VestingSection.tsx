@@ -25,6 +25,11 @@ export default function VestingSection({ analysis }: Props) {
         </span>
       </div>
 
+      {/* Vesting legend */}
+      <p className="text-xs italic mb-5" style={{ color: '#4b5563' }}>
+        Vesting = prazo que equipe/investidores precisam esperar para vender. Quanto mais longo, melhor para o investidor.
+      </p>
+
       {/* Stats */}
       <div className="grid grid-cols-2 gap-4 mb-6">
         <div className="p-3 rounded-xl" style={{ backgroundColor: '#0a0e1a' }}>

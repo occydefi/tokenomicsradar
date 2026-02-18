@@ -39,6 +39,7 @@ export default function TreasurySection({ analysis }: Props) {
             {estimatedSize ? formatNumber(estimatedSize) : 'N/D'}
           </p>
           <p className="text-xs mt-1" style={{ color: '#4b5563' }}>Estimativa USD</p>
+          <p className="text-xs italic mt-2" style={{ color: '#4b5563' }}>Reserva do projeto em dólares.</p>
         </div>
 
         {/* Treasury % */}
@@ -48,6 +49,7 @@ export default function TreasurySection({ analysis }: Props) {
             {distribution.treasury.toFixed(1)}%
           </p>
           <p className="text-xs mt-1" style={{ color: '#4b5563' }}>da oferta total</p>
+          <p className="text-xs italic mt-2" style={{ color: '#4b5563' }}>Reserva do projeto para desenvolvimento e operações.</p>
         </div>
 
         {/* Runway */}
@@ -57,6 +59,7 @@ export default function TreasurySection({ analysis }: Props) {
             {runwayMonths ? `${runwayMonths}m` : 'N/D'}
           </p>
           <p className="text-xs mt-1" style={{ color: '#4b5563' }}>meses de operação</p>
+          <p className="text-xs italic mt-2" style={{ color: '#4b5563' }}>Quantos meses o projeto sobrevive. Ideal: 24+ meses.</p>
         </div>
       </div>
 

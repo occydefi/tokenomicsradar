@@ -20,6 +20,10 @@ export default function TokenHeader({ analysis }: Props) {
 
   const priceChange = md.price_change_percentage_24h;
 
+  const marketCap = md.market_cap?.usd;
+  const fdv = md.fully_diluted_valuation?.usd;
+  const highDilution = fdv && marketCap && fdv > marketCap * 3;
+
   return (
     <div
       className="rounded-2xl border p-6"
@@ -85,11 +89,28 @@ export default function TokenHeader({ analysis }: Props) {
           </div>
           <div>
             <p style={{ color: '#6b7280' }}>Market Cap</p>
-            <p className="font-bold text-white">{formatNumber(md.market_cap?.usd)}</p>
+            <p className="font-bold text-white">{formatNumber(marketCap)}</p>
+            <p className="text-xs italic mt-1" style={{ color: '#6b7280' }}>
+              ⓘ Valor atual de todos os tokens em circulação
+            </p>
           </div>
           <div>
             <p style={{ color: '#6b7280' }}>FDV</p>
-            <p className="font-bold text-white">{formatNumber(md.fully_diluted_valuation?.usd)}</p>
+            <div className="flex items-center gap-2 flex-wrap">
+              <p className="font-bold text-white">{formatNumber(fdv)}</p>
+              {highDilution && (
+                <span
+                  className="text-xs px-2 py-1 rounded-full font-bold"
+                  title="FDV muito maior que Market Cap indica alto risco de diluição futura"
+                  style={{ backgroundColor: 'rgba(255, 109, 0, 0.15)', color: '#ff6d00', whiteSpace: 'nowrap' }}
+                >
+                  ⚠️ Alta Diluição
+                </span>
+              )}
+            </div>
+            <p className="text-xs italic mt-1" style={{ color: '#6b7280' }}>
+              ⓘ FDV: valor total se todos os tokens já existissem. FDV muito maior que Market Cap = muita diluição futura.
+            </p>
           </div>
         </div>
 
