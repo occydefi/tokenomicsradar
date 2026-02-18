@@ -9,6 +9,7 @@ interface Props {
 
 export default function SearchBar({ onSearch, loading, placeholder }: Props) {
   const [value, setValue] = useState('');
+  const [focused, setFocused] = useState(false);
 
   const handleSubmit = () => {
     const trimmed = value.trim().toUpperCase();
@@ -24,34 +25,42 @@ export default function SearchBar({ onSearch, loading, placeholder }: Props) {
   return (
     <div className="max-w-2xl mx-auto">
       <div
-        className="flex items-center rounded-2xl border p-2 gap-2 transition-all duration-200"
+        className="flex items-center rounded-xl border p-2 gap-2 transition-all duration-200"
         style={{
-          backgroundColor: '#111827',
-          borderColor: '#1e2a45',
-          boxShadow: '0 0 20px rgba(79, 142, 255, 0.1)',
+          backgroundColor: '#0d1a0d',
+          borderColor: focused ? '#39d353' : '#1a2e1a',
+          boxShadow: focused
+            ? '0 0 16px rgba(57, 211, 83, 0.25)'
+            : '0 0 8px rgba(57, 211, 83, 0.05)',
         }}
       >
-        <span className="text-2xl px-2">🔍</span>
+        <span className="text-xl px-2" style={{ filter: 'brightness(0) invert(1) sepia(1) saturate(3) hue-rotate(80deg)' }}>🔍</span>
         <input
           type="text"
           value={value}
           onChange={e => setValue(e.target.value.toUpperCase())}
           onKeyDown={handleKey}
-          placeholder={placeholder ?? "Digite o ticker do token (ex: BTC, SOL, ETH...)"}
-          className="flex-1 bg-transparent text-lg outline-none placeholder-gray-600 text-white"
-          style={{ fontFamily: "'Space Mono', monospace" }}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          placeholder={placeholder ?? "Pesquisar token... (BTC, ETH, SOL)"}
+          className="flex-1 bg-transparent text-lg outline-none text-white"
+          style={{
+            fontFamily: "'Space Mono', monospace",
+            color: '#e2e8e2',
+          }}
           disabled={loading}
           autoFocus
         />
         <button
           onClick={handleSubmit}
           disabled={loading || !value.trim()}
-          className="px-6 py-3 rounded-xl font-bold text-base transition-all duration-200 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-6 py-3 rounded-lg font-bold text-base transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed font-mono"
           style={{
             background: loading
-              ? '#1e2a45'
-              : 'linear-gradient(135deg, #4f8eff, #00e5ff)',
-            boxShadow: loading ? 'none' : '0 0 15px rgba(79, 142, 255, 0.4)',
+              ? '#1a2e1a'
+              : 'linear-gradient(135deg, #39d353, #22a83a)',
+            color: '#070d07',
+            boxShadow: loading ? 'none' : '0 0 12px rgba(57, 211, 83, 0.4)',
           }}
         >
           {loading ? '...' : 'Analisar'}

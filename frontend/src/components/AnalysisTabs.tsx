@@ -35,7 +35,7 @@ export default function AnalysisTabs({ analysis, activeTab, onTabChange }: Props
       {/* Tab bar */}
       <div
         className="rounded-xl border overflow-x-auto"
-        style={{ backgroundColor: '#111827', borderColor: '#1f2937' }}
+        style={{ backgroundColor: '#0d1a0d', borderColor: '#1a2e1a' }}
       >
         <div className="flex min-w-max">
           {TABS.map((tab) => {
@@ -46,15 +46,16 @@ export default function AnalysisTabs({ analysis, activeTab, onTabChange }: Props
                 onClick={() => onTabChange(tab.id)}
                 className="flex items-center gap-2 px-6 py-4 text-sm font-semibold transition-colors whitespace-nowrap border-b-2"
                 style={{
-                  color: isActive ? '#ffffff' : '#6b7280',
-                  borderBottomColor: isActive ? '#f97316' : 'transparent',
+                  color: isActive ? '#39d353' : '#4a7a4a',
+                  borderBottomColor: isActive ? '#39d353' : 'transparent',
                   backgroundColor: 'transparent',
+                  boxShadow: isActive ? '0 2px 8px rgba(57,211,83,0.25)' : 'none',
                 }}
                 onMouseEnter={(e) => {
-                  if (!isActive) (e.currentTarget as HTMLButtonElement).style.color = '#d1d5db';
+                  if (!isActive) (e.currentTarget as HTMLButtonElement).style.color = '#39d353';
                 }}
                 onMouseLeave={(e) => {
-                  if (!isActive) (e.currentTarget as HTMLButtonElement).style.color = '#6b7280';
+                  if (!isActive) (e.currentTarget as HTMLButtonElement).style.color = '#4a7a4a';
                 }}
               >
                 <span>{tab.icon}</span>

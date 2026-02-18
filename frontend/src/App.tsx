@@ -69,38 +69,52 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#0a0e1a' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#070d07' }}>
       {/* Header */}
-      <header className="border-b sticky top-0 z-50 backdrop-blur-sm" style={{ borderColor: '#1e2a45', backgroundColor: 'rgba(10,14,26,0.95)' }}>
+      <header
+        className="border-b sticky top-0 z-50 backdrop-blur-sm"
+        style={{ borderColor: '#1a2e1a', backgroundColor: 'rgba(7,13,7,0.97)' }}
+      >
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="text-3xl">📡</span>
+            <span className="text-3xl" style={{ filter: 'drop-shadow(0 0 8px rgba(57,211,83,0.6))' }}>📡</span>
             <div>
-              <h1 className="text-xl font-bold" style={{ background: 'linear-gradient(135deg, #4f8eff, #00e5ff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              <h1
+                className="text-xl font-bold font-mono tracking-tight"
+                style={{
+                  background: 'linear-gradient(135deg, #39d353, #a855f7)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  textShadow: 'none',
+                  letterSpacing: '-0.5px',
+                }}
+              >
                 TokenomicsRadar
               </h1>
-              <p className="text-xs" style={{ color: '#6b7280' }}>Análise Tokenômica Profunda</p>
+              <p className="text-xs font-mono" style={{ color: '#4a7a4a' }}>
+                <span style={{ color: '#39d353' }}>&gt;</span> análise_tokenômica --deep
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             {/* Compare toggle */}
             <button
               onClick={toggleCompareMode}
-              className="text-sm px-4 py-2 rounded-lg font-semibold transition-all hover:opacity-90"
+              className="text-sm px-4 py-2 rounded-lg font-semibold transition-all hover:opacity-90 font-mono"
               style={
                 compareMode
-                  ? { backgroundColor: '#4f8eff', color: '#fff' }
-                  : { backgroundColor: 'rgba(79,142,255,0.12)', color: '#4f8eff', border: '1px solid #4f8eff40' }
+                  ? { backgroundColor: '#39d353', color: '#070d07', boxShadow: '0 0 12px rgba(57,211,83,0.4)' }
+                  : { backgroundColor: 'rgba(57,211,83,0.08)', color: '#39d353', border: '1px solid rgba(57,211,83,0.25)' }
               }
             >
-              ⚖️ {compareMode ? 'Modo Comparação ON' : 'Comparar Tokens'}
+              ⚖️ {compareMode ? 'Comparação ON' : 'Comparar'}
             </button>
             <a
               href="https://github.com/occydefi/tokenomicsradar"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm transition-colors hover:opacity-80"
-              style={{ color: '#4f8eff' }}
+              className="text-sm transition-colors hover:opacity-80 font-mono"
+              style={{ color: '#a855f7' }}
             >
               GitHub →
             </a>
@@ -112,13 +126,20 @@ function App() {
       {(
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="text-center mb-10">
-          <h2 className="text-4xl font-bold mb-3 text-white">
-            {compareMode ? '⚖️ Comparar Tokens' : 'Análise Tokenômica Completa'}
+          <h2
+            className="text-4xl font-bold mb-3 font-mono"
+            style={{
+              color: '#39d353',
+              textShadow: '0 0 20px rgba(57,211,83,0.4)',
+              letterSpacing: '-1px',
+            }}
+          >
+            {compareMode ? '⚖️ Comparar Tokens' : '> Análise Tokenômica_'}
           </h2>
-          <p className="text-lg" style={{ color: '#9ca3af' }}>
+          <p className="text-lg font-mono" style={{ color: '#4a7a4a' }}>
             {compareMode
-              ? 'Busque dois tokens para comparar lado a lado'
-              : 'Digite o ticker de qualquer criptoativo e receba uma análise detalhada com score 0-10'}
+              ? 'busque dois tokens para comparar lado a lado'
+              : 'insira o ticker de qualquer criptoativo // score 0-10 // DYOR'}
           </p>
         </div>
 
@@ -127,20 +148,20 @@ function App() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Token 1 */}
             <div>
-              <p className="text-sm font-semibold mb-2" style={{ color: '#4f8eff' }}>Token A</p>
-              <SearchBar onSearch={handleSearch} loading={loading} placeholder="Ex: BTC, ETH, SOL..." />
+              <p className="text-sm font-semibold mb-2 font-mono" style={{ color: '#39d353' }}>&gt; Token_A</p>
+              <SearchBar onSearch={handleSearch} loading={loading} placeholder="Token A... (BTC, ETH, SOL)" />
               {error && (
-                <div className="mt-3 p-3 rounded-xl border text-sm" style={{ backgroundColor: 'rgba(255,61,61,0.1)', borderColor: '#ff3d3d', color: '#ff3d3d' }}>
+                <div className="mt-3 p-3 rounded-xl border text-sm font-mono" style={{ backgroundColor: 'rgba(255,68,68,0.08)', borderColor: 'rgba(255,68,68,0.4)', color: '#ff4444' }}>
                   ⚠️ {error}
                 </div>
               )}
             </div>
             {/* Token 2 */}
             <div>
-              <p className="text-sm font-semibold mb-2" style={{ color: '#22c55e' }}>Token B</p>
-              <SearchBar onSearch={handleSearch2} loading={loading2} placeholder="Ex: BTC, ETH, SOL..." />
+              <p className="text-sm font-semibold mb-2 font-mono" style={{ color: '#a855f7' }}>&gt; Token_B</p>
+              <SearchBar onSearch={handleSearch2} loading={loading2} placeholder="Token B... (BTC, ETH, SOL)" />
               {error2 && (
-                <div className="mt-3 p-3 rounded-xl border text-sm" style={{ backgroundColor: 'rgba(255,61,61,0.1)', borderColor: '#ff3d3d', color: '#ff3d3d' }}>
+                <div className="mt-3 p-3 rounded-xl border text-sm font-mono" style={{ backgroundColor: 'rgba(255,68,68,0.08)', borderColor: 'rgba(255,68,68,0.4)', color: '#ff4444' }}>
                   ⚠️ {error2}
                 </div>
               )}
@@ -152,7 +173,7 @@ function App() {
 
         {/* Error (single mode) */}
         {!compareMode && error && (
-          <div className="mt-6 p-4 rounded-xl border text-center" style={{ backgroundColor: 'rgba(255,61,61,0.1)', borderColor: '#ff3d3d', color: '#ff3d3d' }}>
+          <div className="mt-6 p-4 rounded-xl border text-center font-mono" style={{ backgroundColor: 'rgba(255,68,68,0.08)', borderColor: 'rgba(255,68,68,0.4)', color: '#ff4444' }}>
             ⚠️ {error}
           </div>
         )}
@@ -161,8 +182,8 @@ function App() {
         {!compareMode && loading && (
           <div className="mt-12 text-center">
             <div className="inline-flex flex-col items-center gap-4">
-              <div className="w-16 h-16 rounded-full border-4 border-t-transparent animate-spin" style={{ borderColor: '#4f8eff', borderTopColor: 'transparent' }}></div>
-              <p style={{ color: '#9ca3af' }}>Buscando dados na blockchain... 🔍</p>
+              <div className="w-16 h-16 rounded-full border-4 border-t-transparent animate-spin" style={{ borderColor: '#39d353', borderTopColor: 'transparent', boxShadow: '0 0 16px rgba(57,211,83,0.3)' }}></div>
+              <p className="font-mono" style={{ color: '#4a7a4a' }}>&gt; buscando dados na blockchain... 🔍</p>
             </div>
           </div>
         )}
@@ -171,15 +192,15 @@ function App() {
         {compareMode && (loading || loading2) && (
           <div className="mt-8 flex justify-center gap-8">
             {loading && (
-              <div className="flex items-center gap-3" style={{ color: '#9ca3af' }}>
-                <div className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: '#4f8eff', borderTopColor: 'transparent' }} />
-                Buscando Token A...
+              <div className="flex items-center gap-3 font-mono" style={{ color: '#39d353' }}>
+                <div className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: '#39d353', borderTopColor: 'transparent' }} />
+                &gt; Token_A...
               </div>
             )}
             {loading2 && (
-              <div className="flex items-center gap-3" style={{ color: '#9ca3af' }}>
-                <div className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: '#22c55e', borderTopColor: 'transparent' }} />
-                Buscando Token B...
+              <div className="flex items-center gap-3 font-mono" style={{ color: '#a855f7' }}>
+                <div className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: '#a855f7', borderTopColor: 'transparent' }} />
+                &gt; Token_B...
               </div>
             )}
           </div>
@@ -195,9 +216,9 @@ function App() {
         {/* Compare Mode — individual token previews */}
         {compareMode && analysis && !analysis2 && !loading && !loading2 && (
           <div className="mt-8 fade-in">
-            <div className="p-4 rounded-xl border text-center" style={{ backgroundColor: 'rgba(79,142,255,0.05)', borderColor: '#4f8eff40' }}>
-              <p className="text-sm" style={{ color: '#9ca3af' }}>
-                ✅ <strong style={{ color: '#4f8eff' }}>{analysis.token.name}</strong> carregado. Agora busque o Token B para comparar.
+            <div className="p-4 rounded-xl border text-center font-mono" style={{ backgroundColor: 'rgba(57,211,83,0.04)', borderColor: 'rgba(57,211,83,0.2)' }}>
+              <p className="text-sm" style={{ color: '#4a7a4a' }}>
+                ✅ <strong style={{ color: '#39d353' }}>{analysis.token.name}</strong> carregado. Agora busque o Token_B para comparar.
               </p>
             </div>
           </div>
@@ -214,14 +235,30 @@ function App() {
         {/* Empty State */}
         {!analysis && !loading && !error && (
           <div className="mt-16 text-center">
-            <div className="text-6xl mb-4">📊</div>
-            <p className="text-lg mb-2 text-white">Pronto para analisar</p>
-            <p style={{ color: '#6b7280' }}>
-              Exemplos: <button onClick={() => handleSearch('BTC')} className="hover:opacity-80 mx-1 underline" style={{ color: '#4f8eff' }}>BTC</button>
-              <button onClick={() => handleSearch('ETH')} className="hover:opacity-80 mx-1 underline" style={{ color: '#4f8eff' }}>ETH</button>
-              <button onClick={() => handleSearch('SOL')} className="hover:opacity-80 mx-1 underline" style={{ color: '#4f8eff' }}>SOL</button>
-              <button onClick={() => handleSearch('AVAX')} className="hover:opacity-80 mx-1 underline" style={{ color: '#4f8eff' }}>AVAX</button>
-              <button onClick={() => handleSearch('UNI')} className="hover:opacity-80 mx-1 underline" style={{ color: '#4f8eff' }}>UNI</button>
+            <div
+              className="text-6xl mb-4"
+              style={{ filter: 'drop-shadow(0 0 16px rgba(57,211,83,0.5))' }}
+            >
+              📡
+            </div>
+            <p
+              className="text-lg mb-2 font-mono"
+              style={{ color: '#39d353', textShadow: '0 0 10px rgba(57,211,83,0.4)' }}
+            >
+              &gt; sistema_pronto_
+            </p>
+            <p className="font-mono text-sm" style={{ color: '#4a7a4a' }}>
+              ex:{' '}
+              {['BTC', 'ETH', 'SOL', 'AVAX', 'UNI'].map((t) => (
+                <button
+                  key={t}
+                  onClick={() => handleSearch(t)}
+                  className="mx-1 transition-opacity hover:opacity-100"
+                  style={{ color: '#39d353', opacity: 0.7, textDecoration: 'none' }}
+                >
+                  [{t}]
+                </button>
+              ))}
             </p>
           </div>
         )}
@@ -232,13 +269,18 @@ function App() {
       <OccyWidget />
 
       {/* Footer */}
-      <footer className="border-t mt-20 py-8" style={{ borderColor: '#1e2a45' }}>
-        <div className="max-w-6xl mx-auto px-4 text-center" style={{ color: '#6b7280' }}>
+      <footer className="border-t mt-20 py-8" style={{ borderColor: '#1a2e1a' }}>
+        <div className="max-w-6xl mx-auto px-4 text-center font-mono" style={{ color: '#4a7a4a' }}>
           <p className="text-sm">
-            📡 TokenomicsRadar — Dados via <a href="https://coingecko.com" className="hover:opacity-80" style={{ color: '#4f8eff' }}>CoinGecko API</a> • Atualizado em tempo real
+            📡 TokenomicsRadar —{' '}
+            dados via{' '}
+            <a href="https://coingecko.com" className="hover:opacity-80 transition-opacity" style={{ color: '#39d353' }}>
+              CoinGecko API
+            </a>{' '}
+            • realtime
           </p>
-          <p className="text-xs mt-2">
-            Este conteúdo é apenas para fins educacionais e não constitui conselho financeiro.
+          <p className="text-xs mt-2" style={{ color: '#2a4a2a' }}>
+            // fins educacionais // não constitui conselho financeiro // DYOR
           </p>
           {/* by Occy */}
           <div className="flex items-center justify-center gap-3 mt-6">
@@ -249,13 +291,14 @@ function App() {
                 width: 40,
                 height: 40,
                 borderRadius: '50%',
-                border: '2px solid #4f8eff',
-                objectFit: 'cover'
+                border: '2px solid #39d353',
+                objectFit: 'cover',
+                boxShadow: '0 0 10px rgba(57,211,83,0.3)',
               }}
             />
             <div className="text-left">
-              <p className="text-xs font-bold" style={{ color: '#c8d4f0' }}>^OcCy_</p>
-              <p className="text-xs" style={{ color: '#6b7280' }}>built by ~OCcY</p>
+              <p className="text-xs font-bold" style={{ color: '#39d353', textShadow: '0 0 6px rgba(57,211,83,0.4)' }}>^OcCy_</p>
+              <p className="text-xs" style={{ color: '#4a7a4a' }}>built by ~OCcY // underground crypto tools</p>
             </div>
           </div>
         </div>

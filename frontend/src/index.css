@@ -11,6 +11,15 @@
   --color-radar-green: #00c853;
   --color-radar-yellow: #ffd600;
   --color-radar-red: #ff3d3d;
+  --color-goblin-bg: #070d07;
+  --color-goblin-surface: #0d1a0d;
+  --color-goblin-border: #1a2e1a;
+  --color-goblin-green: #39d353;
+  --color-goblin-purple: #a855f7;
+  --color-goblin-gold: #f59e0b;
+  --color-goblin-red: #ff4444;
+  --color-goblin-muted: #4a7a4a;
+  --color-goblin-dim: #2a4a2a;
 }
 
 * {
@@ -18,12 +27,29 @@
 }
 
 body {
-  background-color: #0a0e1a;
-  color: #e2e8f0;
+  background-color: #070d07;
+  color: #e2e8e2;
   font-family: 'Inter', system-ui, sans-serif;
   min-height: 100vh;
   margin: 0;
   padding: 0;
+}
+
+/* Neon glow utility classes */
+.glow-green { box-shadow: 0 0 8px rgba(57, 211, 83, 0.4); }
+.glow-purple { box-shadow: 0 0 8px rgba(168, 85, 247, 0.4); }
+.glow-gold   { box-shadow: 0 0 8px rgba(245, 158, 11, 0.4); }
+.text-glow   { text-shadow: 0 0 10px rgba(57, 211, 83, 0.6); }
+
+/* Card hover effect */
+.goblin-card {
+  background: #0d1a0d;
+  border: 1px solid #1a2e1a;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.goblin-card:hover {
+  border-color: rgba(57, 211, 83, 0.3);
+  box-shadow: 0 0 12px rgba(57, 211, 83, 0.15);
 }
 
 .progress-bar {
@@ -31,8 +57,8 @@ body {
 }
 
 .card {
-  background: #111827;
-  border: 1px solid #1e2a45;
+  background: #0d1a0d;
+  border: 1px solid #1a2e1a;
   border-radius: 12px;
   padding: 1.5rem;
 }
