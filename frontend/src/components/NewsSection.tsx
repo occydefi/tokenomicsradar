@@ -11,19 +11,18 @@ interface NewsSectionProps {
   ticker: string;
 }
 
-// Keywords that make news relevant to tokenomics evaluation
+// Keywords that make a news item relevant for tokenomics analysis
 const HIGHLIGHT_KEYWORDS = [
-  'sec', 'lawsuit', 'regulation', 'regulatory', 'ban', 'illegal',
-  'hack', 'exploit', 'vulnerability', 'stolen', 'breach',
-  'halving', 'burn', 'supply', 'tokenomics', 'fork', 'upgrade',
-  'partnership', 'integration', 'adoption', 'institutional',
-  'etf', 'approval', 'listing', 'delisting',
-  'fine', 'penalty', 'settlement', 'fraud', 'scam',
-  'protocol', 'upgrade', 'v2', 'v3', 'mainnet',
-  'treasury', 'foundation', 'grant',
+  'sec', 'cftc', 'cvm', 'regulation', 'regulatory', 'ban', 'banned', 'lawsuit',
+  'settlement', 'fine', 'penalty', 'probe', 'investigation', 'approve', 'approval',
+  'etf', 'hack', 'exploit', 'vulnerability', 'breach', 'stolen',
+  'burn', 'burning', 'halving', 'fork', 'upgrade', 'mainnet',
+  'partnership', 'integration', 'adoption', 'treasury', 'staking',
+  'governance', 'vote', 'proposal', 'supply', 'tokenomics',
+  'airdrop', 'listing', 'delisted', 'delist',
 ];
 
-function isHighlight(title: string): boolean {
+function isHighlighted(title: string): boolean {
   const lower = title.toLowerCase();
   return HIGHLIGHT_KEYWORDS.some(kw => lower.includes(kw));
 }
@@ -46,15 +45,17 @@ function formatDate(dateStr: string): string {
   }
 }
 
-function getSentimentIcon(title: string): string {
+function getSentimentIcon(title: string): { icon: string; color: string } {
   const lower = title.toLowerCase();
-  const bullish = ['surge', 'soar', 'rally', 'gains', 'rises', 'jumps', 'record', 'adoption', 'bullish', 'growth', 'partnership', 'approved', 'listed', 'etf'];
-  const bearish = ['crash', 'plunge', 'fall', 'drop', 'dump', 'hack', 'scam', 'fraud', 'ban', 'sec', 'lawsuit', 'fine', 'bearish', 'warning', 'stolen', 'exploit', 'delisting'];
+  const bullish = ['surge', 'soar', 'rally', 'bull', 'gains', 'rises', 'jumps', 'high', 'record', 'adoption', 'bullish', 'growth', 'partnership', 'launch', 'approved', 'listed'];
+  const bearish = ['crash', 'plunge', 'fall', 'drop', 'bear', 'dump', 'low', 'hack', 'scam', 'fraud', 'ban', 'lawsuit', 'fine', 'bearish', 'warning', 'risk', 'exploit', 'breach', 'delist'];
+
   const bullScore = bullish.filter(w => lower.includes(w)).length;
   const bearScore = bearish.filter(w => lower.includes(w)).length;
-  if (bullScore > bearScore) return '📈';
-  if (bearScore > bullScore) return '📉';
-  return '📰';
+
+  if (bullScore > bearScore) return { icon: '📈', color: 'text-green-400' };
+  if (bearScore > bullScore) return { icon: '📉', color: 'text-red-400' };
+  return { icon: '📰', color: 'text-gray-400' };
 }
 
 export default function NewsSection({ ticker }: NewsSectionProps) {
@@ -64,65 +65,69 @@ export default function NewsSection({ ticker }: NewsSectionProps) {
   const [expanded, setExpanded] = useState(false);
   const [fetched, setFetched] = useState(false);
 
-  // Separate highlights (always visible when expanded) from general news
-  const highlights = news.filter(n => isHighlight(n.title));
-  const allNews = news;
+  const highlightedNews = news.filter(n => isHighlighted(n.title));
 
-  function handleToggle() {
-    setExpanded(prev => !prev);
-    if (!fetched) {
-      setFetched(true);
-      setLoading(true);
-      setError(null);
+  const fetchNews = () => {
+    if (fetched || loading) return;
+    setLoading(true);
+    setError(null);
 
-      fetch(`/api/news?ticker=${encodeURIComponent(ticker)}`)
-        .then(res => {
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          return res.json();
-        })
-        .then(data => {
-          if (data.news && Array.isArray(data.news)) {
-            setNews(data.news);
-          } else {
-            setError('Nenhuma notícia encontrada');
-          }
-        })
-        .catch(err => {
-          console.error('NewsSection error:', err);
-          setError('Falha ao buscar notícias.');
-        })
-        .finally(() => setLoading(false));
-    }
-  }
+    fetch(`/api/news?ticker=${encodeURIComponent(ticker)}`)
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        if (data.news && Array.isArray(data.news)) {
+          setNews(data.news);
+          setFetched(true);
+        } else {
+          setError('Nenhuma notícia encontrada');
+        }
+      })
+      .catch(err => {
+        console.error('NewsSection error:', err);
+        setError('Falha ao buscar notícias.');
+      })
+      .finally(() => setLoading(false));
+  };
 
   // Reset when ticker changes
   useEffect(() => {
     setNews([]);
-    setExpanded(false);
     setFetched(false);
+    setExpanded(false);
     setError(null);
   }, [ticker]);
 
+  const handleToggle = () => {
+    if (!expanded && !fetched) fetchNews();
+    setExpanded(prev => !prev);
+  };
+
   return (
     <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
-      {/* Header — always visible, acts as toggle */}
+      {/* Header — always visible */}
       <button
         onClick={handleToggle}
         className="w-full flex items-center gap-2 p-5 hover:bg-gray-800/50 transition-colors text-left"
       >
         <span className="text-xl">📡</span>
-        <h3 className="text-lg font-bold text-white flex-1">Notícias Relevantes</h3>
-        {highlights.length > 0 && (
-          <span className="text-xs font-medium bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded-full px-2 py-0.5">
-            {highlights.length} em destaque
-          </span>
-        )}
-        <span className="text-gray-500 text-sm ml-1">{expanded ? '▲' : '▼'}</span>
+        <div className="flex-1">
+          <h3 className="text-base font-bold text-white">Notícias Relevantes</h3>
+          {!expanded && highlightedNews.length === 0 && !fetched && (
+            <p className="text-xs text-gray-500 mt-0.5">Clique para ver notícias de regulação, upgrades e eventos importantes</p>
+          )}
+          {!expanded && highlightedNews.length > 0 && (
+            <p className="text-xs text-orange-400 mt-0.5">⚠️ {highlightedNews.length} notícia{highlightedNews.length > 1 ? 's' : ''} relevante{highlightedNews.length > 1 ? 's' : ''} para tokenomics</p>
+          )}
+        </div>
+        <span className="text-gray-500 text-sm">{expanded ? '▲' : '▼'}</span>
       </button>
 
-      {/* Collapsible content */}
+      {/* Expanded content */}
       {expanded && (
-        <div className="px-5 pb-5">
+        <div className="px-5 pb-5 border-t border-gray-800">
           {loading && (
             <div className="flex items-center gap-3 text-gray-400 py-4">
               <div className="animate-spin w-4 h-4 border-2 border-orange-500 border-t-transparent rounded-full" />
@@ -131,79 +136,62 @@ export default function NewsSection({ ticker }: NewsSectionProps) {
           )}
 
           {error && !loading && (
-            <div className="text-sm text-red-400 bg-red-900/20 rounded-lg p-3 border border-red-800">
+            <div className="text-sm text-red-400 bg-red-900/20 rounded-lg p-3 border border-red-800 mt-3">
               ⚠️ {error}
             </div>
           )}
 
-          {!loading && !error && allNews.length === 0 && fetched && (
-            <p className="text-sm text-gray-500 py-2">Nenhuma notícia encontrada para {ticker}.</p>
+          {!loading && !error && news.length === 0 && fetched && (
+            <p className="text-sm text-gray-500 mt-3">Nenhuma notícia encontrada para {ticker}.</p>
           )}
 
-          {!loading && allNews.length > 0 && (
-            <div className="space-y-2">
-              {/* Highlights first */}
-              {highlights.length > 0 && (
-                <div className="mb-3">
-                  <p className="text-xs text-orange-400 font-semibold uppercase tracking-wide mb-2">
-                    ⚡ Em destaque (relevante para avaliação)
-                  </p>
-                  {highlights.map((item, i) => (
-                    <NewsItem key={`h-${i}`} item={item} highlight />
-                  ))}
-                </div>
-              )}
-
-              {/* Rest of the news */}
-              {allNews.filter(n => !isHighlight(n.title)).length > 0 && (
-                <>
-                  {highlights.length > 0 && (
-                    <p className="text-xs text-gray-600 uppercase tracking-wide mb-2">Outras notícias</p>
-                  )}
-                  {allNews.filter(n => !isHighlight(n.title)).map((item, i) => (
-                    <NewsItem key={`n-${i}`} item={item} />
-                  ))}
-                </>
-              )}
+          {!loading && news.length > 0 && (
+            <div className="space-y-2 mt-3">
+              {news.map((item, i) => {
+                const sentiment = getSentimentIcon(item.title);
+                const highlighted = isHighlighted(item.title);
+                return (
+                  <a
+                    key={i}
+                    href={item.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`flex gap-3 p-3 rounded-lg border transition-all group ${
+                      highlighted
+                        ? 'bg-orange-900/10 border-orange-800/40 hover:border-orange-600'
+                        : 'bg-gray-800 border-gray-700 hover:border-gray-600'
+                    }`}
+                  >
+                    <span className="text-base flex-shrink-0 mt-0.5">{sentiment.icon}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start gap-2">
+                        <p className="text-sm text-gray-200 group-hover:text-white transition-colors line-clamp-2 leading-snug flex-1">
+                          {item.title}
+                        </p>
+                        {highlighted && (
+                          <span className="text-xs bg-orange-900/60 text-orange-300 px-1.5 py-0.5 rounded flex-shrink-0">destaque</span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 mt-1.5">
+                        {item.source && (
+                          <span className="text-xs text-gray-500 truncate max-w-[120px]">{item.source}</span>
+                        )}
+                        {item.pubDate && (
+                          <span className="text-xs text-gray-600">· {formatDate(item.pubDate)}</span>
+                        )}
+                      </div>
+                    </div>
+                  </a>
+                );
+              })}
             </div>
           )}
 
-          <p className="text-xs text-gray-600 mt-4">
-            CoinDesk · Cointelegraph · Decrypt · Apenas informativo · Não é conselho financeiro
+          <p className="text-xs text-gray-600 mt-4 text-center">
+            Fontes: CoinDesk · Cointelegraph · Decrypt · Apenas informativo · Não é conselho financeiro
           </p>
         </div>
       )}
     </div>
-  );
-}
-
-function NewsItem({ item, highlight }: { item: NewsItem; highlight?: boolean }) {
-  const icon = getSentimentIcon(item.title);
-  return (
-    <a
-      href={item.link}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={`flex gap-3 p-3 rounded-lg border transition-all group mb-2 ${
-        highlight
-          ? 'bg-orange-950/30 border-orange-800/40 hover:border-orange-600/60'
-          : 'bg-gray-800 border-gray-700 hover:border-gray-600'
-      }`}
-    >
-      <span className="text-base flex-shrink-0 mt-0.5">{icon}</span>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm text-gray-200 group-hover:text-white transition-colors line-clamp-2 leading-snug">
-          {item.title}
-        </p>
-        <div className="flex items-center gap-2 mt-1">
-          {item.source && (
-            <span className="text-xs text-gray-500 truncate max-w-[120px]">{item.source}</span>
-          )}
-          {item.pubDate && (
-            <span className="text-xs text-gray-600">· {formatDate(item.pubDate)}</span>
-          )}
-        </div>
-      </div>
-    </a>
   );
 }
