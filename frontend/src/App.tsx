@@ -1,24 +1,9 @@
 import { useState } from 'react';
 import SearchBar from './components/SearchBar';
 import TokenHeader from './components/TokenHeader';
-import SupplySection from './components/SupplySection';
-import DistributionSection from './components/DistributionSection';
-import VestingSection from './components/VestingSection';
-import UtilitySection from './components/UtilitySection';
-import TreasurySection from './components/TreasurySection';
-import ProsConsSection from './components/ProsConsSection';
-import ScoreSection from './components/ScoreSection';
-import RedFlagsSection from './components/RedFlagsSection';
-import LinksSection from './components/LinksSection';
-import AIAnalysisSection from './components/AIAnalysisSection';
-import RegulatorySection from './components/RegulatorySection';
-import TeamTransparencySection from './components/TeamTransparencySection';
-import CommunitySection from './components/CommunitySection';
 import CompareView from './components/CompareView';
-import NewsSection from './components/NewsSection';
-import OnChainMetrics from './components/OnChainMetrics';
+import AnalysisTabs from './components/AnalysisTabs';
 import OccyWidget from './components/OccyWidget';
-import TLDRCard from './components/TLDRCard';
 import type { AnalysisResult } from './types';
 import { searchToken } from './services/coingecko';
 import { analyzeToken } from './utils/analyzer';
@@ -27,6 +12,7 @@ function App() {
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState('overview');
 
   // Compare mode state
   const [compareMode, setCompareMode] = useState(false);
@@ -38,6 +24,7 @@ function App() {
     setLoading(true);
     setError(null);
     setAnalysis(null);
+    setActiveTab('overview');
     if (compareMode) setAnalysis2(null);
 
     try {
@@ -220,26 +207,7 @@ function App() {
         {!compareMode && analysis && !loading && (
           <div className="mt-10 fade-in space-y-6">
             <TokenHeader analysis={analysis} />
-            <TLDRCard analysis={analysis} />
-            <LinksSection analysis={analysis} />
-            <RedFlagsSection analysis={analysis} />
-            <RegulatorySection analysis={analysis} />
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <SupplySection analysis={analysis} />
-              <DistributionSection analysis={analysis} />
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <VestingSection analysis={analysis} />
-              <UtilitySection analysis={analysis} />
-            </div>
-            <TreasurySection analysis={analysis} />
-            <TeamTransparencySection analysis={analysis} />
-            <CommunitySection analysis={analysis} />
-            <OnChainMetrics ticker={analysis.token.symbol} />
-            <NewsSection ticker={analysis.token.symbol} />
-            <ProsConsSection analysis={analysis} />
-            <AIAnalysisSection analysis={analysis} />
-            <ScoreSection analysis={analysis} />
+            <AnalysisTabs analysis={analysis} activeTab={activeTab} onTabChange={setActiveTab} />
           </div>
         )}
 
