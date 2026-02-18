@@ -81,7 +81,7 @@ export default function NewsSection({ ticker }: NewsSectionProps) {
       <div className="flex items-center gap-2 mb-4">
         <span className="text-xl">📡</span>
         <h3 className="text-lg font-bold text-white">Notícias Recentes</h3>
-        <span className="text-xs text-gray-500 ml-auto">via Google News</span>
+        <span className="text-xs text-gray-500 ml-auto">CoinDesk · CoinTelegraph · Decrypt</span>
       </div>
 
       {loading && (
@@ -134,7 +134,7 @@ export default function NewsSection({ ticker }: NewsSectionProps) {
       )}
 
       <p className="text-xs text-gray-600 mt-4 text-center">
-        Notícias em inglês do Google News · Apenas informativo · Não é conselho financeiro
+        Fontes especializadas em crypto · Apenas informativo · Não é conselho financeiro
       </p>
     </div>
   );
