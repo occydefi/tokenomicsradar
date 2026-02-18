@@ -318,34 +318,16 @@ export function analyzeToken(token: TokenData): AnalysisResult {
     else treasScore = 3;
   }
 
-  // Regulatory adjustment
-  let regulatoryAdj = 0;
-  if (regulatoryEntry) {
-    if (regulatoryEntry.severity === 'high') regulatoryAdj = -2;
-    else if (regulatoryEntry.severity === 'medium') regulatoryAdj = -1;
-    else if (regulatoryEntry.severity === 'low') regulatoryAdj = -0.5;
-  }
-
-  // Team transparency adjustment
-  let teamAdj = 0;
-  if (teamTransparency === 'high') teamAdj = 0.5;
-  else if (teamTransparency === 'low') teamAdj = -0.5;
-  else if (teamTransparency === 'anonymous') teamAdj = -1;
-
-  // Community strength adjustment
-  let communityAdj = 0;
-  if (communityStrength === 'strong') communityAdj = 0.5;
-  else if (communityStrength === 'weak') communityAdj = -0.5;
+  // ─── Regulatory / Team / Community are informational ONLY ────
+  // They appear as visual sections but do NOT affect the tokenomics score.
+  // The platform focus is pure tokenomics quality, not external risk factors.
 
   const totalScore = Math.max(0, Math.min(10,
     supplyScore * 0.25 +
     distScore * 0.25 +
     vestingScore * 0.20 +
     utilScore * 0.20 +
-    treasScore * 0.10 +
-    regulatoryAdj +
-    teamAdj +
-    communityAdj
+    treasScore * 0.10
   ));
 
   const scores = {

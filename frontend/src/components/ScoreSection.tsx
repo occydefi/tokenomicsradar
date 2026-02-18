@@ -124,8 +124,14 @@ export default function ScoreSection({ analysis }: Props) {
         <p className="text-sm leading-relaxed" style={{ color: '#d1d5db' }}>{conclusion}</p>
       </div>
 
+      {/* Score methodology note */}
+      <div className="mt-3 px-3 py-2 rounded-lg text-xs flex items-center gap-2" style={{ backgroundColor: 'rgba(79,142,255,0.08)', color: '#6b7280' }}>
+        <span>📐</span>
+        <span>Score baseado puramente em tokenomics. Risco regulatório, transparência do time e comunidade aparecem como contexto nas seções acima, mas não afetam a pontuação.</span>
+      </div>
+
       {/* Disclaimer */}
-      <div className="mt-4 p-3 rounded-xl text-xs" style={{ backgroundColor: 'rgba(79,142,255,0.05)', color: '#4b5563' }}>
+      <div className="mt-3 p-3 rounded-xl text-xs" style={{ backgroundColor: 'rgba(79,142,255,0.05)', color: '#4b5563' }}>
         ⚠️ Esta análise é gerada automaticamente com base em dados públicos e algoritmos de pontuação. 
         Não constitui conselho financeiro. Faça sua própria pesquisa (DYOR) antes de investir.
       </div>
