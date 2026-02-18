@@ -12,6 +12,7 @@ import RedFlagsSection from './components/RedFlagsSection';
 import LinksSection from './components/LinksSection';
 import AIAnalysisSection from './components/AIAnalysisSection';
 import CompareView from './components/CompareView';
+import OccyWidget from './components/OccyWidget';
 import type { AnalysisResult } from './types';
 import { searchToken } from './services/coingecko';
 import { analyzeToken } from './utils/analyzer';
@@ -244,6 +245,9 @@ function App() {
           </div>
         )}
       </div>
+
+      {/* Occy floating widget */}
+      <OccyWidget />
 
       {/* Footer */}
       <footer className="border-t mt-20 py-8" style={{ borderColor: '#1e2a45' }}>
