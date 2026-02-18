@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 const INTRO_LINES = [
   { icon: '🚨', text: 'Antes de comprar qualquer altcoin — leia isso.' },
@@ -17,8 +17,29 @@ const INTRO_LINES = [
 
 export default function OccyWidget() {
   const [open, setOpen] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const handlePlay = () => {
+    if (isPlaying) {
+      audioRef.current?.pause();
+      if (audioRef.current) audioRef.current.currentTime = 0;
+      setIsPlaying(false);
+    } else {
+      if (!audioRef.current) {
+        audioRef.current = new Audio('/occy-intro.mp3');
+        audioRef.current.onended = () => setIsPlaying(false);
+        audioRef.current.onerror = () => setIsPlaying(false);
+      }
+      audioRef.current.play();
+      setIsPlaying(true);
+    }
+  };
 
   const handleClose = () => {
+    audioRef.current?.pause();
+    if (audioRef.current) audioRef.current.currentTime = 0;
+    setIsPlaying(false);
     setOpen(false);
   };
 
@@ -87,6 +108,31 @@ export default function OccyWidget() {
               ×
             </button>
           </div>
+
+          {/* Audio button */}
+          <button
+            onClick={handlePlay}
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              padding: '9px 16px',
+              borderRadius: 10,
+              border: `1px solid ${isPlaying ? '#ff6b6b60' : '#4f8eff60'}`,
+              backgroundColor: isPlaying ? 'rgba(255,61,61,0.15)' : 'rgba(79,142,255,0.15)',
+              color: isPlaying ? '#ff6b6b' : '#4f8eff',
+              cursor: 'pointer',
+              fontSize: 13,
+              fontWeight: 600,
+              marginBottom: 12,
+              transition: 'all 0.15s',
+            }}
+          >
+            <img src="/occy-avatar.jpg" alt="" style={{ width: 20, height: 20, borderRadius: '50%', objectFit: 'cover' }} />
+            {isPlaying ? '⏹ Parar' : '▶ Ouvir explicação'}
+          </button>
 
           {/* Intro content */}
           <div
