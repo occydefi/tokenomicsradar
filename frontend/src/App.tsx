@@ -136,6 +136,24 @@ function App() {
           <p className="text-xs mt-2">
             Este conteúdo é apenas para fins educacionais e não constitui conselho financeiro.
           </p>
+          {/* by Occy */}
+          <div className="flex items-center justify-center gap-3 mt-6">
+            <img
+              src="/occy-avatar.jpg"
+              alt="Occy"
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
+                border: '2px solid #4f8eff',
+                objectFit: 'cover'
+              }}
+            />
+            <div className="text-left">
+              <p className="text-xs font-bold" style={{ color: '#c8d4f0' }}>^OcCy_</p>
+              <p className="text-xs" style={{ color: '#6b7280' }}>built by ~OCcY</p>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
