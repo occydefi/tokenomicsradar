@@ -11,46 +11,85 @@ export default function AIAnalysisSection({ analysis }: Props) {
 
   return (
     <div
-      className="rounded-2xl border p-6"
-      style={{ backgroundColor: '#0d1421', borderColor: '#4f8eff40' }}
+      className="rounded-2xl border p-6 relative overflow-hidden"
+      style={{
+        backgroundColor: '#080d0a',
+        borderColor: '#00ff4140',
+        boxShadow: '0 0 24px #00ff4115, inset 0 0 40px #00000060',
+      }}
     >
-      <div className="flex items-center gap-3 mb-4">
-        <div
-          className="w-8 h-8 rounded-full flex items-center justify-center text-base flex-shrink-0"
-          style={{ backgroundColor: 'rgba(79,142,255,0.15)', border: '1px solid #4f8eff40' }}
-        >
-          🤖
-        </div>
-        <div>
-          <h3 className="text-sm font-bold" style={{ color: '#4f8eff' }}>
-            Análise Tokenômica — Gerada por IA
-          </h3>
-          <p className="text-xs" style={{ color: '#4b5563' }}>
-            Síntese automática baseada nos dados analisados
-          </p>
-        </div>
-        <span
-          className="ml-auto text-xs px-2 py-1 rounded-full font-semibold"
-          style={{ backgroundColor: 'rgba(79,142,255,0.1)', color: '#4f8eff', border: '1px solid #4f8eff30' }}
-        >
-          IA Local
-        </span>
-      </div>
-
+      {/* scanline effect */}
       <div
-        className="p-4 rounded-xl text-sm leading-relaxed"
+        className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundColor: 'rgba(79,142,255,0.05)',
-          color: '#d1d5db',
-          borderLeft: '3px solid #4f8eff',
+          background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,65,0.015) 2px, rgba(0,255,65,0.015) 4px)',
+          zIndex: 0,
         }}
-      >
-        {text}
-      </div>
+      />
 
-      <p className="text-xs mt-3" style={{ color: '#374151' }}>
-        ⚠️ Análise gerada automaticamente com base em dados públicos. Não constitui conselho financeiro. Faça sua própria pesquisa (DYOR).
-      </p>
+      {/* corner accents */}
+      <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 rounded-tl-xl" style={{ borderColor: '#00ff41' }} />
+      <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 rounded-tr-xl" style={{ borderColor: '#00ff41' }} />
+      <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 rounded-bl-xl" style={{ borderColor: '#00ff41' }} />
+      <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 rounded-br-xl" style={{ borderColor: '#00ff41' }} />
+
+      <div className="relative z-10">
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-4">
+          <div
+            className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+            style={{
+              backgroundColor: 'rgba(0,255,65,0.08)',
+              border: '1px solid #00ff4150',
+              boxShadow: '0 0 12px #00ff4120',
+            }}
+          >
+            🧌
+          </div>
+          <div>
+            <h3 className="text-sm font-bold tracking-wider uppercase" style={{ color: '#00ff41', fontFamily: 'monospace' }}>
+              Análise Occy
+            </h3>
+            <p className="text-xs font-mono" style={{ color: '#00ff4160' }}>
+              {'>'} tokenomics_scan.sh --deep --no-bs
+            </p>
+          </div>
+          <div className="ml-auto flex items-center gap-2">
+            <span
+              className="w-2 h-2 rounded-full animate-pulse"
+              style={{ backgroundColor: '#00ff41', boxShadow: '0 0 6px #00ff41' }}
+            />
+            <span
+              className="text-xs px-2 py-1 rounded font-mono font-bold tracking-wider"
+              style={{
+                backgroundColor: 'rgba(0,255,65,0.08)',
+                color: '#00ff41',
+                border: '1px solid #00ff4130',
+              }}
+            >
+              OCCY v2.0
+            </span>
+          </div>
+        </div>
+
+        {/* Analysis text */}
+        <div
+          className="p-4 rounded-xl text-sm leading-relaxed font-mono"
+          style={{
+            backgroundColor: 'rgba(0,255,65,0.04)',
+            color: '#a3c9a8',
+            borderLeft: '3px solid #00ff41',
+          }}
+        >
+          <span style={{ color: '#00ff4180' }}>{'// '}</span>
+          {text}
+        </div>
+
+        {/* Footer */}
+        <p className="text-xs mt-3 font-mono" style={{ color: '#374151' }}>
+          ⚠ not financial advice · DYOR · trust the math, not the hype
+        </p>
+      </div>
     </div>
   );
 }
