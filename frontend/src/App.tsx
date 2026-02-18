@@ -13,15 +13,11 @@ import LinksSection from './components/LinksSection';
 import AIAnalysisSection from './components/AIAnalysisSection';
 import CompareView from './components/CompareView';
 import OccyWidget from './components/OccyWidget';
-import Top10Section from './components/Top10Section';
 import type { AnalysisResult } from './types';
 import { searchToken } from './services/coingecko';
 import { analyzeToken } from './utils/analyzer';
 
-type ActiveTab = 'analisar' | 'top10';
-
 function App() {
-  const [activeTab, setActiveTab] = useState<ActiveTab>('analisar');
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -31,11 +27,6 @@ function App() {
   const [analysis2, setAnalysis2] = useState<AnalysisResult | null>(null);
   const [loading2, setLoading2] = useState(false);
   const [error2, setError2] = useState<string | null>(null);
-
-  const handleAnalyzeFromTop10 = (ticker: string) => {
-    setActiveTab('analisar');
-    handleSearch(ticker);
-  };
 
   const handleSearch = async (ticker: string) => {
     setLoading(true);
@@ -124,55 +115,8 @@ function App() {
         </div>
       </header>
 
-      {/* Tab Navigation */}
-      <div style={{ borderBottom: '1px solid #1e2a45', backgroundColor: 'rgba(10,14,26,0.7)' }}>
-        <div className="max-w-6xl mx-auto px-4">
-          <div style={{ display: 'flex', gap: 8, paddingTop: 12, paddingBottom: 12 }}>
-            <button
-              onClick={() => setActiveTab('analisar')}
-              style={{
-                padding: '8px 20px',
-                borderRadius: 999,
-                fontWeight: 600,
-                fontSize: 14,
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                border: activeTab === 'analisar' ? '1px solid #4f8eff' : '1px solid #1e2a45',
-                backgroundColor: activeTab === 'analisar' ? '#4f8eff' : 'transparent',
-                color: activeTab === 'analisar' ? '#fff' : '#9ca3af',
-              }}
-            >
-              🔍 Analisar Token
-            </button>
-            <button
-              onClick={() => setActiveTab('top10')}
-              style={{
-                padding: '8px 20px',
-                borderRadius: 999,
-                fontWeight: 600,
-                fontSize: 14,
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                border: activeTab === 'top10' ? '1px solid #4f8eff' : '1px solid #1e2a45',
-                backgroundColor: activeTab === 'top10' ? '#4f8eff' : 'transparent',
-                color: activeTab === 'top10' ? '#fff' : '#9ca3af',
-              }}
-            >
-              🏆 Top 10
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Top 10 Tab */}
-      {activeTab === 'top10' && (
-        <div className="max-w-6xl mx-auto px-4 py-10">
-          <Top10Section onAnalyzeToken={handleAnalyzeFromTop10} />
-        </div>
-      )}
-
       {/* Hero / Search */}
-      {activeTab === 'analisar' && (
+      {(
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="text-center mb-10">
           <h2 className="text-4xl font-bold mb-3 text-white">
