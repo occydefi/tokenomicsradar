@@ -512,7 +512,15 @@ export function analyzeToken(token: TokenData): AnalysisResult {
   if (isMemeToken) {
     conclusion = `${tokenName} é um memecoin — ativo puramente especulativo sem utilidade real no protocolo. Memecoins podem apresentar distribuição "justa" e oferta fixa, mas carecem dos fundamentos que sustentam valorização de longo prazo: utilidade, governança, receita de protocolo e roadmap técnico. O score reflete essa realidade: pode ser um trade, não é um investimento fundamentalista.`;
   } else if (isStablecoin) {
-    conclusion = `${tokenName} é uma stablecoin — projetada para manter paridade com o dólar, não para apreciação de valor. A análise tokenômica reflete sua estrutura de colateralização e riscos de depeg, não potencial de valorização.`;
+    const isCentralizedStable = ['tether', 'usd-coin', 'true-usd', 'first-digital-usd'].includes(token.id);
+    const isDecentralizedStable = ['dai', 'frax', 'usdd'].includes(token.id);
+    if (isCentralizedStable) {
+      conclusion = `${tokenName} é uma stablecoin centralizada — emitida e controlada por uma empresa privada com reservas em custódia. Não é um ativo de investimento, mas uma ferramenta de liquidez essencial no ecossistema cripto: representa a maior parte do volume de trading global e serve como colateral em DeFi. O score reflete sua utilidade real como meio de troca, não potencial de valorização. Risco principal: dependência da empresa emissora e regulação.`;
+    } else if (isDecentralizedStable) {
+      conclusion = `${tokenName} é uma stablecoin descentralizada — mantida por smart contracts e colateral cripto, sem custódia centralizada. Maior resiliência a censura e intervenção regulatória, mas sujeita a riscos de smart contract e eventos de descolamento (depeg). Utilidade alta em DeFi nativo. Não é investimento — é infraestrutura.`;
+    } else {
+      conclusion = `${tokenName} é uma stablecoin — projetada para manter paridade com o dólar, não para apreciação de valor. Alta utilidade como meio de troca e colateral, com score limitado por design: stablecoins não competem como ativos de valorização.`;
+    }
   } else if (verdict === 'Excelente') {
     conclusion = `${tokenName} apresenta fundamentos tokenômicos sólidos, com excelente pontuação em distribuição, utilidade e oferta. Trata-se de um token bem estruturado que demonstra comprometimento com sustentabilidade de longo prazo.`;
   } else if (verdict === 'Bom') {
