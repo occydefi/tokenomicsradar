@@ -256,6 +256,12 @@ export function analyzeToken(token: TokenData): AnalysisResult {
     utilityScore = Math.min(10, utilityScore + 3.0);
   }
 
+  // Stablecoin medium-of-exchange bonus: USDT/USDC are the backbone of DeFi
+  // High utility as collateral, trading pairs, and settlement layer — just not investment-grade
+  if (isStablecoin) {
+    utilityScore = Math.min(8.0, utilityScore + 4.0); // boost utility but score still capped at 6.0 total
+  }
+
   utilityData.score = utilityScore;
 
   // ─── Treasury Data ─────────────────────────────────────────────
@@ -480,6 +486,7 @@ export function analyzeToken(token: TokenData): AnalysisResult {
   if (utilityData.stakingAvailable) pros.push('Staking disponível — incentiva holders de longo prazo');
   if (utilityData.governancePower) pros.push('Poder de governança — token confere voz no protocolo');
   if (isStoreOfValue) pros.push('Reserva de valor digital — utilidade monetária comprovada como ativo de escassez programada');
+  if (isStablecoin) pros.push('Meio de troca e colateral DeFi — espinha dorsal da liquidez em cripto');
   if (utilityData.neededToUse) pros.push('Token essencial para usar o protocolo — demanda orgânica garantida');
 
   if (!utilityData.feeBurning) cons.push('Sem mecanismo de queima — sem pressão deflacionária');
