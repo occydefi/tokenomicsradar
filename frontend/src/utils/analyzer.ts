@@ -517,7 +517,12 @@ export function analyzeToken(token: TokenData): AnalysisResult {
   }
 
   if (teamTransparency === 'anonymous') {
-    contextParts.push(`🕵️ Time completamente anônimo — ausência de accountability pública aumenta o risco de saída do projeto.`);
+    // Special case: Bitcoin — anonymous creator is a FEATURE (no one controls it)
+    if (token.id === 'bitcoin') {
+      contextParts.push(`🔓 Criador anônimo (Satoshi) é uma característica de descentralização — sem fundador para pressionar ou controlar o protocolo. Caso único no mercado.`);
+    } else {
+      contextParts.push(`🕵️ Time completamente anônimo — ausência de accountability pública aumenta o risco de saída do projeto.`);
+    }
   } else if (teamTransparency === 'low') {
     contextParts.push(`👤 Transparência do time limitada — poucas informações públicas sobre os desenvolvedores.`);
   } else if (teamTransparency === 'high' && (verdict === 'Excelente' || verdict === 'Bom')) {
