@@ -1,0 +1,251 @@
+import type { AnalysisResult } from '../types';
+import { formatNumber, getScoreColor } from '../utils/analyzer';
+import { getRedFlags } from './RedFlagsSection';
+
+interface Props {
+  analysis1: AnalysisResult;
+  analysis2: AnalysisResult;
+}
+
+interface MetricRow {
+  label: string;
+  icon: string;
+  val1: number | null;
+  val2: number | null;
+  format: (v: number) => string;
+  /** lower is better */
+  lowerIsBetter?: boolean;
+  /** exact match (no winner) */
+  noWinner?: boolean;
+  suffix?: string;
+}
+
+function Winner({ wins, color }: { wins: boolean; color: string }) {
+  if (!wins) return null;
+  return (
+    <span
+      className="ml-1 text-xs px-1.5 py-0.5 rounded-full font-bold"
+      style={{ backgroundColor: `${color}20`, color }}
+    >
+      ✓
+    </span>
+  );
+}
+
+export default function CompareView({ analysis1, analysis2 }: Props) {
+  const t1 = analysis1.token;
+  const t2 = analysis2.token;
+  const md1 = t1.market_data;
+  const md2 = t2.market_data;
+
+  const mc1 = md1.market_cap?.usd ?? 0;
+  const mc2 = md2.market_cap?.usd ?? 0;
+  const fdv1 = md1.fully_diluted_valuation?.usd ?? 0;
+  const fdv2 = md2.fully_diluted_valuation?.usd ?? 0;
+  const fdvRatio1 = mc1 > 0 ? fdv1 / mc1 : 0;
+  const fdvRatio2 = mc2 > 0 ? fdv2 / mc2 : 0;
+
+  const flags1 = getRedFlags(analysis1).length;
+  const flags2 = getRedFlags(analysis2).length;
+
+  const metrics: MetricRow[] = [
+    {
+      label: 'Market Cap',
+      icon: '💰',
+      val1: mc1,
+      val2: mc2,
+      format: (v) => formatNumber(v),
+    },
+    {
+      label: 'FDV',
+      icon: '📊',
+      val1: fdv1,
+      val2: fdv2,
+      format: (v) => formatNumber(v),
+    },
+    {
+      label: 'FDV / MC Ratio',
+      icon: '⚖️',
+      val1: fdvRatio1,
+      val2: fdvRatio2,
+      format: (v) => v.toFixed(2) + 'x',
+      lowerIsBetter: true,
+    },
+    {
+      label: 'Circulação %',
+      icon: '🔄',
+      val1: analysis1.supplyMetrics.circulatingPct,
+      val2: analysis2.supplyMetrics.circulatingPct,
+      format: (v) => v.toFixed(1) + '%',
+    },
+    {
+      label: 'Time %',
+      icon: '👥',
+      val1: analysis1.distribution.team,
+      val2: analysis2.distribution.team,
+      format: (v) => v.toFixed(0) + '%',
+      lowerIsBetter: true,
+    },
+    {
+      label: 'Investidores %',
+      icon: '🏦',
+      val1: analysis1.distribution.investors,
+      val2: analysis2.distribution.investors,
+      format: (v) => v.toFixed(0) + '%',
+      lowerIsBetter: true,
+    },
+    {
+      label: 'Comunidade %',
+      icon: '🌍',
+      val1: analysis1.distribution.community,
+      val2: analysis2.distribution.community,
+      format: (v) => v.toFixed(0) + '%',
+    },
+    {
+      label: 'Vesting (anos)',
+      icon: '🔐',
+      val1: analysis1.vestingYears,
+      val2: analysis2.vestingYears,
+      format: (v) => v === 0 ? 'Nenhum' : v + ' anos',
+    },
+    {
+      label: 'Score Total',
+      icon: '🎯',
+      val1: analysis1.scores.total,
+      val2: analysis2.scores.total,
+      format: (v) => v.toFixed(1) + '/10',
+    },
+    {
+      label: 'Red Flags',
+      icon: '🚩',
+      val1: flags1,
+      val2: flags2,
+      format: (v) => v === 0 ? 'Nenhuma' : v.toString(),
+      lowerIsBetter: true,
+    },
+  ];
+
+  const verdictColors: Record<string, string> = {
+    'Excelente': '#22c55e',
+    'Bom': '#69f0ae',
+    'Regular': '#f59e0b',
+    'Ruim': '#ff6d00',
+    'Evitar': '#ef4444',
+  };
+
+  return (
+    <div className="rounded-2xl border p-6" style={{ backgroundColor: '#111827', borderColor: '#1e2a45' }}>
+      <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+        ⚖️ Comparação de Tokens
+      </h3>
+
+      {/* Token Headers */}
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        <div />
+        {[analysis1, analysis2].map((a) => (
+          <div key={a.token.id} className="text-center">
+            {a.token.image?.large && (
+              <img
+                src={a.token.image.large}
+                alt={a.token.name}
+                className="w-12 h-12 rounded-full mx-auto mb-2"
+                style={{ border: '2px solid #1e2a45' }}
+              />
+            )}
+            <p className="font-bold text-white text-sm">{a.token.name}</p>
+            <p className="text-xs font-mono" style={{ color: '#00e5ff' }}>
+              {a.token.symbol?.toUpperCase()}
+            </p>
+            <span
+              className="text-xs font-bold px-2 py-0.5 rounded-full inline-block mt-1"
+              style={{
+                color: verdictColors[a.verdict],
+                backgroundColor: `${verdictColors[a.verdict]}20`,
+              }}
+            >
+              {a.verdict}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {/* Metrics Table */}
+      <div className="space-y-2">
+        {metrics.map((row) => {
+          const v1 = row.val1 ?? 0;
+          const v2 = row.val2 ?? 0;
+          const tie = v1 === v2;
+          const win1 = !tie && (row.lowerIsBetter ? v1 < v2 : v1 > v2);
+          const win2 = !tie && !win1;
+
+          const GREEN = '#22c55e';
+          const NEUTRAL = '#9ca3af';
+
+          return (
+            <div
+              key={row.label}
+              className="grid grid-cols-3 gap-4 items-center py-2 px-3 rounded-lg"
+              style={{ backgroundColor: 'rgba(30,42,69,0.4)' }}
+            >
+              {/* Label */}
+              <div className="text-sm flex items-center gap-2" style={{ color: '#9ca3af' }}>
+                <span>{row.icon}</span>
+                <span>{row.label}</span>
+              </div>
+
+              {/* Token 1 value */}
+              <div className="text-center">
+                <span
+                  className="text-sm font-bold"
+                  style={{ color: win1 ? GREEN : NEUTRAL }}
+                >
+                  {row.val1 !== null ? row.format(row.val1) : 'N/D'}
+                </span>
+                <Winner wins={win1} color={GREEN} />
+              </div>
+
+              {/* Token 2 value */}
+              <div className="text-center">
+                <span
+                  className="text-sm font-bold"
+                  style={{ color: win2 ? GREEN : NEUTRAL }}
+                >
+                  {row.val2 !== null ? row.format(row.val2) : 'N/D'}
+                </span>
+                <Winner wins={win2} color={GREEN} />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Winner Banner */}
+      {(() => {
+        const score1 = analysis1.scores.total;
+        const score2 = analysis2.scores.total;
+        if (score1 === score2) return null;
+        const winner = score1 > score2 ? analysis1 : analysis2;
+        const color = verdictColors[winner.verdict] ?? GREEN_COLOR;
+        return (
+          <div
+            className="mt-6 p-4 rounded-xl text-center"
+            style={{ backgroundColor: `${color}15`, border: `1px solid ${color}40` }}
+          >
+            <p className="text-sm font-bold" style={{ color }}>
+              🏆 {winner.token.name} ({winner.token.symbol?.toUpperCase()}) tem melhor tokenomics
+            </p>
+            <p className="text-xs mt-1" style={{ color: '#6b7280' }}>
+              Score: {winner.scores.total.toFixed(1)}/10 vs {(winner === analysis1 ? analysis2 : analysis1).scores.total.toFixed(1)}/10
+            </p>
+          </div>
+        );
+      })()}
+
+      <p className="text-xs mt-4" style={{ color: '#374151' }}>
+        ✓ = Melhor nesta métrica &nbsp;|&nbsp; Comparação baseada em critérios tokenômicos objetivos
+      </p>
+    </div>
+  );
+}
+
+const GREEN_COLOR = '#22c55e';

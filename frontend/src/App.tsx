@@ -8,6 +8,10 @@ import UtilitySection from './components/UtilitySection';
 import TreasurySection from './components/TreasurySection';
 import ProsConsSection from './components/ProsConsSection';
 import ScoreSection from './components/ScoreSection';
+import RedFlagsSection from './components/RedFlagsSection';
+import LinksSection from './components/LinksSection';
+import AIAnalysisSection from './components/AIAnalysisSection';
+import CompareView from './components/CompareView';
 import type { AnalysisResult } from './types';
 import { searchToken } from './services/coingecko';
 import { analyzeToken } from './utils/analyzer';
@@ -17,10 +21,17 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Compare mode state
+  const [compareMode, setCompareMode] = useState(false);
+  const [analysis2, setAnalysis2] = useState<AnalysisResult | null>(null);
+  const [loading2, setLoading2] = useState(false);
+  const [error2, setError2] = useState<string | null>(null);
+
   const handleSearch = async (ticker: string) => {
     setLoading(true);
     setError(null);
     setAnalysis(null);
+    if (compareMode) setAnalysis2(null);
 
     try {
       const tokenData = await searchToken(ticker);
@@ -37,6 +48,32 @@ function App() {
     }
   };
 
+  const handleSearch2 = async (ticker: string) => {
+    setLoading2(true);
+    setError2(null);
+    setAnalysis2(null);
+
+    try {
+      const tokenData = await searchToken(ticker);
+      const result = analyzeToken(tokenData);
+      setAnalysis2(result);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError2(err.message);
+      } else {
+        setError2('Erro ao buscar dados. Verifique o ticker e tente novamente.');
+      }
+    } finally {
+      setLoading2(false);
+    }
+  };
+
+  const toggleCompareMode = () => {
+    setCompareMode(prev => !prev);
+    setAnalysis2(null);
+    setError2(null);
+  };
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#0a0e1a' }}>
       {/* Header */}
@@ -51,15 +88,29 @@ function App() {
               <p className="text-xs" style={{ color: '#6b7280' }}>Análise Tokenômica Profunda</p>
             </div>
           </div>
-          <a
-            href="https://github.com/occydefi/tokenomicsradar"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm transition-colors hover:opacity-80"
-            style={{ color: '#4f8eff' }}
-          >
-            GitHub →
-          </a>
+          <div className="flex items-center gap-3">
+            {/* Compare toggle */}
+            <button
+              onClick={toggleCompareMode}
+              className="text-sm px-4 py-2 rounded-lg font-semibold transition-all hover:opacity-90"
+              style={
+                compareMode
+                  ? { backgroundColor: '#4f8eff', color: '#fff' }
+                  : { backgroundColor: 'rgba(79,142,255,0.12)', color: '#4f8eff', border: '1px solid #4f8eff40' }
+              }
+            >
+              ⚖️ {compareMode ? 'Modo Comparação ON' : 'Comparar Tokens'}
+            </button>
+            <a
+              href="https://github.com/occydefi/tokenomicsradar"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm transition-colors hover:opacity-80"
+              style={{ color: '#4f8eff' }}
+            >
+              GitHub →
+            </a>
+          </div>
         </div>
       </header>
 
@@ -67,24 +118,52 @@ function App() {
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="text-center mb-10">
           <h2 className="text-4xl font-bold mb-3 text-white">
-            Análise Tokenômica Completa
+            {compareMode ? '⚖️ Comparar Tokens' : 'Análise Tokenômica Completa'}
           </h2>
           <p className="text-lg" style={{ color: '#9ca3af' }}>
-            Digite o ticker de qualquer criptoativo e receba uma análise detalhada com score 0-10
+            {compareMode
+              ? 'Busque dois tokens para comparar lado a lado'
+              : 'Digite o ticker de qualquer criptoativo e receba uma análise detalhada com score 0-10'}
           </p>
         </div>
 
-        <SearchBar onSearch={handleSearch} loading={loading} />
+        {/* Search area */}
+        {compareMode ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Token 1 */}
+            <div>
+              <p className="text-sm font-semibold mb-2" style={{ color: '#4f8eff' }}>Token A</p>
+              <SearchBar onSearch={handleSearch} loading={loading} placeholder="Ex: BTC, ETH, SOL..." />
+              {error && (
+                <div className="mt-3 p-3 rounded-xl border text-sm" style={{ backgroundColor: 'rgba(255,61,61,0.1)', borderColor: '#ff3d3d', color: '#ff3d3d' }}>
+                  ⚠️ {error}
+                </div>
+              )}
+            </div>
+            {/* Token 2 */}
+            <div>
+              <p className="text-sm font-semibold mb-2" style={{ color: '#22c55e' }}>Token B</p>
+              <SearchBar onSearch={handleSearch2} loading={loading2} placeholder="Ex: BTC, ETH, SOL..." />
+              {error2 && (
+                <div className="mt-3 p-3 rounded-xl border text-sm" style={{ backgroundColor: 'rgba(255,61,61,0.1)', borderColor: '#ff3d3d', color: '#ff3d3d' }}>
+                  ⚠️ {error2}
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          <SearchBar onSearch={handleSearch} loading={loading} />
+        )}
 
-        {/* Error */}
-        {error && (
+        {/* Error (single mode) */}
+        {!compareMode && error && (
           <div className="mt-6 p-4 rounded-xl border text-center" style={{ backgroundColor: 'rgba(255,61,61,0.1)', borderColor: '#ff3d3d', color: '#ff3d3d' }}>
             ⚠️ {error}
           </div>
         )}
 
-        {/* Loading */}
-        {loading && (
+        {/* Loading (single mode) */}
+        {!compareMode && loading && (
           <div className="mt-12 text-center">
             <div className="inline-flex flex-col items-center gap-4">
               <div className="w-16 h-16 rounded-full border-4 border-t-transparent animate-spin" style={{ borderColor: '#4f8eff', borderTopColor: 'transparent' }}></div>
@@ -93,10 +172,48 @@ function App() {
           </div>
         )}
 
-        {/* Results */}
-        {analysis && !loading && (
+        {/* Compare Mode — both loading indicators */}
+        {compareMode && (loading || loading2) && (
+          <div className="mt-8 flex justify-center gap-8">
+            {loading && (
+              <div className="flex items-center gap-3" style={{ color: '#9ca3af' }}>
+                <div className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: '#4f8eff', borderTopColor: 'transparent' }} />
+                Buscando Token A...
+              </div>
+            )}
+            {loading2 && (
+              <div className="flex items-center gap-3" style={{ color: '#9ca3af' }}>
+                <div className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: '#22c55e', borderTopColor: 'transparent' }} />
+                Buscando Token B...
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Compare Mode Results */}
+        {compareMode && analysis && analysis2 && !loading && !loading2 && (
+          <div className="mt-10 fade-in space-y-6">
+            <CompareView analysis1={analysis} analysis2={analysis2} />
+          </div>
+        )}
+
+        {/* Compare Mode — individual token previews */}
+        {compareMode && analysis && !analysis2 && !loading && !loading2 && (
+          <div className="mt-8 fade-in">
+            <div className="p-4 rounded-xl border text-center" style={{ backgroundColor: 'rgba(79,142,255,0.05)', borderColor: '#4f8eff40' }}>
+              <p className="text-sm" style={{ color: '#9ca3af' }}>
+                ✅ <strong style={{ color: '#4f8eff' }}>{analysis.token.name}</strong> carregado. Agora busque o Token B para comparar.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Single Mode Results */}
+        {!compareMode && analysis && !loading && (
           <div className="mt-10 fade-in space-y-6">
             <TokenHeader analysis={analysis} />
+            <LinksSection analysis={analysis} />
+            <RedFlagsSection analysis={analysis} />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <SupplySection analysis={analysis} />
               <DistributionSection analysis={analysis} />
@@ -107,6 +224,7 @@ function App() {
             </div>
             <TreasurySection analysis={analysis} />
             <ProsConsSection analysis={analysis} />
+            <AIAnalysisSection analysis={analysis} />
             <ScoreSection analysis={analysis} />
           </div>
         )}

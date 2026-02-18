@@ -60,6 +60,7 @@ export interface AnalysisResult {
   supplyMetrics: SupplyMetrics;
   distribution: DistributionData;
   vestingData: VestingData;
+  vestingYears: number;
   utilityData: UtilityData;
   treasuryData: TreasuryData;
   verdict: 'Excelente' | 'Bom' | 'Regular' | 'Ruim' | 'Evitar';

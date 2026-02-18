@@ -368,6 +368,7 @@ export function analyzeToken(token: TokenData): AnalysisResult {
     supplyMetrics,
     distribution,
     vestingData,
+    vestingYears,
     utilityData,
     treasuryData,
     verdict,

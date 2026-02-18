@@ -4,9 +4,10 @@ import type { KeyboardEvent } from 'react';
 interface Props {
   onSearch: (ticker: string) => void;
   loading: boolean;
+  placeholder?: string;
 }
 
-export default function SearchBar({ onSearch, loading }: Props) {
+export default function SearchBar({ onSearch, loading, placeholder }: Props) {
   const [value, setValue] = useState('');
 
   const handleSubmit = () => {
@@ -36,7 +37,7 @@ export default function SearchBar({ onSearch, loading }: Props) {
           value={value}
           onChange={e => setValue(e.target.value.toUpperCase())}
           onKeyDown={handleKey}
-          placeholder="Digite o ticker do token (ex: BTC, SOL, ETH...)"
+          placeholder={placeholder ?? "Digite o ticker do token (ex: BTC, SOL, ETH...)"}
           className="flex-1 bg-transparent text-lg outline-none placeholder-gray-600 text-white"
           style={{ fontFamily: "'Space Mono', monospace" }}
           disabled={loading}
