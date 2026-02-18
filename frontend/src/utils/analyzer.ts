@@ -33,6 +33,7 @@ export const TOKEN_METADATA: Record<string, {
   controlledPct?: number;        // % effectively controlled by one entity (team + treasury if same entity)
   centralizedControl?: boolean;  // true when team+treasury >40% AND same entity controls both
   executionRisk?: boolean;       // true when project has significant execution gap (promised >> delivered)
+  weakValueAccrual?: boolean;    // true when ecosystem grows but token doesn't capture value (e.g. ATOM — IBC doesn't require ATOM)
 }> = {
   // ── Layer 1 — Bitcoin & forks ────────────────────────────────────────────
   'bitcoin': { team: 0, investors: 0, community: 100, treasury: 0, stakingAvailable: false, governancePower: false, feeBurning: true, neededToUse: true, vestingYears: 0, treasuryUSD: 0, note: 'Já deflacionário na prática: emissão pós-halving 2024 caiu para ~0.85% ao ano, e moedas perdidas (Satoshi + wallets inacessíveis) superam a emissão nova. Supply efetivo diminui. Cap fixo de 21M — caso único de escassez programada.', teamTransparency: 'anonymous', teamNote: 'Satoshi Nakamoto é anônimo. O protocolo é 100% open source e descentralizado — caso único no mercado.', sources: [{ label: 'Bitcoin Whitepaper', url: 'https://bitcoin.org/bitcoin.pdf' }, { label: 'bitcoin.org', url: 'https://bitcoin.org' }] },
@@ -50,7 +51,7 @@ export const TOKEN_METADATA: Record<string, {
   'cardano': { team: 9, investors: 7, community: 64, treasury: 20, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 0, treasuryUSD: 1000000000, executionRisk: true, note: '~80% supply already circulating. On-chain treasury (20%) but Cardano Foundation retains significant influence. ⚠️ Execution gap: smart contracts (Plutus) launched 2021 but DeFi ecosystem still lags ETH/SOL significantly. Voltaire governance still maturing.', teamTransparency: 'high', teamNote: 'Charles Hoskinson é público e muito ativo. IOHK, Emurgo e Cardano Foundation têm equipes identificadas e histórico verificável.', sources: [{ label: 'Cardano Docs', url: 'https://docs.cardano.org/explore-cardano/monetary-policy/ada-distribution' }, { label: 'Cardano Foundation', url: 'https://cardanofoundation.org' }] },
   'avalanche-2': { team: 10, investors: 9, community: 50, treasury: 31, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 4, treasuryUSD: 1200000000, note: 'Fixed 720M max supply. ⚠️ Ava Labs (a private company) controls 31% treasury — this is CENTRALIZATION disguised as "ecosystem fund". Combined Ava Labs control (team 10% + treasury 31%) = 41% under single entity. Comparable to VC-backed projects.', teamTransparency: 'high', teamNote: 'Emin Gün Sirer (professor Cornell) é público e verificável. Ava Labs tem equipe amplamente identificada e acadêmica.' },
   'tron': { team: 34, investors: 16, community: 40, treasury: 10, stakingAvailable: true, governancePower: true, feeBurning: true, neededToUse: true, vestingYears: 2, treasuryUSD: 200000000, centralizedControl: true, note: 'Justin Sun / Tron Foundation holds ~34% of supply. Treasury controlled by same entity. High insider concentration — effectively a single-entity controlled chain.', teamTransparency: 'high', teamNote: 'Justin Sun é extremamente público mas controverso. Múltiplos processos regulatórios e acusações de manipulação de mercado.' },
-  'cosmos': { team: 10, investors: 5, community: 67, treasury: 18, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 2, treasuryUSD: 500000000, note: 'IBC protocol hub. Interchain Foundation treasury funds ecosystem development.' },
+  'cosmos': { team: 10, investors: 5, community: 67, treasury: 18, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: false, vestingYears: 4, treasuryUSD: 500000000, weakValueAccrual: true, note: 'IBC protocol hub com problema crítico de captura de valor: as appchains do Cosmos NÃO precisam usar ATOM — o protocolo IBC é agnóstico ao token. ATOM 2.0 (proposta de reforma econômica) foi parcialmente rejeitado pela comunidade. Inflação histórica alta (até 20% a.a., reduzida via prop 848 mas sem mecanismo de burn). "Cosmos é um sucesso técnico, ATOM é um fracasso como ativo" — consenso crescente entre analistas.', teamTransparency: 'high', teamNote: 'Interchain Foundation tem equipe identificada. Jae Kwon (fundador original) saiu em 2020. Ethan Buchman lidera. Múltiplos times contribuindo (Informal Systems, Strangelove, etc.).' },
   'polkadot': { team: 30, investors: 10, community: 50, treasury: 10, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 2, treasuryUSD: 500000000, note: 'W3F/Parity hold ~30%. Parachain auction system recycles locked DOT.', teamTransparency: 'high', teamNote: 'Gavin Wood (co-fundador Ethereum) é público e verificável. Web3 Foundation e Parity Technologies têm equipes amplamente identificadas.' },
   'near': { team: 17, investors: 17, community: 40, treasury: 26, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 4, treasuryUSD: 600000000, note: 'NEAR Foundation holds 26% for ecosystem grants. 5% annual inflation.', teamTransparency: 'high', teamNote: 'Illia Polosukhin (ex-Google) e Alex Skidanov são públicos e verificáveis. NEAR Inc. tem equipe amplamente identificada.' },
   'aptos': { team: 19, investors: 16, community: 51, treasury: 14, stakingAvailable: true, governancePower: false, feeBurning: false, neededToUse: true, vestingYears: 4, treasuryUSD: 400000000, note: 'Ex-Meta Diem team. 10-year vesting for foundation/core. Monthly token unlocks ongoing.', teamTransparency: 'high', teamNote: 'Mo Shaikh e Avery Ching (ex-Meta Diem) são públicos. Equipe composta majoritariamente por ex-funcionários da Meta verificáveis no LinkedIn.' },
@@ -396,6 +397,8 @@ export function analyzeToken(token: TokenData): AnalysisResult {
   let utilScore = utilityData.score;
   // Execution risk: token/project promised features not delivered → utility is overestimated
   if (meta?.executionRisk) utilScore = Math.max(0, utilScore - 2);
+  // Weak value accrual: ecosystem grows but token doesn't capture value (e.g. ATOM — IBC is token-agnostic)
+  if (meta?.weakValueAccrual) utilScore = Math.max(0, utilScore - 2.5);
 
   // Treasury score (10%)
   let treasScore = 5;
@@ -477,6 +480,10 @@ export function analyzeToken(token: TokenData): AnalysisResult {
 
   if (meta?.executionRisk) {
     cons.push('Gap de execução: o projeto prometeu muito mais do que entregou até agora');
+  }
+
+  if (meta?.weakValueAccrual) {
+    cons.push('Problema de captura de valor: o ecossistema cresce mas o token não acumula esse valor estruturalmente');
   }
 
   if (fdvPenalty > 0) {
