@@ -1,40 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
-const INTRO_TEXT =
-  'Olá! Sou o Occy, seu analista de tokenomics. Antes de investir em qualquer token, analise a distribuição do supply: quanto vai para o time, investidores e comunidade. Fique de olho nos red flags como supply concentrado, sem vesting ou FDV muito maior que o Market Cap. Use o TokenomicsRadar para comparar dois tokens lado a lado e tome decisões mais inteligentes!';
+const INTRO_LINES = [
+  { icon: '🚨', text: 'Antes de comprar qualquer altcoin — leia isso.' },
+  { icon: '📊', text: 'A maioria das pessoas analisa gráfico. Poucos analisam tokenomics. É justamente aí que os projetos te passam pra trás.' },
+  { icon: '⚠️', text: 'Equipe com 40% do supply sem lock? Dump garantido.' },
+  { icon: '⚠️', text: 'VC com cliff de 1 ano? Espera a venda em massa.' },
+  { icon: '⚠️', text: 'FDV 10x maior que o Market Cap? Você tá pagando o pico.' },
+  { icon: '📡', text: 'O TokenomicsRadar analisa tudo isso em segundos:' },
+  { icon: '📊', text: 'Distribuição real do supply' },
+  { icon: '🚩', text: 'Red flags automáticos' },
+  { icon: '⚖️', text: 'Comparação entre 2 tokens lado a lado' },
+  { icon: '🔗', text: 'Links para TokenUnlocks, Messari e DeFiLlama' },
+  { icon: '🤖', text: 'Análise em português gerada automaticamente' },
+  { icon: '✅', text: 'Gratuito. Sem cadastro. Funciona no celular.' },
+];
 
 export default function OccyWidget() {
   const [open, setOpen] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [supported, setSupported] = useState(false);
-
-  useEffect(() => {
-    setSupported(typeof window !== 'undefined' && 'speechSynthesis' in window);
-  }, []);
-
-  const speak = () => {
-    if (!window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(INTRO_TEXT);
-    utterance.lang = 'pt-BR';
-    utterance.rate = 0.95;
-    utterance.pitch = 1.0;
-    const voices = window.speechSynthesis.getVoices();
-    const ptVoice = voices.find((v) => v.lang.startsWith('pt'));
-    if (ptVoice) utterance.voice = ptVoice;
-    utterance.onend = () => setIsPlaying(false);
-    utterance.onerror = () => setIsPlaying(false);
-    setIsPlaying(true);
-    window.speechSynthesis.speak(utterance);
-  };
-
-  const stop = () => {
-    window.speechSynthesis.cancel();
-    setIsPlaying(false);
-  };
 
   const handleClose = () => {
-    stop();
     setOpen(false);
   };
 
@@ -104,51 +88,25 @@ export default function OccyWidget() {
             </button>
           </div>
 
-          {/* Intro text */}
-          <p
+          {/* Intro content */}
+          <div
             style={{
-              fontSize: 13,
-              lineHeight: 1.6,
-              color: '#d1d5db',
-              margin: '0 0 14px 0',
-              padding: '10px 12px',
               backgroundColor: 'rgba(79,142,255,0.06)',
               borderRadius: 10,
               borderLeft: '3px solid #4f8eff',
+              padding: '10px 12px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 7,
             }}
           >
-            {INTRO_TEXT}
-          </p>
-
-          {/* Audio button */}
-          {supported && (
-            <button
-              onClick={isPlaying ? stop : speak}
-              style={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 8,
-                padding: '9px 16px',
-                borderRadius: 10,
-                border: '1px solid #4f8eff60',
-                backgroundColor: isPlaying ? 'rgba(255,61,61,0.15)' : 'rgba(79,142,255,0.15)',
-                color: isPlaying ? '#ff6b6b' : '#4f8eff',
-                cursor: 'pointer',
-                fontSize: 13,
-                fontWeight: 600,
-                transition: 'all 0.15s',
-              }}
-            >
-              <img
-                src="/occy-avatar.jpg"
-                alt=""
-                style={{ width: 20, height: 20, borderRadius: '50%', objectFit: 'cover' }}
-              />
-              {isPlaying ? '⏹ Parar' : '▶ Ouvir'}
-            </button>
-          )}
+            {INTRO_LINES.map((line, i) => (
+              <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+                <span style={{ fontSize: 13, flexShrink: 0, lineHeight: 1.5 }}>{line.icon}</span>
+                <span style={{ fontSize: 12, lineHeight: 1.5, color: '#d1d5db' }}>{line.text}</span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 

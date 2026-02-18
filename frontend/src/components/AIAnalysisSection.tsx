@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import type { AnalysisResult } from '../types';
 import { generateAnalysisText } from '../utils/textAnalysis';
 
@@ -8,38 +8,6 @@ interface Props {
 
 export default function AIAnalysisSection({ analysis }: Props) {
   const text = useMemo(() => generateAnalysisText(analysis), [analysis]);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [supported, setSupported] = useState(false);
-
-  useEffect(() => {
-    setSupported(typeof window !== 'undefined' && 'speechSynthesis' in window);
-    // Stop any ongoing speech when analysis changes
-    if (typeof window !== 'undefined' && window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-    }
-    setIsPlaying(false);
-  }, [analysis]);
-
-  const speak = (textToSpeak: string) => {
-    if (!window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(textToSpeak);
-    utterance.lang = 'pt-BR';
-    utterance.rate = 0.95;
-    utterance.pitch = 1.0;
-    const voices = window.speechSynthesis.getVoices();
-    const ptVoice = voices.find((v) => v.lang.startsWith('pt'));
-    if (ptVoice) utterance.voice = ptVoice;
-    utterance.onend = () => setIsPlaying(false);
-    utterance.onerror = () => setIsPlaying(false);
-    setIsPlaying(true);
-    window.speechSynthesis.speak(utterance);
-  };
-
-  const stop = () => {
-    window.speechSynthesis.cancel();
-    setIsPlaying(false);
-  };
 
   return (
     <div
@@ -79,37 +47,6 @@ export default function AIAnalysisSection({ analysis }: Props) {
       >
         {text}
       </div>
-
-      {/* Audio play button */}
-      {supported && (
-        <div style={{ marginTop: 12 }}>
-          <button
-            onClick={isPlaying ? stop : () => speak(text)}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 7,
-              padding: '7px 14px',
-              borderRadius: 8,
-              border: `1px solid ${isPlaying ? '#ff6b6b60' : '#4f8eff60'}`,
-              backgroundColor: isPlaying ? 'rgba(255,61,61,0.12)' : 'rgba(79,142,255,0.12)',
-              color: isPlaying ? '#ff6b6b' : '#4f8eff',
-              cursor: 'pointer',
-              fontSize: 12,
-              fontWeight: 600,
-              transition: 'all 0.15s',
-            }}
-          >
-            <img
-              src="/occy-avatar.jpg"
-              alt="Occy"
-              style={{ width: 20, height: 20, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }}
-            />
-            <span>{isPlaying ? '🔊' : '🔈'}</span>
-            <span>{isPlaying ? '⏹ Parar' : 'Ouvir análise'}</span>
-          </button>
-        </div>
-      )}
 
       <p className="text-xs mt-3" style={{ color: '#374151' }}>
         ⚠️ Análise gerada automaticamente com base em dados públicos. Não constitui conselho financeiro. Faça sua própria pesquisa (DYOR).
