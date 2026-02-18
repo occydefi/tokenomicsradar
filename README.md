@@ -15,6 +15,10 @@
 - 🎯 **Radar Chart** — visão completa dos scores
 - 🇧🇷 **Interface em Português (pt-BR)**
 
+## 🌐 Live Demo
+
+**https://tokenomicsradar.surge.sh**
+
 ## 🚀 Deploy
 
 ### Vercel (Recomendado)
