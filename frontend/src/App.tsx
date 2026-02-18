@@ -11,6 +11,9 @@ import ScoreSection from './components/ScoreSection';
 import RedFlagsSection from './components/RedFlagsSection';
 import LinksSection from './components/LinksSection';
 import AIAnalysisSection from './components/AIAnalysisSection';
+import RegulatorySection from './components/RegulatorySection';
+import TeamTransparencySection from './components/TeamTransparencySection';
+import CommunitySection from './components/CommunitySection';
 import CompareView from './components/CompareView';
 import OccyWidget from './components/OccyWidget';
 import type { AnalysisResult } from './types';
@@ -216,6 +219,7 @@ function App() {
             <TokenHeader analysis={analysis} />
             <LinksSection analysis={analysis} />
             <RedFlagsSection analysis={analysis} />
+            <RegulatorySection analysis={analysis} />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <SupplySection analysis={analysis} />
               <DistributionSection analysis={analysis} />
@@ -225,6 +229,8 @@ function App() {
               <UtilitySection analysis={analysis} />
             </div>
             <TreasurySection analysis={analysis} />
+            <TeamTransparencySection analysis={analysis} />
+            <CommunitySection analysis={analysis} />
             <ProsConsSection analysis={analysis} />
             <AIAnalysisSection analysis={analysis} />
             <ScoreSection analysis={analysis} />

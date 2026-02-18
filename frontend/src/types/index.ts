@@ -38,6 +38,7 @@ export interface TokenData {
   community_data: {
     twitter_followers: number;
     reddit_subscribers: number;
+    reddit_accounts_active_48h: number | null;
     telegram_channel_user_count: number | null;
   };
   links: {
@@ -63,6 +64,9 @@ export interface AnalysisResult {
   vestingYears: number;
   utilityData: UtilityData;
   treasuryData: TreasuryData;
+  teamTransparency?: 'high' | 'medium' | 'low' | 'anonymous';
+  teamNote?: string;
+  communityStrength?: 'strong' | 'medium' | 'weak';
   verdict: 'Excelente' | 'Bom' | 'Regular' | 'Ruim' | 'Evitar';
   conclusion: string;
   pros: string[];

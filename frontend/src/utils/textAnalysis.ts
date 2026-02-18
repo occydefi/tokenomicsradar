@@ -1,17 +1,19 @@
 import type { AnalysisResult } from '../types';
 import { getRedFlags } from '../components/RedFlagsSection';
+import { REGULATORY_DATA } from './regulatoryData';
 
 /**
  * Generates a natural-sounding 3-4 sentence analysis paragraph in Portuguese
  * using a sophisticated template system — no API calls needed.
  */
 export function generateAnalysisText(analysis: AnalysisResult): string {
-  const { token, scores, distribution, vestingYears, utilityData, supplyMetrics, verdict } = analysis;
+  const { token, scores, distribution, vestingYears, utilityData, supplyMetrics, verdict, teamTransparency, teamNote } = analysis;
   const name = token.name;
   const symbol = token.symbol?.toUpperCase() ?? '';
   const score = scores.total;
   const flags = getRedFlags(analysis);
   const flagCount = flags.length;
+  const regulatoryEntry = REGULATORY_DATA[token.id] ?? null;
 
   // ── Sentence 1: Overview & Score ──────────────────────────────
   const overviewTemplates = [
@@ -59,9 +61,19 @@ export function generateAnalysisText(analysis: AnalysisResult): string {
     s3 = `A utilidade do token é robusta: ${utilityFeatures.join(', ')}${supplyMetrics.isFixed ? ' — e a oferta máxima fixada adiciona escassez ao modelo' : ''}.`;
   }
 
-  // ── Sentence 4: Red Flags / Conclusion ────────────────────────
+  // ── Sentence 4: Regulatory & Team ─────────────────────────────
   let s4 = '';
-  if (flagCount === 0) {
+  if (regulatoryEntry && regulatoryEntry.severity === 'high') {
+    s4 = `⚠️ ALERTA REGULATÓRIO: ${name} possui risco regulatório ALTO${regulatoryEntry.source ? ` (${regulatoryEntry.source})` : ''} — processo ou sanção que pode impactar significativamente o valor e a liquidez do token.`;
+  } else if (regulatoryEntry && regulatoryEntry.severity === 'medium') {
+    s4 = `Atenção ao risco regulatório de nível médio — ${name} está sob atenção de reguladores${regulatoryEntry.source ? ` (${regulatoryEntry.source})` : ''}, o que pode afetar a disponibilidade em exchanges.`;
+  } else if (teamTransparency === 'anonymous') {
+    s4 = `O time completamente anônimo representa um risco adicional significativo: sem identificação dos responsáveis, a accountability em caso de problemas é inexistente.`;
+  } else if (teamTransparency === 'low') {
+    s4 = `A baixa transparência da equipe aumenta o risco de governança — com responsáveis parcialmente anônimos, é difícil avaliar o comprometimento de longo prazo.`;
+  } else if (teamTransparency === 'high' && score >= 7) {
+    s4 = `A alta transparência da equipe${teamNote ? ` (${teamNote.split('.')[0]})` : ''} reforça a confiabilidade do projeto e reduz riscos de má gestão.`;
+  } else if (flagCount === 0) {
     if (score >= 7) {
       s4 = `Não foram detectadas red flags críticas, tornando ${name} uma das opções mais sólidas em termos de tokenomics no mercado atual.`;
     } else {
