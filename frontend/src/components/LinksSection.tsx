@@ -12,7 +12,7 @@ interface ExternalLink {
 }
 
 export default function LinksSection({ analysis }: Props) {
-  const { token } = analysis;
+  const { token, tokenomicsSources, tokenomicsLastUpdated } = analysis;
   const coinGeckoId = token.id;
   const symbol = token.symbol?.toLowerCase() ?? '';
 
@@ -58,9 +58,8 @@ export default function LinksSection({ analysis }: Props) {
     { label: 'Preço & Supply', source: 'CoinGecko', icon: '🦎', url: 'https://coingecko.com' },
     { label: 'Comunidade & Dev', source: 'CoinGecko API', icon: '🦎', url: 'https://coingecko.com' },
     { label: 'Notícias', source: 'Google News', icon: '📡', url: 'https://news.google.com' },
-    { label: 'Distribuição & Vesting', source: 'Curadoria manual (whitepapers, sites oficiais, TokenUnlocks)', icon: '📋', url: null },
-    { label: 'Risco Regulatório', source: 'Curadoria manual (SEC, OFAC, DOJ, fontes públicas)', icon: '🏛️', url: null },
-    { label: 'Transparência do Time', source: 'Curadoria manual (LinkedIn, GitHub, docs oficiais)', icon: '👥', url: null },
+    { label: 'Distribuição & Vesting', source: 'Curadoria manual (whitepapers, docs oficiais)', icon: '📋', url: null },
+    { label: 'Risco Regulatório', source: 'Curadoria manual (SEC, OFAC, DOJ)', icon: '🏛️', url: null },
   ];
 
   return (
@@ -94,7 +93,7 @@ export default function LinksSection({ analysis }: Props) {
       {/* Data Sources */}
       <div className="border-t pt-3" style={{ borderColor: '#1e2a45' }}>
         <p className="text-xs font-semibold mb-2" style={{ color: '#4b5563' }}>📌 Fontes dos dados:</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 mb-2">
           {dataSources.map(ds => (
             <div key={ds.label} className="flex items-start gap-2 text-xs" style={{ color: '#6b7280' }}>
               <span>{ds.icon}</span>
@@ -112,6 +111,44 @@ export default function LinksSection({ analysis }: Props) {
             </div>
           ))}
         </div>
+
+        {/* Token-specific sources */}
+        {tokenomicsSources.length > 0 && (
+          <div className="mt-2 pt-2 border-t" style={{ borderColor: '#1e2a45' }}>
+            <p className="text-xs mb-1.5" style={{ color: '#4b5563' }}>
+              📖 Fontes específicas — {token.name} <span style={{ color: '#374151' }}>(verificado em {tokenomicsLastUpdated})</span>:
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {tokenomicsSources.map(src => (
+                <a
+                  key={src.url}
+                  href={src.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs hover:opacity-80 transition-opacity"
+                  style={{ backgroundColor: 'rgba(79,142,255,0.1)', color: '#4f8eff', border: '1px solid rgba(79,142,255,0.25)' }}
+                >
+                  {src.label} ↗
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Fallback when no specific sources */}
+        {tokenomicsSources.length === 0 && (
+          <div className="mt-1.5">
+            <a
+              href={`https://www.coingecko.com/en/coins/${coinGeckoId}#tokenomics`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs hover:underline"
+              style={{ color: '#4f8eff' }}
+            >
+              📖 Ver tokenomics de {token.name} no CoinGecko ↗
+            </a>
+          </div>
+        )}
       </div>
     </div>
   );
