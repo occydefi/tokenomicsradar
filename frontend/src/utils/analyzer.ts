@@ -9,7 +9,7 @@ import type {
 } from '../types';
 
 // Known token metadata for better analysis
-const TOKEN_METADATA: Record<string, {
+export const TOKEN_METADATA: Record<string, {
   team?: number;
   investors?: number;
   community?: number;
@@ -401,4 +401,18 @@ export function getScoreColor(score: number): string {
   if (score >= 8) return '#00c853';
   if (score >= 5) return '#ffd600';
   return '#ff3d3d';
+}
+
+export function getQuickScore(coinGeckoId: string): number | null {
+  const meta = TOKEN_METADATA[coinGeckoId];
+  if (!meta) return null;
+  let score = 5;
+  if ((meta.community ?? 0) >= 60) score += 1;
+  if ((meta.investors ?? 0) <= 10) score += 1;
+  if ((meta.team ?? 0) <= 15) score += 1;
+  if ((meta.vestingYears ?? 0) >= 2) score += 0.5;
+  if (meta.feeBurning) score += 0.5;
+  if ((meta.team ?? 0) >= 40) score -= 2;
+  if ((meta.investors ?? 0) >= 30) score -= 1.5;
+  return Math.min(10, Math.max(0, Math.round(score * 10) / 10));
 }
