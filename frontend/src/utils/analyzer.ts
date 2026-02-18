@@ -382,6 +382,7 @@ export function analyzeToken(token: TokenData): AnalysisResult {
   const tokenName = token.name;
   let conclusion = '';
 
+  // Base conclusion from tokenomics verdict
   if (verdict === 'Excelente') {
     conclusion = `${tokenName} apresenta fundamentos tokenômicos sólidos, com excelente pontuação em distribuição, utilidade e oferta. Trata-se de um token bem estruturado que demonstra comprometimento com sustentabilidade de longo prazo.`;
   } else if (verdict === 'Bom') {
@@ -392,6 +393,37 @@ export function analyzeToken(token: TokenData): AnalysisResult {
     conclusion = `${tokenName} possui fundamentos tokenômicos preocupantes. Alta concentração, inflação elevada ou falta de utilidade real comprometem o potencial de valorização sustentável no longo prazo.`;
   } else {
     conclusion = `${tokenName} apresenta sérios problemas tokenômicos. A combinação de má distribuição, sem utilidade real e riscos de inflação ou venda pelos insiders torna este token de alto risco para investidores.`;
+  }
+
+  // Append relevant context: regulatory, team transparency, community
+  const contextParts: string[] = [];
+
+  if (regulatoryEntry) {
+    if (regulatoryEntry.severity === 'high') {
+      contextParts.push(`⚠️ Risco regulatório ALTO: ${regulatoryEntry.summary} — isso representa uma ameaça real ao projeto e deve ser considerado antes de qualquer investimento.`);
+    } else if (regulatoryEntry.severity === 'medium') {
+      contextParts.push(`⚠️ Risco regulatório moderado: ${regulatoryEntry.summary}.`);
+    } else if (regulatoryEntry.severity === 'low') {
+      contextParts.push(`ℹ️ Risco regulatório baixo: ${regulatoryEntry.summary}.`);
+    }
+  }
+
+  if (teamTransparency === 'anonymous') {
+    contextParts.push(`🕵️ Time completamente anônimo — ausência de accountability pública aumenta o risco de saída do projeto.`);
+  } else if (teamTransparency === 'low') {
+    contextParts.push(`👤 Transparência do time limitada — poucas informações públicas sobre os desenvolvedores.`);
+  } else if (teamTransparency === 'high' && (verdict === 'Excelente' || verdict === 'Bom')) {
+    contextParts.push(`✅ Time público e verificável, o que aumenta a credibilidade e accountability do projeto.`);
+  }
+
+  if (communityStrength === 'strong' && (verdict === 'Excelente' || verdict === 'Bom')) {
+    contextParts.push(`🌐 Comunidade forte e ativa reforça o potencial de adoção.`);
+  } else if (communityStrength === 'weak' && (verdict === 'Regular' || verdict === 'Ruim' || verdict === 'Evitar')) {
+    contextParts.push(`📉 Comunidade fraca pode dificultar a adoção e valorização orgânica.`);
+  }
+
+  if (contextParts.length > 0) {
+    conclusion += ' ' + contextParts.join(' ');
   }
 
   return {
