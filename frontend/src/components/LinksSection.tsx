@@ -4,152 +4,61 @@ interface Props {
   analysis: AnalysisResult;
 }
 
-interface ExternalLink {
-  label: string;
-  url: string;
-  icon: string;
-  color: string;
-}
-
 export default function LinksSection({ analysis }: Props) {
   const { token, tokenomicsSources, tokenomicsLastUpdated } = analysis;
   const coinGeckoId = token.id;
   const symbol = token.symbol?.toLowerCase() ?? '';
-
-  const links: ExternalLink[] = [
-    {
-      label: 'CoinGecko',
-      url: `https://www.coingecko.com/en/coins/${coinGeckoId}`,
-      icon: '🦎',
-      color: '#8dc63f',
-    },
-    {
-      label: 'TokenUnlocks',
-      url: `https://token.unlocks.app/${symbol}`,
-      icon: '🔓',
-      color: '#4f8eff',
-    },
-    {
-      label: 'Messari',
-      url: `https://messari.io/asset/${coinGeckoId}`,
-      icon: '📊',
-      color: '#a855f7',
-    },
-    {
-      label: 'DeFiLlama',
-      url: `https://defillama.com/unlocks/${coinGeckoId}`,
-      icon: '🦙',
-      color: '#22c55e',
-    },
-  ];
-
-  // Add official website if available
   const homepage = token.links?.homepage?.[0];
-  if (homepage) {
-    links.unshift({
-      label: 'Site Oficial',
-      url: homepage,
-      icon: '🌐',
-      color: '#9ca3af',
-    });
-  }
 
-  const dataSources = [
-    { label: 'Preço & Supply', source: 'CoinGecko', icon: '🦎', url: 'https://coingecko.com' },
-    { label: 'Comunidade & Dev', source: 'CoinGecko API', icon: '🦎', url: 'https://coingecko.com' },
-    { label: 'Notícias', source: 'Google News', icon: '📡', url: 'https://news.google.com' },
-    { label: 'Distribuição & Vesting', source: 'Curadoria manual (whitepapers, docs oficiais)', icon: '📋', url: null },
-    { label: 'Risco Regulatório', source: 'Curadoria manual (SEC, OFAC, DOJ)', icon: '🏛️', url: null },
-  ];
+  const links = [
+    homepage ? { label: 'Site Oficial', url: homepage, icon: '🌐' } : null,
+    { label: 'CoinGecko', url: `https://www.coingecko.com/en/coins/${coinGeckoId}`, icon: '🦎' },
+    { label: 'TokenUnlocks', url: `https://token.unlocks.app/${symbol}`, icon: '🔓' },
+    { label: 'Messari', url: `https://messari.io/asset/${coinGeckoId}`, icon: '📊' },
+    { label: 'DeFiLlama', url: `https://defillama.com/unlocks/${coinGeckoId}`, icon: '🦙' },
+  ].filter(Boolean) as { label: string; url: string; icon: string }[];
 
   return (
-    <div className="rounded-2xl border p-4 space-y-4" style={{ backgroundColor: '#111827', borderColor: '#1e2a45' }}>
-      {/* External Links */}
+    <div className="rounded-xl border border-gray-800 bg-gray-900 p-4">
+      {/* External Links — compact row */}
       <div className="flex items-center flex-wrap gap-2">
-        <span className="text-sm font-semibold mr-2" style={{ color: '#6b7280' }}>
-          🔗 Ver em:
-        </span>
+        <span className="text-xs text-gray-600 mr-1">Ver em:</span>
         {links.map(link => (
           <a
             key={link.label}
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all hover:opacity-80 hover:scale-105"
-            style={{
-              backgroundColor: `${link.color}18`,
-              color: link.color,
-              border: `1px solid ${link.color}40`,
-              textDecoration: 'none',
-            }}
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-800 text-gray-300 border border-gray-700 hover:bg-gray-750 hover:text-white hover:border-gray-600 transition-all"
           >
-            <span>{link.icon}</span>
-            <span>{link.label}</span>
-            <span style={{ opacity: 0.6 }}>↗</span>
+            {link.icon} {link.label} ↗
           </a>
         ))}
       </div>
 
-      {/* Data Sources */}
-      <div className="border-t pt-3" style={{ borderColor: '#1e2a45' }}>
-        <p className="text-xs font-semibold mb-2" style={{ color: '#4b5563' }}>📌 Fontes dos dados:</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 mb-2">
-          {dataSources.map(ds => (
-            <div key={ds.label} className="flex items-start gap-2 text-xs" style={{ color: '#6b7280' }}>
-              <span>{ds.icon}</span>
-              <span>
-                <span style={{ color: '#9ca3af' }}>{ds.label}:</span>{' '}
-                {ds.url ? (
-                  <a href={ds.url} target="_blank" rel="noopener noreferrer"
-                    className="hover:underline" style={{ color: '#4f8eff' }}>
-                    {ds.source}
-                  </a>
-                ) : (
-                  <span>{ds.source}</span>
-                )}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {/* Token-specific sources */}
-        {tokenomicsSources.length > 0 && (
-          <div className="mt-2 pt-2 border-t" style={{ borderColor: '#1e2a45' }}>
-            <p className="text-xs mb-1.5" style={{ color: '#4b5563' }}>
-              📖 Fontes específicas — {token.name} <span style={{ color: '#374151' }}>(verificado em {tokenomicsLastUpdated})</span>:
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {tokenomicsSources.map(src => (
-                <a
-                  key={src.url}
-                  href={src.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs hover:opacity-80 transition-opacity"
-                  style={{ backgroundColor: 'rgba(79,142,255,0.1)', color: '#4f8eff', border: '1px solid rgba(79,142,255,0.25)' }}
-                >
-                  {src.label} ↗
-                </a>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Fallback when no specific sources */}
-        {tokenomicsSources.length === 0 && (
-          <div className="mt-1.5">
+      {/* Token-specific sources (only when curated) */}
+      {tokenomicsSources.length > 0 && (
+        <div className="mt-3 pt-3 border-t border-gray-800 flex flex-wrap gap-2 items-center">
+          <span className="text-xs text-gray-600">📖 Fontes curadas:</span>
+          {tokenomicsSources.map(src => (
             <a
-              href={`https://www.coingecko.com/en/coins/${coinGeckoId}#tokenomics`}
+              key={src.url}
+              href={src.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs hover:underline"
-              style={{ color: '#4f8eff' }}
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs text-blue-400 hover:text-blue-300 hover:underline transition-colors"
             >
-              📖 Ver tokenomics de {token.name} no CoinGecko ↗
+              {src.label} ↗
             </a>
-          </div>
-        )}
-      </div>
+          ))}
+          <span className="text-xs text-gray-700 ml-auto">verificado em {tokenomicsLastUpdated}</span>
+        </div>
+      )}
+
+      {/* Minimal data sources footnote */}
+      <p className="mt-2 text-xs text-gray-700">
+        Dados: CoinGecko · DeFiLlama · Curadoria manual
+      </p>
     </div>
   );
 }
