@@ -22,6 +22,10 @@
 ## 🚀 Deploy
 
 ### Vercel (Recomendado)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Foccydefi%2Ftokenomicsradar&root-directory=frontend&framework=vite&build-command=npm+run+build&output-directory=dist)
+
+Ou manualmente:
 1. Vá em [vercel.com](https://vercel.com) → New Project
 2. Importe `occydefi/tokenomicsradar` do GitHub
 3. Configure:
