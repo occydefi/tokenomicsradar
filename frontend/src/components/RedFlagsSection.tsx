@@ -1,3 +1,4 @@
+import { useLanguage } from '../contexts/LanguageContext';
 import type { AnalysisResult } from '../types';
 
 interface Props {
@@ -10,7 +11,7 @@ interface RedFlag {
   severity: 'high' | 'medium';
 }
 
-export function getRedFlags(analysis: AnalysisResult): RedFlag[] {
+export function getRedFlags(analysis: AnalysisResult, lang: 'pt'|'en' = 'pt'): RedFlag[] {
   const flags: RedFlag[] = [];
   const { distribution, vestingYears, utilityData, supplyMetrics, token } = analysis;
   const md = token.market_data;
@@ -21,7 +22,7 @@ export function getRedFlags(analysis: AnalysisResult): RedFlag[] {
   if (distribution.team >= 40 && vestingYears === 0) {
     flags.push({
       id: 'team-no-lock',
-      message: '⚠️ Equipe detém 40%+ sem lock declarado',
+      message: lang==='en' ? '⚠️ Team holds 40%+ with no declared lock' : '⚠️ Equipe detém 40%+ sem lock declarado',
       severity: 'high',
     });
   }
@@ -30,7 +31,7 @@ export function getRedFlags(analysis: AnalysisResult): RedFlag[] {
   if (distribution.investors >= 30) {
     flags.push({
       id: 'vc-concentration',
-      message: '⚠️ Concentração VC muito alta (30%+)',
+      message: lang==='en' ? '⚠️ Very high VC concentration (30%+)' : '⚠️ Concentração VC muito alta (30%+)',
       severity: 'high',
     });
   }
@@ -39,7 +40,7 @@ export function getRedFlags(analysis: AnalysisResult): RedFlag[] {
   if (fdv && marketCap && fdv > 10 * marketCap) {
     flags.push({
       id: 'fdv-ratio',
-      message: '⚠️ FDV mais de 10x o Market Cap',
+      message: lang==='en' ? '⚠️ FDV over 10x Market Cap' : '⚠️ FDV mais de 10x o Market Cap',
       severity: 'high',
     });
   }
@@ -48,7 +49,7 @@ export function getRedFlags(analysis: AnalysisResult): RedFlag[] {
   if (supplyMetrics.maxSupply === null && !utilityData.feeBurning) {
     flags.push({
       id: 'infinite-supply',
-      message: '⚠️ Supply infinito sem mecanismo deflacionário',
+      message: lang==='en' ? '⚠️ Infinite supply with no deflationary mechanism' : '⚠️ Supply infinito sem mecanismo deflacionário',
       severity: 'medium',
     });
   }
@@ -57,7 +58,7 @@ export function getRedFlags(analysis: AnalysisResult): RedFlag[] {
   if (distribution.community < 20) {
     flags.push({
       id: 'low-community',
-      message: '⚠️ Menos de 20% do supply para comunidade',
+      message: lang==='en' ? '⚠️ Less than 20% supply allocated to community' : '⚠️ Menos de 20% do supply para comunidade',
       severity: 'medium',
     });
   }
@@ -73,7 +74,7 @@ export function getRedFlags(analysis: AnalysisResult): RedFlag[] {
   if (utilityCount === 0) {
     flags.push({
       id: 'no-utility',
-      message: '⚠️ Sem utilidade clara do token',
+      message: lang==='en' ? '⚠️ No clear token utility' : '⚠️ Sem utilidade clara do token',
       severity: 'high',
     });
   }
@@ -82,14 +83,15 @@ export function getRedFlags(analysis: AnalysisResult): RedFlag[] {
 }
 
 export default function RedFlagsSection({ analysis }: Props) {
-  const flags = getRedFlags(analysis);
+  const { t, lang } = useLanguage();
+  const flags = getRedFlags(analysis, lang);
 
   if (flags.length === 0) return null;
 
   return (
     <div className="rounded-2xl border p-6" style={{ backgroundColor: '#1a0a0a', borderColor: '#ef4444' }}>
       <h3 className="text-lg font-bold mb-4 flex items-center gap-2" style={{ color: '#ef4444' }}>
-        🚩 Red Flags Detectadas
+        {t.redFlagsTitle}
         <span
           className="text-sm font-bold px-2 py-0.5 rounded-full"
           style={{ backgroundColor: 'rgba(239,68,68,0.2)', color: '#ef4444' }}
@@ -128,7 +130,7 @@ export default function RedFlagsSection({ analysis }: Props) {
       </div>
 
       <p className="text-xs mt-4" style={{ color: '#6b7280' }}>
-        🔴 Risco alto &nbsp;|&nbsp; 🟡 Risco médio &nbsp;|&nbsp; Análise baseada em dados públicos
+        {t.redFlagsFooter}
       </p>
     </div>
   );

@@ -1,3 +1,4 @@
+import { useLanguage } from '../contexts/LanguageContext';
 import { useMemo } from 'react';
 import type { AnalysisResult } from '../types';
 import { generateAnalysisText } from '../utils/textAnalysis';
@@ -7,6 +8,7 @@ interface Props {
 }
 
 export default function AIAnalysisSection({ analysis }: Props) {
+  const { t } = useLanguage();
   const text = useMemo(() => generateAnalysisText(analysis), [analysis]);
 
   return (
@@ -48,10 +50,10 @@ export default function AIAnalysisSection({ analysis }: Props) {
           </div>
           <div>
             <h3 className="text-sm font-bold tracking-wider uppercase" style={{ color: '#00ff41', fontFamily: 'monospace' }}>
-              Análise Occy
+              {t.aiSectionLabel}
             </h3>
             <p className="text-xs font-mono" style={{ color: '#00ff4160' }}>
-              {'>'} tokenomics_scan.sh --deep --no-bs
+              {t.aiSectionCmd}
             </p>
           </div>
           <div className="ml-auto flex items-center gap-2">
@@ -67,7 +69,7 @@ export default function AIAnalysisSection({ analysis }: Props) {
                 border: '1px solid #00ff4130',
               }}
             >
-              OCCY v2.0
+              {t.aiSectionBadge}
             </span>
           </div>
         </div>
@@ -87,7 +89,7 @@ export default function AIAnalysisSection({ analysis }: Props) {
 
         {/* Footer */}
         <p className="text-xs mt-3 font-mono" style={{ color: '#374151' }}>
-          ⚠ not financial advice · DYOR · trust the math, not the hype
+          {t.aiSectionFooter}
         </p>
       </div>
     </div>

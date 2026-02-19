@@ -1,3 +1,4 @@
+import { useLanguage } from '../contexts/LanguageContext';
 import type { AnalysisResult } from '../types';
 import { REGULATORY_DATA } from '../utils/regulatoryData';
 import type { RegulatoryEntry } from '../utils/regulatoryData';
@@ -46,6 +47,7 @@ function getStatusLabel(status: RegulatoryEntry['status']): { emoji: string; lab
 }
 
 export default function RegulatorySection({ analysis }: Props) {
+  const { t } = useLanguage();
   const entry = REGULATORY_DATA[analysis.token.id] ?? null;
 
   if (!entry) {
@@ -55,7 +57,7 @@ export default function RegulatorySection({ analysis }: Props) {
         style={{ backgroundColor: '#111827', borderColor: '#1e2a45' }}
       >
         <div className="flex items-center gap-3 mb-4">
-          <h3 className="text-lg font-bold text-white">🏛️ Risco Regulatório</h3>
+          <h3 className="text-lg font-bold text-white">{t.regSectionTitle}</h3>
           <span
             className="text-xs px-2 py-0.5 rounded-full font-semibold"
             style={{ backgroundColor: 'rgba(0,200,83,0.15)', color: '#00c853' }}
@@ -93,7 +95,7 @@ export default function RegulatorySection({ analysis }: Props) {
       style={{ backgroundColor: '#111827', borderColor: '#1e2a45' }}
     >
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-bold text-white">🏛️ Risco Regulatório</h3>
+        <h3 className="text-lg font-bold text-white">{t.regSectionTitle}</h3>
         <span
           className="text-xs px-3 py-1 rounded-full font-semibold"
           style={{ backgroundColor: colors.badge, color: colors.text }}

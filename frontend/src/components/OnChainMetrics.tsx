@@ -1,3 +1,4 @@
+import { useLanguage } from '../contexts/LanguageContext';
 import { useState, useEffect } from 'react';
 
 interface Metrics {
@@ -47,6 +48,7 @@ function MetricCard({ label, value, sub, change }: { label: string; value?: stri
 }
 
 export default function OnChainMetrics({ ticker }: Props) {
+  const { t } = useLanguage();
   const [data, setData] = useState<MetricsData | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -70,11 +72,11 @@ export default function OnChainMetrics({ ticker }: Props) {
       <div className="bg-gray-900 rounded-xl p-5 border border-gray-800">
         <div className="flex items-center gap-2 mb-4">
           <span className="text-xl">📊</span>
-          <h3 className="text-lg font-bold text-white">Métricas On-Chain</h3>
+          <h3 className="text-lg font-bold text-white">{t.onchainSectionTitle}</h3>
         </div>
         <div className="flex items-center gap-3 text-gray-400 py-2">
           <div className="animate-spin w-4 h-4 border-2 border-orange-500 border-t-transparent rounded-full" />
-          <span className="text-sm">Buscando dados on-chain...</span>
+          <span className="text-sm">{t.onchainLoading}</span>
         </div>
       </div>
     );
@@ -86,14 +88,14 @@ export default function OnChainMetrics({ ticker }: Props) {
     <div className="bg-gray-900 rounded-xl p-5 border border-gray-800">
       <div className="flex items-center gap-2 mb-4">
         <span className="text-xl">📊</span>
-        <h3 className="text-lg font-bold text-white">Métricas On-Chain</h3>
+        <h3 className="text-lg font-bold text-white">{t.onchainSectionTitle}</h3>
         <span className="text-xs text-gray-500 ml-auto">via DeFiLlama</span>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         {m?.tvl && (
           <MetricCard
-            label="TVL (Total Value Locked)"
+            label={t.onchainTVL}
             value={m.tvl}
             change={m.tvlChange7d}
             sub={m.tvlChange30d !== undefined ? `30d: ${m.tvlChange30d >= 0 ? '+' : ''}${m.tvlChange30d.toFixed(1)}%` : undefined}
@@ -101,20 +103,20 @@ export default function OnChainMetrics({ ticker }: Props) {
         )}
         {m?.fees24h && (
           <MetricCard
-            label="Taxas (24h)"
+            label={t.onchainFees24h}
             value={m.fees24h}
             sub={m.fees7d ? `7d: ${m.fees7d}` : undefined}
           />
         )}
         {m?.fees30d && (
           <MetricCard
-            label="Taxas (30d)"
+            label={t.onchainFees30d}
             value={m.fees30d}
           />
         )}
         {m?.revenue24h && (
           <MetricCard
-            label="Receita do Protocolo (24h)"
+            label={t.onchainRevenue24h}
             value={m.revenue24h}
             sub={m.revenue30d ? `30d: ${m.revenue30d}` : undefined}
           />
@@ -122,7 +124,7 @@ export default function OnChainMetrics({ ticker }: Props) {
       </div>
 
       <p className="text-xs text-gray-600 mt-4">
-        Dados de TVL, taxas e receita via DeFiLlama · Atualizado a cada 15 min
+        {t.onchainSource}
       </p>
     </div>
   );

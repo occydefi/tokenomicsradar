@@ -1,3 +1,4 @@
+import { useLanguage } from '../contexts/LanguageContext';
 import type { AnalysisResult } from '../types';
 
 interface Props {
@@ -56,6 +57,7 @@ function getConfig(level: Transparency) {
 }
 
 export default function TeamTransparencySection({ analysis }: Props) {
+  const { t } = useLanguage();
   const { teamTransparency, teamNote, token } = analysis;
 
   if (!teamTransparency) {
@@ -64,7 +66,7 @@ export default function TeamTransparencySection({ analysis }: Props) {
         className="rounded-2xl border p-6"
         style={{ backgroundColor: '#111827', borderColor: '#1e2a45' }}
       >
-        <h3 className="text-lg font-bold text-white mb-4">👥 Transparência do Time</h3>
+        <h3 className="text-lg font-bold text-white mb-4">{t.teamSectionTitle}</h3>
         <div className="p-4 rounded-xl" style={{ backgroundColor: '#0a0e1a' }}>
           <p className="text-sm" style={{ color: '#6b7280' }}>
             Dados de transparência da equipe não disponíveis para {token.name}. Pesquise os fundadores e equipe antes de investir.
@@ -82,7 +84,7 @@ export default function TeamTransparencySection({ analysis }: Props) {
       style={{ backgroundColor: '#111827', borderColor: '#1e2a45' }}
     >
       <div className="flex items-center justify-between mb-5">
-        <h3 className="text-lg font-bold text-white">👥 Transparência do Time</h3>
+        <h3 className="text-lg font-bold text-white">{t.teamSectionTitle}</h3>
         <span
           className="text-xs font-bold px-3 py-1 rounded-full"
           style={{ backgroundColor: cfg.badge, color: cfg.color }}
@@ -114,7 +116,7 @@ export default function TeamTransparencySection({ analysis }: Props) {
       {/* Transparency bar */}
       <div>
         <div className="flex justify-between text-xs mb-1" style={{ color: '#6b7280' }}>
-          <span>Nível de Transparência</span>
+          <span>{t.teamTransparencyLevel}</span>
           <span style={{ color: cfg.color }}>{cfg.label}</span>
         </div>
         <div className="h-2 rounded-full" style={{ backgroundColor: '#1e2a45' }}>

@@ -1,3 +1,4 @@
+import { useLanguage } from '../contexts/LanguageContext';
 import type { AnalysisResult } from '../types';
 import { formatNumber, getScoreColor } from '../utils/analyzer';
 import { getRedFlags } from './RedFlagsSection';
@@ -33,6 +34,7 @@ function Winner({ wins, color }: { wins: boolean; color: string }) {
 }
 
 export default function CompareView({ analysis1, analysis2 }: Props) {
+  const { t } = useLanguage();
   const t1 = analysis1.token;
   const t2 = analysis2.token;
   const md1 = t1.market_data;
@@ -50,21 +52,21 @@ export default function CompareView({ analysis1, analysis2 }: Props) {
 
   const metrics: MetricRow[] = [
     {
-      label: 'Market Cap',
+      label: t.compareMetricMC,
       icon: '💰',
       val1: mc1,
       val2: mc2,
       format: (v) => formatNumber(v),
     },
     {
-      label: 'FDV',
+      label: t.compareMetricFDV,
       icon: '📊',
       val1: fdv1,
       val2: fdv2,
       format: (v) => formatNumber(v),
     },
     {
-      label: 'FDV / MC Ratio',
+      label: t.compareMetricFDVRatio,
       icon: '⚖️',
       val1: fdvRatio1,
       val2: fdvRatio2,
@@ -72,14 +74,14 @@ export default function CompareView({ analysis1, analysis2 }: Props) {
       lowerIsBetter: true,
     },
     {
-      label: 'Circulação %',
+      label: t.compareMetricCirc,
       icon: '🔄',
       val1: analysis1.supplyMetrics.circulatingPct,
       val2: analysis2.supplyMetrics.circulatingPct,
       format: (v) => v.toFixed(1) + '%',
     },
     {
-      label: 'Time %',
+      label: t.compareMetricTeam,
       icon: '👥',
       val1: analysis1.distribution.team,
       val2: analysis2.distribution.team,
@@ -87,7 +89,7 @@ export default function CompareView({ analysis1, analysis2 }: Props) {
       lowerIsBetter: true,
     },
     {
-      label: 'Investidores %',
+      label: t.compareMetricInv,
       icon: '🏦',
       val1: analysis1.distribution.investors,
       val2: analysis2.distribution.investors,
@@ -95,28 +97,28 @@ export default function CompareView({ analysis1, analysis2 }: Props) {
       lowerIsBetter: true,
     },
     {
-      label: 'Comunidade %',
+      label: t.compareMetricComm,
       icon: '🌍',
       val1: analysis1.distribution.community,
       val2: analysis2.distribution.community,
       format: (v) => v.toFixed(0) + '%',
     },
     {
-      label: 'Vesting (anos)',
+      label: t.compareMetricVesting,
       icon: '🔐',
       val1: analysis1.vestingYears,
       val2: analysis2.vestingYears,
       format: (v) => v === 0 ? 'Nenhum' : v + ' anos',
     },
     {
-      label: 'Score Total',
+      label: t.compareMetricScore,
       icon: '🎯',
       val1: analysis1.scores.total,
       val2: analysis2.scores.total,
       format: (v) => v.toFixed(1) + '/10',
     },
     {
-      label: 'Red Flags',
+      label: t.compareMetricFlags,
       icon: '🚩',
       val1: flags1,
       val2: flags2,
@@ -136,7 +138,7 @@ export default function CompareView({ analysis1, analysis2 }: Props) {
   return (
     <div className="rounded-2xl border p-6" style={{ backgroundColor: '#111827', borderColor: '#1e2a45' }}>
       <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-        ⚖️ Comparação de Tokens
+        {t.compareSectionTitle}
       </h3>
 
       {/* Token Headers */}
@@ -232,7 +234,7 @@ export default function CompareView({ analysis1, analysis2 }: Props) {
             style={{ backgroundColor: `${color}15`, border: `1px solid ${color}40` }}
           >
             <p className="text-sm font-bold" style={{ color }}>
-              🏆 {winner.token.name} ({winner.token.symbol?.toUpperCase()}) tem melhor tokenomics
+              🏆 {winner.token.name} ({winner.token.symbol?.toUpperCase()}) {t.compareWinner}
             </p>
             <p className="text-xs mt-1" style={{ color: '#6b7280' }}>
               Score: {winner.scores.total.toFixed(1)}/10 vs {(winner === analysis1 ? analysis2 : analysis1).scores.total.toFixed(1)}/10
@@ -242,7 +244,7 @@ export default function CompareView({ analysis1, analysis2 }: Props) {
       })()}
 
       <p className="text-xs mt-4" style={{ color: '#374151' }}>
-        ✓ = Melhor nesta métrica &nbsp;|&nbsp; Comparação baseada em critérios tokenômicos objetivos
+        {t.compareFooter}
       </p>
 
       {/* ── Market Cap Simulator ── */}

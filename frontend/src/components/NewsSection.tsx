@@ -1,3 +1,4 @@
+import { useLanguage } from '../contexts/LanguageContext';
 import { useState, useEffect } from 'react';
 
 interface NewsItem {
@@ -59,6 +60,7 @@ function getSentimentIcon(title: string): { icon: string; color: string } {
 }
 
 export default function NewsSection({ ticker }: NewsSectionProps) {
+  const { t } = useLanguage();
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -114,7 +116,7 @@ export default function NewsSection({ ticker }: NewsSectionProps) {
       >
         <span className="text-xl">📡</span>
         <div className="flex-1">
-          <h3 className="text-base font-bold text-white">Notícias Relevantes</h3>
+          <h3 className="text-base font-bold text-white">{t.newsSectionTitle}</h3>
           {!expanded && highlightedNews.length === 0 && !fetched && (
             <p className="text-xs text-gray-500 mt-0.5">Clique para ver notícias de regulação, upgrades e eventos importantes</p>
           )}

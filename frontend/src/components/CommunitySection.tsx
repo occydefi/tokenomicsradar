@@ -1,3 +1,4 @@
+import { useLanguage } from '../contexts/LanguageContext';
 import type { AnalysisResult } from '../types';
 
 interface Props {
@@ -45,6 +46,7 @@ function MetricCard({
 }
 
 export default function CommunitySection({ analysis }: Props) {
+  const { t } = useLanguage();
   const { token, communityStrength } = analysis;
   const cd = token.community_data;
   const dd = token.developer_data;
@@ -71,7 +73,7 @@ export default function CommunitySection({ analysis }: Props) {
       style={{ backgroundColor: '#111827', borderColor: '#1e2a45' }}
     >
       <div className="flex items-center justify-between mb-5">
-        <h3 className="text-lg font-bold text-white">🌐 Reputação & Comunidade</h3>
+        <h3 className="text-lg font-bold text-white">{t.communitySectionTitle}</h3>
         {communityStrength && (
           <span
             className="text-xs font-bold px-3 py-1 rounded-full"
@@ -152,7 +154,7 @@ export default function CommunitySection({ analysis }: Props) {
       {communityStrength && (
         <div>
           <div className="flex justify-between text-xs mb-1" style={{ color: '#6b7280' }}>
-            <span>Força da Comunidade</span>
+            <span>{t.communityStrengthLabel}</span>
             <span style={{ color: cfg.color }}>{cfg.label}</span>
           </div>
           <div className="h-2 rounded-full" style={{ backgroundColor: '#1e2a45' }}>
