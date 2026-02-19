@@ -142,8 +142,23 @@ export default function TLDRCard({ analysis }: Props) {
         </div>
       </div>
 
-      {/* User challenge panel */}
-      <div className="mt-4">
+      {/* User challenge panel — prominent CTA */}
+      <div
+        className="mt-6 rounded-xl border p-4"
+        style={{
+          backgroundColor: 'rgba(255,109,0,0.04)',
+          borderColor: 'rgba(255,109,0,0.2)',
+        }}
+      >
+        <div className="flex items-center gap-2 mb-2">
+          <span style={{ color: '#ff6d00' }}>⚖️</span>
+          <span className="text-xs font-bold font-mono" style={{ color: '#ff6d00', letterSpacing: '1px' }}>
+            DISCORDA DESTA ANÁLISE?
+          </span>
+        </div>
+        <p className="text-xs mb-3" style={{ color: '#4a7a4a' }}>
+          Se você tem dados que contradizem esta avaliação, apresente seu argumento. A Occy reavalia com base em fatos — não aceita argumentos de preço ou sentimento.
+        </p>
         <ScoreFeedback analysis={analysis} />
       </div>
     </div>
