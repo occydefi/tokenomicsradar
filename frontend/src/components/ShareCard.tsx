@@ -281,7 +281,7 @@ export default function ShareCard({
             <div key={i} style={{ position:'absolute', width:6, height:6, borderRadius:'50%', top:t, bottom:b, left:l, right:r, backgroundColor:accent, opacity:0.5 }} />
           ))}
           <div style={{ textAlign:'center', marginBottom:14 }}>
-            <div style={{ fontSize:22, filter:`drop-shadow(0 0 7px ${accent})` }}>📡</div>
+            <img src="/logo-satellite.png" alt="" style={{ width:28, height:28, filter:`drop-shadow(0 0 7px ${accent})`, display:'inline-block' }} />
             <div style={{ fontSize:13, fontWeight:900 }}>
               <span style={{ color:'#39d353' }}>Token</span><span style={{ color:'#a855f7' }}>omics</span><span style={{ color:'#39d353' }}>Radar</span>
             </div>

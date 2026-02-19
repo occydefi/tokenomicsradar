@@ -101,8 +101,8 @@ function App() {
               alt="TokenomicsRadar"
               className="flex-shrink-0"
               style={{ 
-                width: '32px', 
-                height: '32px',
+                width: '40px', 
+                height: '40px',
                 filter: 'drop-shadow(0 0 8px rgba(57,211,83,0.6))' 
               }}
             />
@@ -140,7 +140,7 @@ function App() {
                 src="/icon-simulator.png" 
                 alt="Sim"
                 className="sm:hidden"
-                style={{ width: '20px', height: '20px' }}
+                style={{ width: '28px', height: '28px' }}
               />
             </button>
             {/* Compare toggle */}
@@ -158,7 +158,7 @@ function App() {
                 src="/icon-compare.png" 
                 alt="Compare"
                 className="sm:hidden"
-                style={{ width: '20px', height: '20px' }}
+                style={{ width: '28px', height: '28px' }}
               />
             </button>
             <LangToggle />
@@ -291,12 +291,16 @@ function App() {
         {/* Empty State */}
         {!analysis && !loading && !error && (
           <div className="mt-16 text-center">
-            <div
-              className="text-6xl mb-4"
-              style={{ filter: 'drop-shadow(0 0 16px rgba(57,211,83,0.5))' }}
-            >
-              📡
-            </div>
+            <img
+              src="/logo-satellite.png"
+              alt="TokenomicsRadar"
+              className="mb-4"
+              style={{ 
+                width: '96px', 
+                height: '96px',
+                filter: 'drop-shadow(0 0 16px rgba(57,211,83,0.5))' 
+              }}
+            />
             <p
               className="text-lg mb-2 font-mono"
               style={{ color: '#39d353', textShadow: '0 0 10px rgba(57,211,83,0.4)' }}
@@ -328,8 +332,9 @@ function App() {
 
       <footer className="border-t mt-20 py-8" style={{ borderColor: '#1a2e1a' }}>
         <div className="max-w-6xl mx-auto px-4 text-center font-mono" style={{ color: '#4a7a4a' }}>
-          <p className="text-sm">
-            📡 TokenomicsRadar —{' '}
+          <p className="text-sm flex items-center justify-center gap-2">
+            <img src="/logo-satellite.png" alt="" style={{ width: '18px', height: '18px' }} />
+            TokenomicsRadar —{' '}
             dados via{' '}
             <a href="https://coingecko.com" className="hover:opacity-80 transition-opacity" style={{ color: '#39d353' }}>
               CoinGecko API
