@@ -1,5 +1,4 @@
 import { useRef, useState } from 'react';
-import React from 'react';
 import html2canvas from 'html2canvas';
 
 interface ShareCardProps {
@@ -59,69 +58,28 @@ export default function ShareCard({
     sharePageUrl
   );
 
-  const generateImage = async (): Promise<{ blob: Blob; dataUrl: string } | null> => {
-    if (!cardRef.current) return null;
-    const canvas = await html2canvas(cardRef.current, {
-      backgroundColor: '#060d06',
-      scale: 2,
-      useCORS: true,
-      logging: false,
-    });
-    return new Promise(resolve => {
-      canvas.toBlob(blob => {
-        if (!blob) { resolve(null); return; }
-        resolve({ blob, dataUrl: canvas.toDataURL('image/png') });
-      }, 'image/png');
-    });
-  };
-
   const handleDownload = async () => {
+    if (!cardRef.current || downloading) return;
     setDownloading(true);
     try {
-      const result = await generateImage();
-      if (!result) return;
+      const canvas = await html2canvas(cardRef.current, {
+        backgroundColor: '#060d06',
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        ignoreElements: el => el.tagName === 'BUTTON',
+      });
       const link = document.createElement('a');
       link.download = `tokenomicsradar-${tokenX.symbol}-${tokenY.symbol}.png`;
-      link.href = result.dataUrl;
+      link.href = canvas.toDataURL('image/png');
       link.click();
     } catch (e) {
-      console.error(e);
+      console.error('html2canvas error:', e);
+      alert('Erro ao gerar imagem. Tente fazer um print da tela.');
     } finally {
       setDownloading(false);
     }
-  };
-
-  // Mobile: Web Share API (shares image natively to Twitter/Instagram/WhatsApp)
-  // Desktop: download image then open Twitter
-  const handleXShare = async (e: React.MouseEvent) => {
-    const tweetUrl = `https://twitter.com/intent/tweet?text=${tweetText}`;
-    const filename = `tokenomicsradar-${tokenX.symbol}-${tokenY.symbol}.png`;
-
-    // Try Web Share API (mobile) with image
-    if (navigator.canShare) {
-      e.preventDefault();
-      setDownloading(true);
-      try {
-        const result = await generateImage();
-        if (result) {
-          const file = new File([result.blob], filename, { type: 'image/png' });
-          if (navigator.canShare({ files: [file] })) {
-            await navigator.share({
-              files: [file],
-              text: `🔮 Se ${tokenX.symbol} tivesse o MC ${mode === 'ath' ? '(ATH) ' : ''}de ${tokenY.symbol}: ${fmt(projectedPrice)} (${multiplier.toFixed(2)}X)\n\n${shareUrl}`,
-            });
-            return;
-          }
-        }
-      } catch (err) {
-        // User cancelled or not supported — fall through to normal link
-      } finally {
-        setDownloading(false);
-      }
-      // Fallback: open Twitter intent
-      window.open(tweetUrl, '_blank');
-    }
-    // Desktop: just let the <a href> work normally (opens Twitter)
   };
 
   const handleCopy = () => {
@@ -154,13 +112,11 @@ export default function ShareCard({
             fontFamily: "'JetBrains Mono', 'Courier New', monospace",
           }}
         >
-          {/* Gradient border overlay */}
+          {/* Gradient border overlay — html2canvas compatible (outline trick) */}
           <div style={{
-            position: 'absolute', inset: 0, borderRadius: '20px', padding: '1.5px',
-            background: `linear-gradient(135deg, ${accent}80, #a855f780, #00e5ff40)`,
-            WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-            WebkitMaskComposite: 'xor',
-            maskComposite: 'exclude',
+            position: 'absolute', inset: 0, borderRadius: '20px',
+            border: `1.5px solid ${accent}50`,
+            boxShadow: `inset 0 0 0 1px #a855f730, 0 0 30px ${accent}15`,
             pointerEvents: 'none',
           }} />
 
@@ -186,12 +142,9 @@ export default function ShareCard({
           {/* Logo */}
           <div style={{ textAlign: 'center', marginBottom: 20 }}>
             <div style={{ fontSize: 28, marginBottom: 4, filter: `drop-shadow(0 0 10px ${accent}90)` }}>📡</div>
-            <div style={{
-              fontSize: 16, fontWeight: 900, letterSpacing: '-0.5px',
-              background: 'linear-gradient(135deg, #39d353, #a855f7)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}>TokenomicsRadar</div>
+            <div style={{ fontSize: 16, fontWeight: 900, letterSpacing: '-0.5px', color: '#39d353' }}>
+              Token<span style={{ color: '#a855f7' }}>omics</span>Radar
+            </div>
             <div style={{ fontSize: 10, color: '#2a4a2a', letterSpacing: 3, marginTop: 2 }}>SIMULADOR DE MARKET CAP</div>
           </div>
 
@@ -263,23 +216,18 @@ export default function ShareCard({
 
         {/* ── ACTION BUTTONS (outside card, not captured in image) ── */}
         <div className="flex flex-col sm:flex-row gap-3">
-          {/* X Share — mobile: Web Share API with image; desktop: Twitter intent */}
+          {/* X Share — opens Twitter with link; Twitter auto-shows OG card preview */}
           <a
             href={`https://twitter.com/intent/tweet?text=${tweetText}`}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={handleXShare}
             className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-mono font-bold text-sm transition-all hover:opacity-90"
             style={{ backgroundColor: '#1a1a1a', color: '#ffffff', border: '1px solid #333', textDecoration: 'none' }}
           >
-            {downloading ? (
-              <span style={{ fontSize: 13 }}>⏳</span>
-            ) : (
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.748-8.855L1.254 2.25H8.08l4.259 5.63L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
-              </svg>
-            )}
-            {downloading ? 'gerando...' : 'X SHARE'}
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.748-8.855L1.254 2.25H8.08l4.259 5.63L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
+            </svg>
+            X SHARE
           </a>
 
           {/* Download image */}
