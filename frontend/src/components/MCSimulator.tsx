@@ -362,7 +362,6 @@ export default function MCSimulator() {
           pctChange={pctChange}
           targetMC={targetMC}
           mode={mode}
-          shareUrl={`${window.location.origin}${window.location.pathname}?sim=${x!.symbol?.toUpperCase()}&ref=${y!.symbol?.toUpperCase()}&mode=${mode}`}
           onClose={() => setShareModal(false)}
         />
       )}
