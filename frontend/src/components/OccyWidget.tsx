@@ -74,7 +74,7 @@ export default function OccyWidget() {
           {/* Panel header */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
             <img
-              src="/occy-avatar.jpg"
+              src="/occy-male.jpg"
               alt="Occy"
               style={{
                 width: 48,
@@ -132,7 +132,7 @@ export default function OccyWidget() {
               transition: 'all 0.15s',
             }}
           >
-            <img src="/occy-avatar.jpg" alt="" style={{ width: 20, height: 20, borderRadius: '50%', objectFit: 'cover' }} />
+            <img src="/occy-male.jpg" alt="" style={{ width: 20, height: 20, borderRadius: '50%', objectFit: 'cover' }} />
             {isPlaying ? t.occyStop : t.occyPlay}
           </button>
 
@@ -176,7 +176,7 @@ export default function OccyWidget() {
         }}
       >
         <img
-          src="/occy-avatar.jpg"
+          src="/occy-male.jpg"
           alt="Occy"
           style={{
             width: '100%',
