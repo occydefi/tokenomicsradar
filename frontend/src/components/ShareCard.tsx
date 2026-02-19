@@ -201,9 +201,9 @@ export default function ShareCard({
   const appUrl = `${window.location.origin}/?sim=${tokenX.symbol}&ref=${tokenY.symbol}&mode=${mode}`;
 
   const tweetText = encodeURIComponent(
-    `🔮 Se ${tokenX.symbol} tivesse o MC ${mode === 'ath' ? '(ATH) ' : ''}de ${tokenY.symbol}:\n` +
+    `🔮 Se $${tokenX.symbol} tivesse o Market Cap ${mode === 'ath' ? 'na máxima histórica ' : ''}de $${tokenY.symbol}:\n` +
     `💰 ${fmt(projectedPrice)}  ${multiplier.toFixed(2)}X (${sign}${pctChange.toFixed(1)}%)\n\n` +
-    `📡 tokenomicsradar.vercel.app`
+    `tokenomicsradar.vercel.app`
   );
 
   const handleSaveImage = () => {
