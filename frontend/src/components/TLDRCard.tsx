@@ -100,7 +100,7 @@ export default function TLDRCard({ analysis }: Props) {
             <span style={{ fontSize: 20, lineHeight: 1 }}>⚠️</span>
           ) : (
             <img
-              src="/occy-avatar.jpg"
+              src="/occy-male.jpg"
               alt="Occy"
               className="rounded-full"
               style={{ width: 28, height: 28, objectFit: 'cover' }}
