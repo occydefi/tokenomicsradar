@@ -95,7 +95,7 @@ function TokenInput({
               value={val}
               onChange={e => setVal(e.target.value.toUpperCase())}
               onKeyDown={e => e.key === 'Enter' && submit()}
-              placeholder="TICKER..."
+              placeholder="TICKER... (BTC, ETH, SOL)"
               className="flex-1 bg-transparent outline-none font-mono text-sm"
               style={{ color: '#39d353', caretColor: '#39d353' }}
               disabled={slot.loading}
@@ -186,14 +186,17 @@ export default function MCSimulator() {
     <div className="max-w-3xl mx-auto px-4 py-8">
       {/* Header */}
       <div className="text-center mb-8">
+        <p className="text-xs font-mono mb-1 tracking-widest" style={{ color: '#2a4a2a' }}>
+          &gt; simulador_de_market_cap.sh
+        </p>
         <h2
           className="text-3xl font-bold font-mono mb-2"
           style={{ color: '#39d353', textShadow: '0 0 20px rgba(57,211,83,0.4)', letterSpacing: '-1px' }}
         >
-          🔮 MC_SIMULATOR_
+          🔮 Simulador de Market Cap
         </h2>
         <p className="font-mono text-sm" style={{ color: '#4a7a4a' }}>
-          {'>'} e se TOKEN_X tivesse o market cap de TOKEN_Y?
+          E se o Token X tivesse o market cap do Token Y? Quanto valeria?
         </p>
       </div>
 
@@ -201,7 +204,7 @@ export default function MCSimulator() {
       <div className="flex items-center gap-12 mb-6">
         <TokenInput
           slot={tokenX}
-          label="TOKEN X  [TARGET]"
+          label="TOKEN X  [ALVO]"
           labelColor="#39d353"
           onSearch={q => fetchToken(q, setTokenX)}
           onSwap={swap}
@@ -209,7 +212,7 @@ export default function MCSimulator() {
         />
         <TokenInput
           slot={tokenY}
-          label="TOKEN Y  [MC REFERENCE]"
+          label="TOKEN Y  [REFERÊNCIA DE MC]"
           labelColor="#00e5ff"
           onSearch={q => fetchToken(q, setTokenY)}
         />
@@ -233,7 +236,7 @@ export default function MCSimulator() {
                   boxShadow: mode === m ? '0 0 12px rgba(57,211,83,0.4)' : 'none',
                 }}
               >
-                {m === 'current' ? 'CURRENT' : 'ATH'}
+                {m === 'current' ? 'ATUAL' : 'ATH (Máxima)'}
               </button>
             ))}
           </div>
@@ -257,15 +260,16 @@ export default function MCSimulator() {
 
           {/* Title */}
           <p className="text-lg font-mono mb-6 relative z-10">
+            <span style={{ color: '#9ca3af' }}>Preço de </span>
             <strong style={{ color: '#39d353' }}>{x.symbol?.toUpperCase()}</strong>
-            <span style={{ color: '#9ca3af' }}> price with MC of </span>
+            <span style={{ color: '#9ca3af' }}> com o Market Cap de </span>
             <strong style={{ color: '#00e5ff' }}>{y.symbol?.toUpperCase()}</strong>
             {mode === 'ath' && (
               <span
                 className="ml-2 text-xs px-2 py-0.5 rounded font-bold"
                 style={{ backgroundColor: 'rgba(0,229,255,0.1)', color: '#00e5ff', border: '1px solid #00e5ff40' }}
               >
-                ATH
+                na Máxima Histórica
               </span>
             )}
           </p>
@@ -288,18 +292,18 @@ export default function MCSimulator() {
           {/* Stats row */}
           <div className="grid grid-cols-4 gap-4 relative z-10">
             {[
-              { label: 'Current Price', value: formatPrice(currentPriceX), color: '#9ca3af' },
+              { label: 'Preço Atual', value: formatPrice(currentPriceX), color: '#9ca3af' },
               {
-                label: 'Multiplier',
+                label: 'Multiplicador',
                 value: multiplier.toFixed(2) + 'X',
                 color: isGain ? '#39d353' : '#ff6d00',
               },
               {
-                label: 'Price Increase',
+                label: 'Variação de Preço',
                 value: (isGain ? '+' : '') + pctChange.toFixed(2) + '%',
                 color: isGain ? '#39d353' : '#ff6d00',
               },
-              { label: 'Target Marketcap', value: formatMC(targetMC), color: '#9ca3af' },
+              { label: 'Market Cap Alvo', value: formatMC(targetMC), color: '#9ca3af' },
             ].map(({ label, value, color }) => (
               <div key={label}>
                 <p className="text-lg font-bold font-mono" style={{ color }}>{value}</p>
@@ -318,12 +322,12 @@ export default function MCSimulator() {
               letterSpacing: '3px',
             }}
             onClick={() => {
-              const text = `🔮 Se ${x.name} (${x.symbol?.toUpperCase()}) tivesse o market cap ${mode === 'ath' ? 'ATH' : 'atual'} de ${y.name} (${y.symbol?.toUpperCase()}):\n💰 Preço: ${formatPrice(projectedPrice)}\n📈 ${multiplier.toFixed(2)}X (${pctChange.toFixed(1)}%)\n\nAnalise em tokenomicsradar.vercel.app`;
+              const text = `🔮 Se ${x.name} (${x.symbol?.toUpperCase()}) tivesse o market cap ${mode === 'ath' ? 'na máxima histórica' : 'atual'} de ${y.name} (${y.symbol?.toUpperCase()}):\n💰 Preço seria: ${formatPrice(projectedPrice)}\n📈 ${multiplier.toFixed(2)}X (${pctChange.toFixed(1)}%)\n\n🔗 tokenomicsradar.vercel.app`;
               navigator.clipboard.writeText(text).catch(() => {});
               alert('📋 Copiado para a área de transferência!');
             }}
           >
-            ↗ SHARE
+            ↗ COMPARTILHAR
           </button>
         </div>
       ) : (
@@ -331,12 +335,12 @@ export default function MCSimulator() {
         <div className="rounded-2xl border p-12 text-center" style={{ backgroundColor: '#060d06', borderColor: '#1a2e1a' }}>
           <p className="text-4xl mb-4" style={{ filter: 'drop-shadow(0 0 10px rgba(57,211,83,0.4))' }}>🔮</p>
           <p className="font-mono text-sm" style={{ color: '#39d353' }}>&gt; aguardando tokens...</p>
-          <p className="font-mono text-xs mt-2" style={{ color: '#2a4a2a' }}>busque Token X e Token Y para simular</p>
+          <p className="font-mono text-xs mt-2" style={{ color: '#2a4a2a' }}>busque o Token X e o Token Y para simular</p>
         </div>
       )}
 
       <p className="text-xs font-mono text-center mt-4" style={{ color: '#1a2e1a' }}>
-        ⚠ simulação baseada em market cap · não considera inflação de supply · não é conselho financeiro
+        ⚠ simulação educacional · não considera emissão futura de tokens · não é conselho financeiro
       </p>
     </div>
   );
