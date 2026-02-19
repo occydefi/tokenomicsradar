@@ -18,6 +18,8 @@ export interface TokenData {
     total_volume: { usd: number };
     price_change_percentage_24h: number;
     market_cap_change_percentage_24h: number;
+    ath: { usd: number };
+    ath_date: { usd: string };
   };
   categories: string[];
   description: { en: string };

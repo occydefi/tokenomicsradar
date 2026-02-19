@@ -5,6 +5,7 @@ import CompareView from './components/CompareView';
 import AnalysisTabs from './components/AnalysisTabs';
 import OccyWidget from './components/OccyWidget';
 import Background from './components/Background';
+import MCSimulator from './components/MCSimulator';
 import type { AnalysisResult } from './types';
 import { searchToken } from './services/coingecko';
 import { analyzeToken } from './utils/analyzer';
@@ -17,6 +18,7 @@ function App() {
 
   // Compare mode state
   const [compareMode, setCompareMode] = useState(false);
+  const [mcSimMode, setMcSimMode] = useState(false);
   const [analysis2, setAnalysis2] = useState<AnalysisResult | null>(null);
   const [loading2, setLoading2] = useState(false);
   const [error2, setError2] = useState<string | null>(null);
@@ -65,8 +67,14 @@ function App() {
 
   const toggleCompareMode = () => {
     setCompareMode(prev => !prev);
+    setMcSimMode(false);
     setAnalysis2(null);
     setError2(null);
+  };
+
+  const toggleMcSim = () => {
+    setMcSimMode(prev => !prev);
+    setCompareMode(false);
   };
 
   return (
@@ -101,18 +109,30 @@ function App() {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            {/* MC Sim toggle */}
+            <button
+              onClick={toggleMcSim}
+              className="text-sm px-3 py-2 rounded-lg font-semibold transition-all hover:opacity-90 font-mono"
+              style={
+                mcSimMode
+                  ? { backgroundColor: '#00e5ff', color: '#060d06', boxShadow: '0 0 12px rgba(0,229,255,0.4)' }
+                  : { backgroundColor: 'rgba(0,229,255,0.08)', color: '#00e5ff', border: '1px solid rgba(0,229,255,0.25)' }
+              }
+            >
+              🔮 MC SIM
+            </button>
             {/* Compare toggle */}
             <button
               onClick={toggleCompareMode}
-              className="text-sm px-4 py-2 rounded-lg font-semibold transition-all hover:opacity-90 font-mono"
+              className="text-sm px-3 py-2 rounded-lg font-semibold transition-all hover:opacity-90 font-mono"
               style={
                 compareMode
                   ? { backgroundColor: '#39d353', color: '#070d07', boxShadow: '0 0 12px rgba(57,211,83,0.4)' }
                   : { backgroundColor: 'rgba(57,211,83,0.08)', color: '#39d353', border: '1px solid rgba(57,211,83,0.25)' }
               }
             >
-              ⚖️ {compareMode ? 'Comparação ON' : 'Comparar'}
+              ⚖️ {compareMode ? 'COMPARAR ON' : 'COMPARAR'}
             </button>
             <a
               href="https://github.com/occydefi/tokenomicsradar"
@@ -127,8 +147,11 @@ function App() {
         </div>
       </header>
 
+      {/* MC Simulator mode */}
+      {mcSimMode && <MCSimulator />}
+
       {/* Hero / Search */}
-      {(
+      {!mcSimMode && (
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="text-center mb-10">
           <h2
