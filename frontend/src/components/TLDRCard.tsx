@@ -2,6 +2,7 @@ import type { AnalysisResult } from '../types';
 import { useLanguage } from '../contexts/LanguageContext';
 import { translateProsCons } from '../i18n/proscons.en';
 import ScoreFeedback from './ScoreFeedback';
+import { useTTS } from '../hooks/useTTS';
 
 interface Props {
   analysis: AnalysisResult;
@@ -22,8 +23,26 @@ function getScoreColors(score: number): ColorConfig {
 
 export default function TLDRCard({ analysis }: Props) {
   const { t, lang } = useLanguage();
-  const { scores, verdict, pros: rawPros, cons: rawCons } = analysis;
+  const { scores, verdict, pros: rawPros, cons: rawCons, conclusion } = analysis;
   const c = getScoreColors(scores.total);
+  const { state: ttsState, speak } = useTTS();
+
+  const symbol = analysis.token.symbol?.toUpperCase() ?? '';
+
+  const buildSpeechText = () => {
+    const localPros = translateProsCons(rawPros, lang).slice(0, 3);
+    const localCons = translateProsCons(rawCons, lang).slice(0, 3);
+    if (lang === 'en') {
+      return `${symbol} tokenomics analysis. Score: ${scores.total.toFixed(1)} out of 10. Verdict: ${verdict}. ` +
+        (localPros.length ? `Highlights: ${localPros.join('. ')}. ` : '') +
+        (localCons.length ? `Risks: ${localCons.join('. ')}. ` : '') +
+        (conclusion ? conclusion : '');
+    }
+    return `Análise de tokenomics de ${symbol}. Score: ${scores.total.toFixed(1)} de 10. Veredicto: ${verdict}. ` +
+      (localPros.length ? `Destaques: ${localPros.join('. ')}. ` : '') +
+      (localCons.length ? `Riscos: ${localCons.join('. ')}. ` : '') +
+      (conclusion ? conclusion : '');
+  };
 
   const verdictMap: Record<string, string> = {
     'Excelente': t.verdictExcelente,
@@ -45,14 +64,34 @@ export default function TLDRCard({ analysis }: Props) {
         boxShadow: `0 0 20px ${c.glow}`,
       }}
     >
-      {/* Header label */}
-      <div className="flex items-center gap-2 mb-4">
+      {/* Header label + TTS button */}
+      <div className="flex items-center justify-between gap-2 mb-4">
         <span
           className="text-xs font-bold tracking-widest uppercase font-mono"
           style={{ color: c.text, textShadow: `0 0 8px ${c.glow}` }}
         >
           {t.tldrTitle}
         </span>
+        <button
+          onClick={() => speak(buildSpeechText())}
+          title={ttsState === 'playing' ? 'Parar' : lang === 'en' ? 'Listen to analysis' : 'Ouvir análise'}
+          className="flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-xs font-bold transition-all hover:opacity-90"
+          style={{
+            backgroundColor: ttsState === 'playing' ? `${c.text}20` : '#0f1a0f',
+            color: ttsState === 'error' ? '#ff4444' : c.text,
+            border: `1px solid ${ttsState === 'playing' ? c.text : c.border}`,
+            boxShadow: ttsState === 'playing' ? `0 0 10px ${c.glow}` : 'none',
+            animation: ttsState === 'playing' ? 'pulse 1.5s ease-in-out infinite' : 'none',
+          }}
+        >
+          {ttsState === 'loading' ? '⏳' : ttsState === 'playing' ? '⏹' : ttsState === 'error' ? '⚠' : '🔊'}
+          <span className="hidden sm:inline">
+            {ttsState === 'loading' ? (lang === 'en' ? 'Loading...' : 'Carregando...') :
+             ttsState === 'playing' ? (lang === 'en' ? 'Stop' : 'Parar') :
+             ttsState === 'error' ? 'Erro' :
+             lang === 'en' ? 'Listen' : 'Ouvir'}
+          </span>
+        </button>
       </div>
 
       <div className="flex flex-col md:flex-row items-center gap-6">
