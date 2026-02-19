@@ -75,6 +75,7 @@ export interface AnalysisResult {
   cons: string[];
   tokenomicsLastUpdated: string; // date of last manual review of tokenomics data
   tokenomicsSources: { label: string; url: string }[]; // specific sources used for tokenomics data
+  dataQuality: 'verified' | 'estimated'; // 'verified' = manual review with sources; 'estimated' = auto-inferred
   fetchedAt: Date;
 }
 

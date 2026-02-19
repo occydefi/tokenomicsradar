@@ -14,7 +14,7 @@ const VERDICT_CONFIG: Record<string, { color: string; icon: string; label: strin
 };
 
 export default function TokenHeader({ analysis }: Props) {
-  const { token, scores, verdict, tokenomicsLastUpdated } = analysis;
+  const { token, scores, verdict, tokenomicsLastUpdated, dataQuality, tokenomicsSources } = analysis;
   const md = token.market_data;
   const scoreColor = getScoreColor(scores.total);
   const vc = VERDICT_CONFIG[verdict] ?? { color: '#6b7280', icon: '❓', label: verdict.toUpperCase() };
@@ -131,10 +131,42 @@ export default function TokenHeader({ analysis }: Props) {
               ) : null;
               })()}
 
-              {/* Last updated */}
-              <p className="text-xs mt-1 font-mono" style={{ color: '#2a4a2a' }}>
-                &gt; data_tokenomics: {tokenomicsLastUpdated}
-              </p>
+              {/* Data quality badge + last updated */}
+              <div className="flex items-center gap-2 mt-2 flex-wrap">
+                {dataQuality === 'verified' ? (
+                  <span
+                    className="text-xs px-2 py-0.5 rounded font-mono flex items-center gap-1"
+                    style={{
+                      backgroundColor: 'rgba(57,211,83,0.08)',
+                      color: '#39d353',
+                      border: '1px solid rgba(57,211,83,0.25)',
+                    }}
+                    title="Dados revisados manualmente com fontes verificadas"
+                  >
+                    🟢 dados verificados
+                  </span>
+                ) : (
+                  <span
+                    className="text-xs px-2 py-0.5 rounded font-mono flex items-center gap-1"
+                    style={{
+                      backgroundColor: 'rgba(255,180,0,0.08)',
+                      color: '#f59e0b',
+                      border: '1px solid rgba(255,180,0,0.25)',
+                    }}
+                    title="Dados estimados automaticamente — podem conter imprecisões. Verifique fontes oficiais antes de usar."
+                  >
+                    🟡 dados estimados
+                  </span>
+                )}
+                <span className="text-xs font-mono" style={{ color: '#2a4a2a' }}>
+                  · rev. {tokenomicsLastUpdated}
+                </span>
+                {tokenomicsSources.length > 0 && (
+                  <span className="text-xs font-mono" style={{ color: '#2a4a2a' }}>
+                    · {tokenomicsSources.length} fonte{tokenomicsSources.length > 1 ? 's' : ''}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
 

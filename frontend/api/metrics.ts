@@ -1,8 +1,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-// DeFiLlama protocol slug mapping
+// DeFiLlama protocol slug mapping (for fees/revenue endpoint)
+// Source: https://api.llama.fi/protocols — protocol.slug field
 const DEFILLAMA_SLUGS: Record<string, string> = {
-  // DeFi Protocols
+  // ── DeFi Protocols ─────────────────────────────────────────
   UNI: 'uniswap',
   AAVE: 'aave',
   MKR: 'makerdao',
@@ -13,14 +14,20 @@ const DEFILLAMA_SLUGS: Record<string, string> = {
   BAL: 'balancer',
   SUSHI: 'sushiswap',
   GRT: 'the-graph',
-  BAT: 'brave-browser',
-  // Chains (use chain TVL)
+  GMX: 'gmx',
+  PENDLE: 'pendle',
+  ENA: 'ethena',
+  JUP: 'jupiter',
+  HYPE: 'hyperliquid',
+  DYDX: 'dydx',
+  // ── L1/L2 Chains ────────────────────────────────────────────
   ETH: 'ethereum',
   SOL: 'solana',
   ADA: 'cardano',
   AVAX: 'avalanche',
   DOT: 'polkadot',
   MATIC: 'polygon',
+  POL: 'polygon',
   ATOM: 'cosmos',
   NEAR: 'near',
   APT: 'aptos',
@@ -32,9 +39,15 @@ const DEFILLAMA_SLUGS: Record<string, string> = {
   INJ: 'injective',
   FIL: 'filecoin',
   ALGO: 'algorand',
+  STX: 'stacks',
+  BNB: 'binance-smart-chain',
+  RUNE: 'thorchain',
+  SEI: 'sei',
+  TIA: 'celestia',
 };
 
-// Chain slugs for DeFiLlama chain TVL endpoint
+// Chain slugs for DeFiLlama historicalChainTvl endpoint
+// These are chains where token = native gas token, so TVL = ecosystem TVL
 const CHAIN_SLUGS: Record<string, string> = {
   ETH: 'Ethereum',
   SOL: 'Solana',
@@ -42,6 +55,7 @@ const CHAIN_SLUGS: Record<string, string> = {
   AVAX: 'Avalanche',
   DOT: 'Polkadot',
   MATIC: 'Polygon',
+  POL: 'Polygon',
   ATOM: 'Cosmos',
   NEAR: 'Near',
   APT: 'Aptos',
@@ -57,6 +71,10 @@ const CHAIN_SLUGS: Record<string, string> = {
   BTC: 'Bitcoin',
   LTC: 'Litecoin',
   XRP: 'Ripple',
+  SEI: 'Sei',
+  TIA: 'Celestia',
+  HYPE: 'Hyperliquid',
+  STX: 'Stacks',
 };
 
 function formatUSD(value: number): string {
