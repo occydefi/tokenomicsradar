@@ -56,6 +56,7 @@ export async function getCoinIdByTicker(ticker: string): Promise<string | null> 
     'MKR': 'maker',
     'ATOM': 'cosmos',
     'PEPE': 'pepe',
+    'DOG': 'dog-bitcoin',
     'FIL': 'filecoin',
     'VET': 'vechain',
     'ALGO': 'algorand',
