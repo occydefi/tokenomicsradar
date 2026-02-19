@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SearchBar from './components/SearchBar';
 import TokenHeader from './components/TokenHeader';
 import CompareView from './components/CompareView';
@@ -20,7 +20,11 @@ function App() {
 
   // Compare mode state
   const [compareMode, setCompareMode] = useState(false);
-  const [mcSimMode, setMcSimMode] = useState(false);
+  const [mcSimMode, setMcSimMode] = useState(() => {
+    // Auto-activate simulator if URL has ?sim= param
+    const params = new URLSearchParams(window.location.search);
+    return params.has('sim');
+  });
   const [analysis2, setAnalysis2] = useState<AnalysisResult | null>(null);
   const [loading2, setLoading2] = useState(false);
   const [error2, setError2] = useState<string | null>(null);

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import React from 'react';
 import { searchToken } from '../services/coingecko';
 import type { TokenData } from '../types';
@@ -140,6 +140,20 @@ export default function MCSimulator() {
   const [tokenX, setTokenX] = useState<TokenSlot>(empty());
   const [tokenY, setTokenY] = useState<TokenSlot>(empty());
   const [mode, setMode] = useState<'current' | 'ath'>('current');
+  const [shareModal, setShareModal] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  // Auto-load from URL params on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const sim = params.get('sim');
+    const ref = params.get('ref');
+    const m = params.get('mode');
+    if (m === 'ath') setMode('ath');
+    if (sim) fetchToken(sim, setTokenX);
+    if (ref) fetchToken(ref, setTokenY);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const fetchToken = async (ticker: string, setSlot: React.Dispatch<React.SetStateAction<TokenSlot>>) => {
     if (!ticker) { setSlot(empty()); return; }
@@ -321,13 +335,9 @@ export default function MCSimulator() {
               boxShadow: '0 0 16px rgba(57,211,83,0.4)',
               letterSpacing: '3px',
             }}
-            onClick={() => {
-              const text = `🔮 Se ${x.name} (${x.symbol?.toUpperCase()}) tivesse o market cap ${mode === 'ath' ? 'na máxima histórica' : 'atual'} de ${y.name} (${y.symbol?.toUpperCase()}):\n💰 Preço seria: ${formatPrice(projectedPrice)}\n📈 ${multiplier.toFixed(2)}X (${pctChange.toFixed(1)}%)\n\n🔗 tokenomicsradar.vercel.app`;
-              navigator.clipboard.writeText(text).catch(() => {});
-              alert('📋 Copiado para a área de transferência!');
-            }}
+            onClick={() => setShareModal(true)}
           >
-            ↗ COMPARTILHAR
+            ↗ COMPARTILHAR RESULTADO
           </button>
         </div>
       ) : (
@@ -342,6 +352,137 @@ export default function MCSimulator() {
       <p className="text-xs font-mono text-center mt-4" style={{ color: '#1a2e1a' }}>
         ⚠ simulação educacional · não considera emissão futura de tokens · não é conselho financeiro
       </p>
+
+      {/* Share Modal */}
+      {shareModal && hasResult && (() => {
+        const shareUrl = `${window.location.origin}${window.location.pathname}?sim=${x!.symbol?.toUpperCase()}&ref=${y!.symbol?.toUpperCase()}&mode=${mode}`;
+        const tweetText = encodeURIComponent(
+          `🔮 Se ${x!.name} (${x!.symbol?.toUpperCase()}) tivesse o market cap ${mode === 'ath' ? 'na máxima histórica' : 'atual'} de ${y!.name} (${y!.symbol?.toUpperCase()}):\n\n` +
+          `💰 Preço: ${formatPrice(projectedPrice)}\n` +
+          `📈 ${multiplier.toFixed(2)}X (+${pctChange.toFixed(1)}%)\n` +
+          `🎯 MC Alvo: ${formatMC(targetMC)}\n\n` +
+          `Simulado em tokenomicsradar.vercel.app`
+        );
+        const twitterUrl = `https://twitter.com/intent/tweet?text=${tweetText}`;
+
+        const handleCopy = () => {
+          navigator.clipboard.writeText(shareUrl).then(() => {
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+          });
+        };
+
+        return (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            style={{ backgroundColor: 'rgba(0,0,0,0.85)' }}
+            onClick={(e) => { if (e.target === e.currentTarget) setShareModal(false); }}
+          >
+            <div
+              className="w-full max-w-md rounded-2xl p-6 relative"
+              style={{
+                backgroundColor: '#0a150a',
+                border: '1px solid #39d35340',
+                boxShadow: '0 0 60px rgba(57,211,83,0.15)',
+              }}
+            >
+              {/* Close */}
+              <button
+                onClick={() => setShareModal(false)}
+                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full font-mono text-sm opacity-50 hover:opacity-100"
+                style={{ color: '#9ca3af', backgroundColor: '#1a2e1a' }}
+              >✕</button>
+
+              {/* Mini result card */}
+              <div
+                className="rounded-xl p-5 mb-5 text-center"
+                style={{
+                  backgroundColor: '#060d06',
+                  border: `1px solid ${isGain ? '#39d35330' : '#ff6d0030'}`,
+                }}
+              >
+                <p className="text-sm font-mono mb-3" style={{ color: '#9ca3af' }}>
+                  Preço de <strong style={{ color: '#39d353' }}>{x!.symbol?.toUpperCase()}</strong>
+                  {' '}com MC de <strong style={{ color: '#00e5ff' }}>{y!.symbol?.toUpperCase()}</strong>
+                  {mode === 'ath' && <span style={{ color: '#00e5ff' }}> (ATH)</span>}
+                </p>
+                <p
+                  className="font-bold font-mono text-3xl mb-3"
+                  style={{
+                    color: '#ffffff',
+                    textShadow: `0 0 20px ${isGain ? 'rgba(57,211,83,0.4)' : 'rgba(255,109,0,0.4)'}`,
+                  }}
+                >
+                  {formatPrice(projectedPrice)}
+                  <span className="text-lg ml-2" style={{ color: isGain ? '#39d353' : '#ff6d00' }}>
+                    [{multiplier.toFixed(2)}X]
+                  </span>
+                </p>
+                <div className="flex justify-around text-center">
+                  <div>
+                    <p className="text-xs font-mono" style={{ color: '#4a7a4a' }}>Preço Atual</p>
+                    <p className="text-sm font-bold font-mono" style={{ color: '#9ca3af' }}>{formatPrice(currentPriceX)}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-mono" style={{ color: '#4a7a4a' }}>Variação</p>
+                    <p className="text-sm font-bold font-mono" style={{ color: isGain ? '#39d353' : '#ff6d00' }}>
+                      {isGain ? '+' : ''}{pctChange.toFixed(2)}%
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-mono" style={{ color: '#4a7a4a' }}>MC Alvo</p>
+                    <p className="text-sm font-bold font-mono" style={{ color: '#9ca3af' }}>{formatMC(targetMC)}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Share label */}
+              <p className="font-mono text-xs tracking-widest mb-3" style={{ color: '#4a7a4a' }}>
+                COMPARTILHAR RESULTADO
+              </p>
+
+              {/* URL bar */}
+              <div
+                className="flex items-center gap-2 rounded-lg px-3 py-2 mb-4 font-mono text-xs"
+                style={{ backgroundColor: '#060d06', border: '1px solid #1a2e1a', color: '#39d353' }}
+              >
+                <span className="flex-1 truncate opacity-60">{shareUrl}</span>
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex gap-3">
+                <a
+                  href={twitterUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-mono font-bold text-sm tracking-widest transition-all hover:opacity-90"
+                  style={{
+                    backgroundColor: '#1a1a1a',
+                    color: '#ffffff',
+                    border: '1px solid #333',
+                  }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.748-8.855L1.254 2.25H8.08l4.259 5.63L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
+                  </svg>
+                  COMPARTILHAR
+                </a>
+                <button
+                  onClick={handleCopy}
+                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-mono font-bold text-sm tracking-widest transition-all hover:opacity-90"
+                  style={{
+                    backgroundColor: copied ? '#39d353' : '#0f2010',
+                    color: copied ? '#060d06' : '#39d353',
+                    border: `1px solid ${copied ? '#39d353' : '#39d35340'}`,
+                  }}
+                >
+                  {copied ? '✓ COPIADO!' : '🔗 COPIAR LINK'}
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }
