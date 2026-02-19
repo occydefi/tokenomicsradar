@@ -158,8 +158,12 @@ export default function TokenHeader({ analysis }: Props) {
                     🟡 dados estimados
                   </span>
                 )}
-                <span className="text-xs font-mono" style={{ color: '#2a4a2a' }}>
-                  · rev. {tokenomicsLastUpdated}
+                <span
+                  className="text-xs font-mono"
+                  style={{ color: '#2a4a2a' }}
+                  title="Os dados de tokenomics são revisados manualmente uma vez por mês pelos analistas da Occy."
+                >
+                  · rev. {tokenomicsLastUpdated} (revisado 1×/mês)
                 </span>
                 {tokenomicsSources.length > 0 && (
                   <span className="text-xs font-mono" style={{ color: '#2a4a2a' }}>

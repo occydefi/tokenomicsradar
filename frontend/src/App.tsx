@@ -9,7 +9,7 @@ import MCSimulator from './components/MCSimulator';
 import { useLanguage, LangToggle } from './contexts/LanguageContext';
 import type { AnalysisResult } from './types';
 import { searchToken } from './services/coingecko';
-import { analyzeToken } from './utils/analyzer';
+import { analyzeToken, DATA_LAST_UPDATED } from './utils/analyzer';
 
 function App() {
   const { t } = useLanguage();
@@ -311,7 +311,10 @@ function App() {
             </a>{' '}
             • realtime
           </p>
-          <p className="text-xs mt-2" style={{ color: '#2a4a2a' }}>
+          <p className="text-xs mt-2" style={{ color: '#39d353', opacity: 0.7 }}>
+            🗓️ Dados de tokenomics revisados em <strong>{DATA_LAST_UPDATED}</strong> — atualização manual 1×/mês (top 100)
+          </p>
+          <p className="text-xs mt-1" style={{ color: '#2a4a2a' }}>
             // fins educacionais // não constitui conselho financeiro // DYOR
           </p>
           {/* by Occy */}
