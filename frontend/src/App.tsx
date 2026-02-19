@@ -326,7 +326,7 @@ function App() {
           {/* by Occy */}
           <div className="flex items-center justify-center gap-3 mt-6">
             <img
-              src="/occy-avatar.jpg"
+              src="/occy-male.jpg"
               alt="Occy"
               style={{
                 width: 40,
