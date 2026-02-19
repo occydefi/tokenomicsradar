@@ -1,5 +1,6 @@
 import type { AnalysisResult } from '../types';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface Props {
   analysis: AnalysisResult;
@@ -24,14 +25,15 @@ const renderCustomizedLabel = (props: {
 };
 
 export default function DistributionSection({ analysis }: Props) {
+  const { t, lang } = useLanguage();
   const { distribution, scores } = analysis;
 
   const chartData = [
-    { name: 'Equipe/Fundadores', value: distribution.team, color: '#ff6b6b' },
-    { name: 'VC/Investidores', value: distribution.investors, color: '#ffd600' },
-    { name: 'Comunidade/Público', value: distribution.community, color: '#00c853' },
-    { name: 'Tesouraria', value: distribution.treasury, color: '#4f8eff' },
-    ...(distribution.other > 0 ? [{ name: 'Outros', value: distribution.other, color: '#00e5ff' }] : []),
+    { name: t.distTeam.replace(/^🔴\s*/, ''), value: distribution.team, color: '#ff6b6b' },
+    { name: t.distVC.replace(/^🟡\s*/, ''), value: distribution.investors, color: '#ffd600' },
+    { name: t.distCommunity.replace(/^🟢\s*/, ''), value: distribution.community, color: '#00c853' },
+    { name: t.distTreasury.replace(/^🔵\s*/, ''), value: distribution.treasury, color: '#4f8eff' },
+    ...(distribution.other > 0 ? [{ name: lang === 'en' ? 'Others' : 'Outros', value: distribution.other, color: '#00e5ff' }] : []),
   ].filter(d => d.value > 0);
 
   const ProgressRow = ({
@@ -62,7 +64,7 @@ export default function DistributionSection({ analysis }: Props) {
   return (
     <div className="rounded-2xl border p-6" style={{ backgroundColor: '#111827', borderColor: '#1e2a45' }}>
       <div className="flex items-center justify-between mb-5">
-        <h3 className="text-lg font-bold text-white">🥧 Distribuição</h3>
+        <h3 className="text-lg font-bold text-white">{t.distSectionTitle}</h3>
         <span
           className="text-sm font-bold font-mono px-3 py-1 rounded-full"
           style={{
@@ -106,28 +108,28 @@ export default function DistributionSection({ analysis }: Props) {
 
       {/* Progress bars with legends */}
       <ProgressRow
-        label="🔴 Equipe/Fundadores"
+        label={t.distTeam}
         value={distribution.team}
         color="#ff6b6b"
-        legend="% alocada para a equipe. Ideal abaixo de 20% com vesting longo."
+        legend={t.distTeamLegend}
       />
       <ProgressRow
-        label="🟡 VC/Investidores"
+        label={t.distVC}
         value={distribution.investors}
         color="#ffd600"
-        legend="Investidores privados com entrada barata. Alto % = risco de dump."
+        legend={t.distVCLegend}
       />
       <ProgressRow
-        label="🟢 Comunidade/Público"
+        label={t.distCommunity}
         value={distribution.community}
         color="#00c853"
-        legend="Quanto maior, mais descentralizado e distribuído o token."
+        legend={t.distCommunityLegend}
       />
       <ProgressRow
-        label="🔵 Tesouraria/Reserva"
+        label={t.distTreasury}
         value={distribution.treasury}
         color="#4f8eff"
-        legend="Reserva do projeto para desenvolvimento e operações futuras."
+        legend={t.distTreasuryLegend}
       />
 
       {/* Warning if team+VC > 40% */}
@@ -136,13 +138,13 @@ export default function DistributionSection({ analysis }: Props) {
           className="mt-3 p-3 rounded-xl text-xs"
           style={{ backgroundColor: 'rgba(255, 61, 61, 0.1)', color: '#ff3d3d' }}
         >
-          ⚠️ Alta concentração: {(distribution.team + distribution.investors).toFixed(0)}% com equipe e investidores
+          {t.distConcentrationWarning.replace('{{pct}}', (distribution.team + distribution.investors).toFixed(0))}
         </div>
       )}
 
       {/* Source */}
       <div className="mt-4 pt-4 border-t text-xs" style={{ borderColor: '#1e2a45', color: '#4b5563' }}>
-        📌 {distribution.note} • {new Date().toLocaleDateString('pt-BR')}
+        📌 {distribution.note} • {new Date().toLocaleDateString(lang === 'en' ? 'en-US' : 'pt-BR')}
       </div>
     </div>
   );

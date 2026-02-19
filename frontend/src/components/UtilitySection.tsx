@@ -1,4 +1,5 @@
 import type { AnalysisResult } from '../types';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface Props {
   analysis: AnalysisResult;
@@ -8,12 +9,12 @@ interface BoolItemProps {
   label: string;
   value: boolean;
   icon: string;
-  trueLabel?: string;
-  falseLabel?: string;
+  trueLabel: string;
+  falseLabel: string;
   legend?: string;
 }
 
-function BoolItem({ label, value, icon, trueLabel = 'Sim', falseLabel = 'Não', legend }: BoolItemProps) {
+function BoolItem({ label, value, icon, trueLabel, falseLabel, legend }: BoolItemProps) {
   return (
     <div
       className="p-3 rounded-xl"
@@ -42,6 +43,7 @@ function BoolItem({ label, value, icon, trueLabel = 'Sim', falseLabel = 'Não', 
 }
 
 export default function UtilitySection({ analysis }: Props) {
+  const { t, lang } = useLanguage();
   const { utilityData, scores } = analysis;
   const trueCount = [
     utilityData.neededToUse,
@@ -53,7 +55,7 @@ export default function UtilitySection({ analysis }: Props) {
   return (
     <div className="rounded-2xl border p-6" style={{ backgroundColor: '#111827', borderColor: '#1e2a45' }}>
       <div className="flex items-center justify-between mb-5">
-        <h3 className="text-lg font-bold text-white">⚡ Score de Utilidade</h3>
+        <h3 className="text-lg font-bold text-white">{t.utilitySectionTitle}</h3>
         <span
           className="text-sm font-bold font-mono px-3 py-1 rounded-full"
           style={{
@@ -67,38 +69,44 @@ export default function UtilitySection({ analysis }: Props) {
 
       <div className="space-y-3 mb-4">
         <BoolItem
-          label="Token necessário para usar o protocolo"
+          label={t.utilityNeeded}
           value={utilityData.neededToUse}
           icon="🔧"
-          legend="Token tem uso real além de especulação? Essencial para pagar taxas ou acessar o serviço."
+          trueLabel={t.utilitySim}
+          falseLabel={t.utilityNao}
+          legend={t.utilityNeededLegend}
         />
         <BoolItem
-          label="Staking disponível"
+          label={t.utilityStaking}
           value={utilityData.stakingAvailable}
           icon="💎"
-          legend="Pode travar tokens para ganhar recompensas? Incentiva holders de longo prazo."
+          trueLabel={t.utilitySim}
+          falseLabel={t.utilityNao}
+          legend={t.utilityStakingLegend}
         />
         <BoolItem
-          label="Poder de governança"
+          label={t.utilityGovernance}
           value={utilityData.governancePower}
           icon="🗳️"
-          legend="Holders votam em decisões do protocolo? Confere participação real no projeto."
+          trueLabel={t.utilitySim}
+          falseLabel={t.utilityNao}
+          legend={t.utilityGovernanceLegend}
         />
         <BoolItem
-          label="Mecanismo de queima de fees"
+          label={t.utilityFeeburn}
           value={utilityData.feeBurning}
           icon="🔥"
-          trueLabel="Deflacionário"
-          falseLabel="Sem queima"
-          legend="Taxas destroem tokens, criando deflação? Reduz oferta com o uso do protocolo."
+          trueLabel={t.utilityDeflacionario}
+          falseLabel={t.utilitySemQueima}
+          legend={t.utilityFeeburnLegend}
         />
       </div>
 
       {/* Score bar */}
       <div className="mt-4">
         <div className="flex justify-between text-xs mb-2" style={{ color: '#6b7280' }}>
-          <span>Utilidade Real</span>
-          <span>{trueCount}/4 critérios atendidos</span>
+          <span>{t.utilityReal}</span>
+          <span>{t.utilityCriteria.replace('{{n}}', trueCount.toString())}</span>
         </div>
         <div className="h-3 rounded-full" style={{ backgroundColor: '#1e2a45' }}>
           <div
@@ -114,17 +122,17 @@ export default function UtilitySection({ analysis }: Props) {
       {/* Insight */}
       {trueCount === 4 && (
         <div className="mt-4 p-3 rounded-xl text-xs" style={{ backgroundColor: 'rgba(0,200,83,0.08)', color: '#00c853' }}>
-          🌟 Token com utilidade completa — todos os critérios de utilidade atendidos!
+          {t.utilityFull}
         </div>
       )}
       {trueCount === 0 && (
         <div className="mt-4 p-3 rounded-xl text-xs" style={{ backgroundColor: 'rgba(255,61,61,0.08)', color: '#ff3d3d' }}>
-          ⚠️ Token sem utilidade comprovada — alto risco de "token desnecessário"
+          {t.utilityNone}
         </div>
       )}
 
       <div className="mt-4 pt-4 border-t text-xs" style={{ borderColor: '#1e2a45', color: '#4b5563' }}>
-        📌 Baseado em análise de categorias e metadados do protocolo • {new Date().toLocaleDateString('pt-BR')}
+        {t.utilitySource} • {new Date().toLocaleDateString(lang === 'en' ? 'en-US' : 'pt-BR')}
       </div>
     </div>
   );

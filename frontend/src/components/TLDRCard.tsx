@@ -1,4 +1,6 @@
 import type { AnalysisResult } from '../types';
+import { useLanguage } from '../contexts/LanguageContext';
+import { translateProsCons } from '../i18n/proscons.en';
 
 interface Props {
   analysis: AnalysisResult;
@@ -18,11 +20,20 @@ function getScoreColors(score: number): ColorConfig {
 }
 
 export default function TLDRCard({ analysis }: Props) {
-  const { scores, verdict, pros, cons } = analysis;
+  const { t, lang } = useLanguage();
+  const { scores, verdict, pros: rawPros, cons: rawCons } = analysis;
   const c = getScoreColors(scores.total);
 
-  const topPros = pros.slice(0, 3);
-  const topCons = cons.slice(0, 3);
+  const verdictMap: Record<string, string> = {
+    'Excelente': t.verdictExcelente,
+    'Bom': t.verdictBom,
+    'Regular': t.verdictRegular,
+    'Ruim': t.verdictRuim,
+    'Evitar': t.verdictEvitar,
+  };
+
+  const pros = translateProsCons(rawPros, lang).slice(0, 3);
+  const cons = translateProsCons(rawCons, lang).slice(0, 3);
 
   return (
     <div
@@ -39,7 +50,7 @@ export default function TLDRCard({ analysis }: Props) {
           className="text-xs font-bold tracking-widest uppercase font-mono"
           style={{ color: c.text, textShadow: `0 0 8px ${c.glow}` }}
         >
-          ⚡ TL;DR — Resumo Rápido
+          {t.tldrTitle}
         </span>
       </div>
 
@@ -74,7 +85,7 @@ export default function TLDRCard({ analysis }: Props) {
               boxShadow: `0 0 8px ${c.glow}`,
             }}
           >
-            {verdict}
+            {verdictMap[verdict] ?? verdict}
           </span>
         </div>
 
@@ -86,11 +97,11 @@ export default function TLDRCard({ analysis }: Props) {
               className="text-xs font-bold mb-2 uppercase tracking-wide font-mono"
               style={{ color: '#39d353', textShadow: '0 0 6px rgba(57,211,83,0.4)' }}
             >
-              ✅ Pontos Positivos
+              {t.tldrPros}
             </p>
             <ul className="space-y-2">
-              {topPros.length > 0 ? (
-                topPros.map((pro, i) => (
+              {pros.length > 0 ? (
+                pros.map((pro, i) => (
                   <li key={i} className="text-sm flex items-start gap-2" style={{ color: '#b8d4b8' }}>
                     <span style={{ color: '#39d353', flexShrink: 0, marginTop: 2 }}>＋</span>
                     <span>{pro}</span>
@@ -98,7 +109,7 @@ export default function TLDRCard({ analysis }: Props) {
                 ))
               ) : (
                 <li className="text-sm" style={{ color: '#4a7a4a' }}>
-                  Nenhum ponto positivo identificado
+                  {t.tldrNonePos}
                 </li>
               )}
             </ul>
@@ -110,11 +121,11 @@ export default function TLDRCard({ analysis }: Props) {
               className="text-xs font-bold mb-2 uppercase tracking-wide font-mono"
               style={{ color: '#ff4444', textShadow: '0 0 6px rgba(255,68,68,0.4)' }}
             >
-              ⚠️ Pontos de Atenção
+              {t.tldrCons}
             </p>
             <ul className="space-y-2">
-              {topCons.length > 0 ? (
-                topCons.map((con, i) => (
+              {cons.length > 0 ? (
+                cons.map((con, i) => (
                   <li key={i} className="text-sm flex items-start gap-2" style={{ color: '#b8d4b8' }}>
                     <span style={{ color: '#ff4444', flexShrink: 0, marginTop: 2 }}>－</span>
                     <span>{con}</span>
@@ -122,7 +133,7 @@ export default function TLDRCard({ analysis }: Props) {
                 ))
               ) : (
                 <li className="text-sm" style={{ color: '#4a7a4a' }}>
-                  Nenhum ponto negativo identificado
+                  {t.tldrNoneNeg}
                 </li>
               )}
             </ul>

@@ -1,4 +1,5 @@
 import type { AnalysisResult } from '../types';
+import { useLanguage } from '../contexts/LanguageContext';
 
 // Mini descrições em português por token
 const PT_DESCRIPTIONS: Record<string, string> = {
@@ -33,8 +34,41 @@ const PT_DESCRIPTIONS: Record<string, string> = {
   'starknet': 'Layer 2 do Ethereum usando provas ZK-STARK (tecnologia criptográfica avançada). STRK é o token de governance e para pagar taxas. Alta concentração em insiders é a principal crítica.',
 };
 
-// Geração automática baseada em categorias e características
-function generateDescription(analysis: AnalysisResult): string {
+// English descriptions
+const EN_DESCRIPTIONS: Record<string, string> = {
+  'bitcoin': 'The world\'s first cryptocurrency, created in 2009 by Satoshi Nakamoto. Functions as decentralized digital money and store of value — no company or government controls it. Fixed supply of 21 million BTC, guaranteed by mathematics.',
+  'ethereum': 'Smart contract platform enabling decentralized applications (dApps), DeFi and NFTs. ETH is the "fuel" to execute operations on the network. Second largest crypto by market cap and the base of the DeFi ecosystem.',
+  'solana': 'High-speed blockchain (65,000 TPS) with very low fees. Direct competitor to Ethereum, popular for DeFi, NFTs and memecoins. SOL is used to pay fees and stake on the network.',
+  'ripple': 'International payments protocol focused on banks and financial institutions. XRP is used for fast cross-currency transfers. Controversial for its high degree of centralization — Ripple Labs controls the majority of supply.',
+  'cardano': 'Smart contract blockchain developed with academic rigor by IOHK. ADA is used for staking and governance. Promised a lot, took years to deliver smart contracts, and still has limited DeFi compared to competitors.',
+  'binancecoin': 'Native token of Binance, the world\'s largest crypto exchange. Used to pay fees on Binance at a discount and on the BNB Chain network. Heavily controlled by Binance — not a decentralized project.',
+  'avalanche-2': 'Smart contract platform with 3-subnet architecture (P-Chain, C-Chain, X-Chain). AVAX is used for fees, staking and creating custom subnets. Competes with Ethereum for building customizable blockchains.',
+  'polkadot': 'Interoperability protocol connecting multiple blockchains (parachains). DOT is used for staking, governance and reserving parachain slots. Created by Gavin Wood, Ethereum co-founder.',
+  'tron': 'Blockchain focused on entertainment and stablecoins. TRX is mostly controlled by Justin Sun and the Tron Foundation. Processes large volumes of USDT, but with serious centralization criticism.',
+  'cosmos': 'Blockchain interoperability protocol via IBC (Inter-Blockchain Communication). ATOM is used for staking on Cosmos Hub — but the problem is ecosystem blockchains don\'t need ATOM to operate.',
+  'litecoin': 'One of the first Bitcoin forks, created in 2011 by Charlie Lee. Functions as "Bitcoin\'s silver" with faster blocks. Relevance dropped dramatically with BTC growth and other networks.',
+  'chainlink': 'Decentralized oracle network connecting smart contracts to real-world data (prices, weather, etc.). LINK is used to pay node operators. Critical infrastructure used by hundreds of DeFi protocols.',
+  'uniswap': 'World\'s largest decentralized exchange (DEX) by volume. Allows swapping any ERC-20 token without intermediaries via liquidity pools. UNI is the protocol\'s governance token.',
+  'aave': 'Decentralized lending protocol — lend or borrow crypto without a bank. AAVE is used for governance and as collateral. One of the most solid and audited DeFi projects.',
+  'maker': 'Protocol that created DAI, the largest decentralized stablecoin. MKR is used for governance and is burned when the protocol profits. One of DeFi\'s oldest and most robust pillars.',
+  'curve-dao-token': 'DEX specialized in stablecoins and price-pegged assets (ETH/wstETH). CRV is the governance token with a lock system (veCRV). Essential infrastructure for DeFi liquidity.',
+  'the-graph': 'Blockchain data indexing protocol — functions as the "Google of blockchain". GRT is used to pay indexers and delegators who organize data for efficient queries.',
+  'hyperliquid': 'High-performance decentralized derivatives exchange (perps). HYPE was 100% distributed to the community via airdrop — no VCs, no founder tokens. Innovative revenue sharing model.',
+  'dogecoin': 'The first and largest memecoin. Created in 2013 as a joke, became a cultural phenomenon. No real technical utility, no supply cap, no active development. Its value is 100% speculative, driven by community and influencers.',
+  'shiba-inu': 'Memecoin created in 2020 as the "Dogecoin killer". SHIB has its own ecosystem (ShibaSwap, Shibarium) but remains essentially speculative. No fundamental utility to justify structural appreciation.',
+  'pepe': 'Memecoin based on the Pepe the Frog meme. No utility, no identified team, no development. Pure speculative community token.',
+  'tether': 'The world\'s largest stablecoin ($140B+). USDT is backed by dollars and equivalents, issued by Tether Ltd. Widely used in DeFi and exchanges, but with a history of reserve opacity.',
+  'usd-coin': 'Stablecoin issued by Circle (regulated US company). USDC is considered the safest centralized stablecoin: monthly audited reserves, 100% in USD and US Treasuries.',
+  'dai': 'Decentralized stablecoin created by MakerDAO. DAI is issued via crypto overcollateralization (ETH, wBTC). Does not depend on any company — operates by code. Primary decentralized DeFi stablecoin.',
+  'arbitrum': 'Ethereum\'s primary Layer 2 by TVL. Processes transactions off mainnet and settles them on Ethereum, drastically reducing fees. ARB is the protocol\'s governance token.',
+  'optimism': 'Ethereum Layer 2 based on Optimistic Rollups. OP is the governance token with an innovative public goods funding model (Retroactive Public Goods Funding).',
+  'the-open-network': 'Blockchain originally created by Telegram, natively integrated into the app (900M+ users). TON has real growth via payments and mini-apps inside Telegram.',
+  'injective-protocol': 'DeFi-optimized blockchain for decentralized finance — derivatives DEX, spot, and structured products. INJ has a weekly burn mechanism via fee auctions.',
+  'starknet': 'Ethereum Layer 2 using ZK-STARK proofs (advanced cryptographic technology). STRK is the governance token and used to pay fees. High insider concentration is the main criticism.',
+};
+
+// PT auto-generated descriptions based on categories
+function generateDescriptionPt(analysis: AnalysisResult): string {
   const { token, utilityData } = analysis;
   const cats = token.categories?.map(c => c.toLowerCase()) || [];
   const name = token.name;
@@ -74,12 +108,57 @@ function generateDescription(analysis: AnalysisResult): string {
   return `${name} (${sym}) é uma criptomoeda com ${utilityData.stakingAvailable ? 'staking disponível' : 'foco em utilidade específica'}${utilityData.governancePower ? ' e poder de governance on-chain' : ''}.`;
 }
 
+// EN auto-generated descriptions based on categories
+function generateDescriptionEn(analysis: AnalysisResult): string {
+  const { token, utilityData } = analysis;
+  const cats = token.categories?.map(c => c.toLowerCase()) || [];
+  const name = token.name;
+  const sym = token.symbol?.toUpperCase();
+
+  if (cats.some(c => c.includes('layer 2') || c.includes('scaling'))) {
+    return `${name} (${sym}) is an Ethereum Layer 2 solution — processes transactions off the main network to reduce costs and increase speed while maintaining Ethereum's security.`;
+  }
+  if (cats.some(c => c.includes('layer 1') || c.includes('smart contract platform'))) {
+    return `${name} (${sym}) is a smart contract blockchain — a platform for building decentralized applications, DeFi and tokens. ${sym} is used to pay fees and stake on the network.`;
+  }
+  if (cats.some(c => c.includes('defi') || c.includes('decentralized finance'))) {
+    return `${name} (${sym}) is a DeFi protocol — decentralized finance without intermediaries. ${utilityData.stakingAvailable ? `${sym} can be used for staking` : `${sym} is the protocol's governance token`}.`;
+  }
+  if (cats.some(c => c.includes('dex') || c.includes('exchange'))) {
+    return `${name} (${sym}) is the token of a decentralized exchange (DEX) — allows swapping crypto without centralized custody. ${sym} gives voting power in protocol governance.`;
+  }
+  if (cats.some(c => c.includes('oracle'))) {
+    return `${name} (${sym}) is an oracle network — connects smart contracts to real-world data like asset prices, weather and events. Critical infrastructure for DeFi.`;
+  }
+  if (cats.some(c => c.includes('gaming') || c.includes('play-to-earn'))) {
+    return `${name} (${sym}) is the token of a blockchain gaming ecosystem (GameFi/play-to-earn). ${sym} is used within games and for ecosystem governance.`;
+  }
+  if (cats.some(c => c.includes('metaverse'))) {
+    return `${name} (${sym}) is the token of a decentralized metaverse — a virtual world where users can buy land, create experiences and interact. ${sym} is the native currency of that environment.`;
+  }
+  if (cats.some(c => c.includes('privacy'))) {
+    return `${name} (${sym}) is a privacy-focused cryptocurrency — transactions are confidential by default, with no public tracking. An alternative to Bitcoin for those who prioritize anonymity.`;
+  }
+  if (cats.some(c => c.includes('stablecoin'))) {
+    return `${name} (${sym}) is a stablecoin — a cryptocurrency with a fixed dollar value. Used as a medium of exchange, DeFi collateral and store of value within the crypto ecosystem.`;
+  }
+  if (cats.some(c => c.includes('meme'))) {
+    return `${name} (${sym}) is a memecoin — a token created without real technical utility, driven by internet culture and community speculation. High risk, no solid economic fundamentals.`;
+  }
+
+  return `${name} (${sym}) is a cryptocurrency with ${utilityData.stakingAvailable ? 'staking available' : 'a specific utility focus'}${utilityData.governancePower ? ' and on-chain governance power' : ''}.`;
+}
+
 interface Props {
   analysis: AnalysisResult;
 }
 
 export default function TokenAbout({ analysis }: Props) {
-  const desc = PT_DESCRIPTIONS[analysis.token.id] ?? generateDescription(analysis);
+  const { t, lang } = useLanguage();
+
+  const desc = lang === 'en'
+    ? (EN_DESCRIPTIONS[analysis.token.id] ?? generateDescriptionEn(analysis))
+    : (PT_DESCRIPTIONS[analysis.token.id] ?? generateDescriptionPt(analysis));
 
   return (
     <div
@@ -92,7 +171,7 @@ export default function TokenAbout({ analysis }: Props) {
       <div className="flex items-center gap-2 mb-3">
         <span style={{ color: '#39d353', fontSize: '16px' }}>📖</span>
         <h3 className="text-sm font-bold font-mono tracking-wider" style={{ color: '#39d353' }}>
-          O QUE É {analysis.token.symbol?.toUpperCase()}?
+          {t.whatIs} {analysis.token.symbol?.toUpperCase()}?
         </h3>
       </div>
       <p className="text-sm leading-relaxed" style={{ color: '#9ca3af' }}>

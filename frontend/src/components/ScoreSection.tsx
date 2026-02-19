@@ -1,14 +1,25 @@
 import type { AnalysisResult } from '../types';
 import { getScoreColor } from '../utils/analyzer';
 import { RadarChart, PolarGrid, PolarAngleAxis, Radar, ResponsiveContainer } from 'recharts';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface Props {
   analysis: AnalysisResult;
 }
 
 export default function ScoreSection({ analysis }: Props) {
+  const { t } = useLanguage();
   const { scores, verdict, conclusion, token } = analysis;
   const totalColor = getScoreColor(scores.total);
+
+  // Verdict translation map (internal keys are always PT)
+  const verdictMap: Record<string, string> = {
+    'Excelente': t.verdictExcelente,
+    'Bom': t.verdictBom,
+    'Regular': t.verdictRegular,
+    'Ruim': t.verdictRuim,
+    'Evitar': t.verdictEvitar,
+  };
 
   // Goblin-themed verdict colors
   const verdictConfig: Record<string, { color: string; glow: string }> = {
@@ -21,19 +32,19 @@ export default function ScoreSection({ analysis }: Props) {
   const vc = verdictConfig[verdict] ?? { color: '#39d353', glow: 'rgba(57,211,83,0.3)' };
 
   const radarData = [
-    { subject: 'Oferta', score: scores.supply, fullMark: 10 },
-    { subject: 'Distribuição', score: scores.distribution, fullMark: 10 },
-    { subject: 'Vesting', score: scores.vesting, fullMark: 10 },
-    { subject: 'Utilidade', score: scores.utility, fullMark: 10 },
-    { subject: 'Tesouraria', score: scores.treasury, fullMark: 10 },
+    { subject: t.radarSupply, score: scores.supply, fullMark: 10 },
+    { subject: t.radarDist, score: scores.distribution, fullMark: 10 },
+    { subject: t.radarVesting, score: scores.vesting, fullMark: 10 },
+    { subject: t.radarUtility, score: scores.utility, fullMark: 10 },
+    { subject: t.radarTreasury, score: scores.treasury, fullMark: 10 },
   ];
 
   const scoreItems = [
-    { label: 'Oferta & Inflação', score: scores.supply, weight: '25%', icon: '📦' },
-    { label: 'Distribuição', score: scores.distribution, weight: '25%', icon: '🥧' },
-    { label: 'Vesting', score: scores.vesting, weight: '20%', icon: '🔐' },
-    { label: 'Utilidade', score: scores.utility, weight: '20%', icon: '⚡' },
-    { label: 'Tesouraria', score: scores.treasury, weight: '10%', icon: '🏦' },
+    { label: t.scoreItemSupply, score: scores.supply, weight: '25%', icon: '📦' },
+    { label: t.scoreItemDist, score: scores.distribution, weight: '25%', icon: '🥧' },
+    { label: t.scoreItemVesting, score: scores.vesting, weight: '20%', icon: '🔐' },
+    { label: t.scoreItemUtility, score: scores.utility, weight: '20%', icon: '⚡' },
+    { label: t.scoreItemTreasury, score: scores.treasury, weight: '10%', icon: '🏦' },
   ];
 
   return (
@@ -42,7 +53,7 @@ export default function ScoreSection({ analysis }: Props) {
       style={{ backgroundColor: '#0d1a0d', borderColor: '#1a2e1a' }}
     >
       <h3 className="text-lg font-bold mb-6" style={{ color: '#39d353', textShadow: '0 0 10px rgba(57,211,83,0.4)' }}>
-        🎯 Score Final & Conclusão
+        {t.scoreSectionTitle}
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
@@ -72,7 +83,7 @@ export default function ScoreSection({ analysis }: Props) {
               <span className="text-xs" style={{ color: '#4a7a4a' }}>/ 10</span>
             </div>
             <div>
-              <p className="text-xs mb-1 font-mono" style={{ color: '#4a7a4a' }}>&gt; veredicto_</p>
+              <p className="text-xs mb-1 font-mono" style={{ color: '#4a7a4a' }}>{t.scoreVerdictLabel}</p>
               <span
                 className="text-xl font-bold px-4 py-2 rounded-lg inline-block font-mono"
                 style={{
@@ -82,7 +93,7 @@ export default function ScoreSection({ analysis }: Props) {
                   boxShadow: `0 0 10px ${vc.glow}`,
                 }}
               >
-                {verdict}
+                {verdictMap[verdict] ?? verdict}
               </span>
               <p className="text-xs mt-2 font-mono" style={{ color: '#4a7a4a' }}>
                 {token.name} • {token.symbol?.toUpperCase()}
@@ -152,7 +163,7 @@ export default function ScoreSection({ analysis }: Props) {
           className="text-xs mb-2 font-bold font-mono tracking-widest"
           style={{ color: totalColor }}
         >
-          &gt; CONCLUSÃO_
+          {t.scoreConclusion}
         </p>
         <p className="text-sm leading-relaxed" style={{ color: '#b8d4b8' }}>{conclusion}</p>
       </div>
@@ -163,7 +174,7 @@ export default function ScoreSection({ analysis }: Props) {
         style={{ backgroundColor: 'rgba(57,211,83,0.05)', color: '#4a7a4a' }}
       >
         <span>📐</span>
-        <span>Score baseado puramente em tokenomics. Risco regulatório, transparência do time e comunidade aparecem como contexto nas seções acima, mas não afetam a pontuação.</span>
+        <span>{t.scoreMethodologyNote}</span>
       </div>
 
       {/* Disclaimer */}
@@ -171,8 +182,7 @@ export default function ScoreSection({ analysis }: Props) {
         className="mt-3 p-3 rounded-xl text-xs"
         style={{ backgroundColor: 'rgba(57,211,83,0.03)', color: '#2a4a2a' }}
       >
-        ⚠️ Esta análise é gerada automaticamente com base em dados públicos e algoritmos de pontuação.
-        Não constitui conselho financeiro. Faça sua própria pesquisa (DYOR) antes de investir.
+        {t.scoreDisclaimer}
       </div>
     </div>
   );

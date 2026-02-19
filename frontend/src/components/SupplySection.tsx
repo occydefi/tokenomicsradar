@@ -1,5 +1,6 @@
 import type { AnalysisResult } from '../types';
 import { formatTokenAmount } from '../utils/analyzer';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface Props {
   analysis: AnalysisResult;
@@ -38,6 +39,7 @@ function ProgressBar({ label, value, max = 100, color = '#4f8eff', suffix = '%',
 }
 
 export default function SupplySection({ analysis }: Props) {
+  const { t, lang } = useLanguage();
   const { supplyMetrics, scores } = analysis;
   const {
     maxSupply,
@@ -53,7 +55,7 @@ export default function SupplySection({ analysis }: Props) {
   return (
     <div className="rounded-2xl border p-6" style={{ backgroundColor: '#111827', borderColor: '#1e2a45' }}>
       <div className="flex items-center justify-between mb-5">
-        <h3 className="text-lg font-bold text-white">📦 Métricas de Oferta</h3>
+        <h3 className="text-lg font-bold text-white">{t.supplySectionTitle}</h3>
         <div
           className="text-sm font-bold px-3 py-1 rounded-full font-mono"
           style={{
@@ -61,29 +63,29 @@ export default function SupplySection({ analysis }: Props) {
             color: isFixed ? '#00c853' : '#ff3d3d',
           }}
         >
-          {isFixed ? '🔒 Oferta Fixa' : '♾️ Sem Limite'}
+          {isFixed ? t.supplyFixed : t.supplyUnlimited}
         </div>
       </div>
 
       {/* Key numbers */}
       <div className="grid grid-cols-2 gap-4 mb-6">
         <div className="p-3 rounded-xl" style={{ backgroundColor: '#0a0e1a' }}>
-          <p className="text-xs mb-1" style={{ color: '#6b7280' }}>Oferta Circulante</p>
+          <p className="text-xs mb-1" style={{ color: '#6b7280' }}>{t.supplyCirculating}</p>
           <p className="font-bold text-white font-mono text-sm">{formatTokenAmount(circulatingSupply)}</p>
-          <p className="text-xs italic mt-1" style={{ color: '#4b5563' }}>Tokens em circulação hoje vs o total máximo.</p>
+          <p className="text-xs italic mt-1" style={{ color: '#4b5563' }}>{t.supplyCirculatingDesc}</p>
         </div>
         <div className="p-3 rounded-xl" style={{ backgroundColor: '#0a0e1a' }}>
-          <p className="text-xs mb-1" style={{ color: '#6b7280' }}>Oferta Máxima</p>
+          <p className="text-xs mb-1" style={{ color: '#6b7280' }}>{t.supplyMax}</p>
           <p className="font-bold text-white font-mono text-sm">{formatTokenAmount(maxSupply) || '∞'}</p>
-          <p className="text-xs italic mt-1" style={{ color: '#4b5563' }}>Quantidade máxima de tokens que jamais existirão. Fixo = deflacionário.</p>
+          <p className="text-xs italic mt-1" style={{ color: '#4b5563' }}>{t.supplyMaxDesc}</p>
         </div>
         <div className="p-3 rounded-xl" style={{ backgroundColor: '#0a0e1a' }}>
-          <p className="text-xs mb-1" style={{ color: '#6b7280' }}>Oferta Total</p>
+          <p className="text-xs mb-1" style={{ color: '#6b7280' }}>{t.supplyTotal}</p>
           <p className="font-bold text-white font-mono text-sm">{formatTokenAmount(totalSupply)}</p>
-          <p className="text-xs italic mt-1" style={{ color: '#4b5563' }}>Total emitido, incluindo os não-circulantes.</p>
+          <p className="text-xs italic mt-1" style={{ color: '#4b5563' }}>{t.supplyTotalDesc}</p>
         </div>
         <div className="p-3 rounded-xl" style={{ backgroundColor: '#0a0e1a' }}>
-          <p className="text-xs mb-1" style={{ color: '#6b7280' }}>Score Oferta</p>
+          <p className="text-xs mb-1" style={{ color: '#6b7280' }}>{t.supplyScore}</p>
           <p className="font-bold font-mono" style={{ color: scores.supply >= 7 ? '#00c853' : scores.supply >= 5 ? '#ffd600' : '#ff3d3d' }}>
             {scores.supply.toFixed(1)}/10
           </p>
@@ -92,31 +94,31 @@ export default function SupplySection({ analysis }: Props) {
 
       {/* Progress bars */}
       <ProgressBar
-        label="% da Oferta em Circulação"
+        label={t.supplyCirculatingPct}
         value={circulatingPct}
         color={circulatingPct > 70 ? '#00c853' : circulatingPct > 40 ? '#ffd600' : '#ff3d3d'}
-        legend="Quanto mais próximo de 100%, menor o risco de tokens futuros pressionar o preço."
+        legend={t.supplyCirculatingLegend}
       />
       <ProgressBar
-        label="Taxa de Inflação Anual Estimada"
+        label={t.supplyInflation}
         value={Math.min(inflationRate, 100)}
         color={inflationColor}
         suffix="%"
-        legend="% de novos tokens criados por ano. Quanto menor, melhor."
+        legend={t.supplyInflationLegend}
       />
 
       {supplyMetrics.burnedPct !== null && supplyMetrics.burnedPct > 0 && (
         <ProgressBar
-          label="Tokens Queimados"
+          label={t.supplyBurned}
           value={supplyMetrics.burnedPct}
           color="#00e5ff"
-          legend="Tokens destruídos permanentemente. Reduz a oferta total, criando deflação."
+          legend={t.supplyBurnedLegend}
         />
       )}
 
       {/* Source */}
       <div className="mt-4 pt-4 border-t text-xs" style={{ borderColor: '#1e2a45', color: '#4b5563' }}>
-        📌 Fonte: CoinGecko API • Atualizado: {new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+        {t.supplySource} {new Date().toLocaleDateString(lang === 'en' ? 'en-US' : 'pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
       </div>
     </div>
   );
