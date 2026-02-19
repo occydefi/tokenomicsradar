@@ -37,12 +37,26 @@ export default function ShareCard({
   const isGain = multiplier >= 1;
   const accent = isGain ? '#39d353' : '#ff6d00';
 
+  // Share page URL with OG meta tags for Twitter card preview
+  const sharePageUrl = (() => {
+    const base = window.location.origin;
+    const p = new URLSearchParams({
+      symX: tokenX.symbol,
+      symY: tokenY.symbol,
+      mode,
+      price: projectedPrice.toString(),
+      mult: multiplier.toString(),
+      pct: pctChange.toString(),
+      mcY: targetMC.toString(),
+    });
+    return `${base}/api/share?${p.toString()}`;
+  })();
+
   const tweetText = encodeURIComponent(
-    `🔮 Se ${tokenX.name} (${tokenX.symbol}) tivesse o market cap ` +
-    `${mode === 'ath' ? 'na máxima histórica' : 'atual'} de ${tokenY.name} (${tokenY.symbol}):\n\n` +
-    `💰 Preço: ${fmt(projectedPrice)}\n` +
-    `📈 ${multiplier.toFixed(2)}X (${pctChange >= 0 ? '+' : ''}${pctChange.toFixed(1)}%)\n\n` +
-    `🔗 ${shareUrl}`
+    `🔮 Se ${tokenX.name} (${tokenX.symbol}) tivesse o MC ` +
+    `${mode === 'ath' ? '(ATH) ' : ''}de ${tokenY.name} (${tokenY.symbol}):\n\n` +
+    `💰 ${fmt(projectedPrice)}  ${multiplier.toFixed(2)}X (${pctChange >= 0 ? '+' : ''}${pctChange.toFixed(1)}%)\n\n` +
+    sharePageUrl
   );
 
   const generateImage = async (): Promise<{ blob: Blob; dataUrl: string } | null> => {

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.18",
+    "@vercel/og": "^0.8.6",
     "axios": "^1.13.5",
     "html2canvas": "^1.4.1",
     "openai": "^6.22.0",
