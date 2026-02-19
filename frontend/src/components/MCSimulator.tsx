@@ -3,6 +3,7 @@ import React from 'react';
 import { searchToken } from '../services/coingecko';
 import type { TokenData } from '../types';
 import ShareCard from './ShareCard';
+import { useTTS } from '../hooks/useTTS';
 
 interface TokenSlot {
   data: TokenData | null;
@@ -142,6 +143,7 @@ export default function MCSimulator() {
   const [tokenY, setTokenY] = useState<TokenSlot>(empty());
   const [mode, setMode] = useState<'current' | 'ath'>('current');
   const [shareModal, setShareModal] = useState(false);
+  const { state: ttsState, speak } = useTTS();
 
   // Auto-load from URL params on mount
   useEffect(() => {
@@ -326,19 +328,33 @@ export default function MCSimulator() {
             ))}
           </div>
 
-          {/* Share button */}
-          <button
-            className="mt-8 w-full py-3 rounded-xl font-mono font-bold text-sm tracking-widest transition-all hover:opacity-90 relative z-10"
-            style={{
-              backgroundColor: '#39d353',
-              color: '#060d06',
-              boxShadow: '0 0 16px rgba(57,211,83,0.4)',
-              letterSpacing: '3px',
-            }}
-            onClick={() => setShareModal(true)}
-          >
-            ↗ COMPARTILHAR RESULTADO
-          </button>
+          {/* Action buttons */}
+          <div className="mt-8 flex gap-3 relative z-10">
+            <button
+              className="flex-1 py-3 rounded-xl font-mono font-bold text-sm tracking-widest transition-all hover:opacity-90"
+              style={{ backgroundColor: '#39d353', color: '#060d06', boxShadow: '0 0 16px rgba(57,211,83,0.4)', letterSpacing: '3px' }}
+              onClick={() => setShareModal(true)}
+            >
+              ↗ COMPARTILHAR
+            </button>
+            <button
+              onClick={() => {
+                const sign = pctChange >= 0 ? '+' : '';
+                const symX = x!.symbol?.toUpperCase();
+                const symY = y!.symbol?.toUpperCase();
+                speak(`Se ${symX} tivesse o Market Cap ${mode === 'ath' ? 'na máxima histórica ' : ''}de ${symY}, o preço seria ${formatPrice(projectedPrice)}, uma variação de ${sign}${pctChange.toFixed(1)} porcento, multiplicador de ${multiplier.toFixed(2)} vezes.`);
+              }}
+              className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-mono font-bold text-sm transition-all hover:opacity-90"
+              style={{
+                backgroundColor: ttsState === 'playing' ? 'rgba(57,211,83,0.15)' : '#0f1a0f',
+                color: '#39d353',
+                border: `1px solid ${ttsState === 'playing' ? '#39d353' : '#39d35340'}`,
+                animation: ttsState === 'playing' ? 'pulse 1.5s ease-in-out infinite' : 'none',
+              }}
+            >
+              {ttsState === 'loading' ? '⏳' : ttsState === 'playing' ? '⏹' : '🔊'}
+            </button>
+          </div>
         </div>
       ) : (
         /* Empty state */

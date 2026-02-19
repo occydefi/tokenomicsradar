@@ -2,6 +2,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import type { AnalysisResult } from '../types';
 import { formatNumber, getScoreColor } from '../utils/analyzer';
 import { getRedFlags } from './RedFlagsSection';
+import { useTTS } from '../hooks/useTTS';
 
 interface Props {
   analysis1: AnalysisResult;
@@ -35,6 +36,7 @@ function Winner({ wins, color }: { wins: boolean; color: string }) {
 
 export default function CompareView({ analysis1, analysis2 }: Props) {
   const { t } = useLanguage();
+  const { state: ttsState, speak } = useTTS();
   const t1 = analysis1.token;
   const t2 = analysis2.token;
   const md1 = t1.market_data;
@@ -137,9 +139,32 @@ export default function CompareView({ analysis1, analysis2 }: Props) {
 
   return (
     <div className="rounded-2xl border p-3 sm:p-6" style={{ backgroundColor: '#111827', borderColor: '#1e2a45' }}>
-      <h3 className="text-base sm:text-lg font-bold text-white mb-4 sm:mb-6 flex items-center gap-2">
-        {t.compareSectionTitle}
-      </h3>
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
+        <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+          {t.compareSectionTitle}
+        </h3>
+        <button
+          onClick={() => {
+            const sym1 = t1.symbol?.toUpperCase();
+            const sym2 = t2.symbol?.toUpperCase();
+            const s1 = analysis1.scores.total.toFixed(1);
+            const s2 = analysis2.scores.total.toFixed(1);
+            const winner = analysis1.scores.total > analysis2.scores.total ? sym1 : sym2;
+            const loser = analysis1.scores.total > analysis2.scores.total ? sym2 : sym1;
+            speak(`Comparação: ${sym1} versus ${sym2}. ${sym1} tem score ${s1} de 10, veredicto ${analysis1.verdict}. ${sym2} tem score ${s2} de 10, veredicto ${analysis2.verdict}. Vencedor em tokenomics: ${winner} com vantagem sobre ${loser}.`);
+          }}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-mono text-xs font-bold transition-all hover:opacity-90"
+          style={{
+            backgroundColor: ttsState === 'playing' ? 'rgba(57,211,83,0.15)' : '#0f1a0f',
+            color: '#39d353',
+            border: `1px solid ${ttsState === 'playing' ? '#39d353' : '#39d35340'}`,
+            animation: ttsState === 'playing' ? 'pulse 1.5s ease-in-out infinite' : 'none',
+          }}
+        >
+          {ttsState === 'loading' ? '⏳' : ttsState === 'playing' ? '⏹' : '🔊'}
+          <span className="hidden sm:inline">{ttsState === 'playing' ? 'Parar' : 'Ouvir'}</span>
+        </button>
+      </div>
 
       {/* Token Headers */}
       <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6">
