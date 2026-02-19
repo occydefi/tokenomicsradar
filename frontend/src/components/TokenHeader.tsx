@@ -103,10 +103,18 @@ export default function TokenHeader({ analysis }: Props) {
                 </span>
               </div>
 
-              {/* Categories */}
-              {token.categories?.length > 0 && (
+              {/* Categories — filter out institutional/noise tags from CoinGecko */}
+              {token.categories?.length > 0 && (() => {
+                const BLOCKLIST = [
+                  'Holdings', 'Celsius', 'FTX', 'Alameda', 'DCG', 'Grayscale',
+                  'Three Arrows', 'Multicoin', 'Pantera', 'a16z', 'Binance Labs',
+                ];
+                const filtered = token.categories.filter(cat =>
+                  !BLOCKLIST.some(bl => cat.toLowerCase().includes(bl.toLowerCase()))
+                ).slice(0, 3);
+                return filtered.length > 0 ? (
                 <div className="flex gap-2 mt-2 flex-wrap">
-                  {token.categories.slice(0, 3).map((cat, i) => (
+                  {filtered.map((cat, i) => (
                     <span
                       key={i}
                       className="text-xs px-2 py-0.5 rounded font-mono"
@@ -120,7 +128,8 @@ export default function TokenHeader({ analysis }: Props) {
                     </span>
                   ))}
                 </div>
-              )}
+              ) : null;
+              })()}
 
               {/* Last updated */}
               <p className="text-xs mt-1 font-mono" style={{ color: '#2a4a2a' }}>

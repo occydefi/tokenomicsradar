@@ -18,9 +18,8 @@ const LanguageContext = createContext<LanguageContextValue>({
 });
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  // Default: detect browser language, fallback to PT
-  const browserLang = navigator.language?.startsWith('en') ? 'en' : 'pt';
-  const [lang, setLang] = useState<Lang>(browserLang);
+  // Default: always PT (Brazilian Portuguese) — this is a Brazilian product
+  const [lang, setLang] = useState<Lang>('pt');
 
   return (
     <LanguageContext.Provider value={{ lang, setLang, t: translations[lang] as Translations }}>
