@@ -36,8 +36,8 @@ export function LangToggle() {
   const { lang, setLang } = useLanguage();
 
   const buttonStyle = (active: boolean) => ({
-    padding: '8px 12px',
-    borderRadius: '8px',
+    padding: '6px 10px',
+    borderRadius: '6px',
     backgroundColor: active ? 'rgba(57,211,83,0.15)' : 'rgba(57,211,83,0.04)',
     border: active ? '1.5px solid rgba(57,211,83,0.5)' : '1px solid rgba(57,211,83,0.15)',
     cursor: 'pointer',
@@ -49,11 +49,11 @@ export function LangToggle() {
 
   return (
     <div
-      className="flex items-center gap-2"
+      className="flex items-center gap-1.5"
       style={{
         backgroundColor: 'rgba(15,26,15,0.6)',
-        padding: '4px',
-        borderRadius: '10px',
+        padding: '3px',
+        borderRadius: '8px',
         border: '1px solid rgba(57,211,83,0.2)',
       }}
     >
@@ -62,14 +62,14 @@ export function LangToggle() {
         style={buttonStyle(lang === 'pt')}
         title="Português"
       >
-        <span style={{ fontSize: '20px', lineHeight: 1 }}>🇧🇷</span>
+        <span style={{ fontSize: '18px', lineHeight: 1 }}>🇧🇷</span>
       </button>
       <button
         onClick={() => setLang('en')}
         style={buttonStyle(lang === 'en')}
         title="English"
       >
-        <span style={{ fontSize: '20px', lineHeight: 1 }}>🇺🇸</span>
+        <span style={{ fontSize: '18px', lineHeight: 1 }}>🇺🇸</span>
       </button>
     </div>
   );
