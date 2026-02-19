@@ -30,12 +30,15 @@ async function speakGlobal(text: string) {
   // Always stop any existing audio first
   stopGlobal();
 
+  // Trim text to 400 chars max to reduce generation time
+  const trimmed = text.length > 400 ? text.slice(0, 397) + '...' : text;
+
   setGlobalState('loading');
   try {
     const res = await fetch('/api/tts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, voice: 'nova' }),
+      body: JSON.stringify({ text: trimmed, voice: 'nova' }),
     });
 
     if (!res.ok) throw new Error('TTS failed');
