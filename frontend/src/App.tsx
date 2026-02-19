@@ -6,11 +6,13 @@ import AnalysisTabs from './components/AnalysisTabs';
 import OccyWidget from './components/OccyWidget';
 import Background from './components/Background';
 import MCSimulator from './components/MCSimulator';
+import { useLanguage, LangToggle } from './contexts/LanguageContext';
 import type { AnalysisResult } from './types';
 import { searchToken } from './services/coingecko';
 import { analyzeToken } from './utils/analyzer';
 
 function App() {
+  const { t } = useLanguage();
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -105,7 +107,7 @@ function App() {
                 TokenomicsRadar
               </h1>
               <p className="text-xs font-mono" style={{ color: '#4a7a4a' }}>
-                <span style={{ color: '#39d353' }}>&gt;</span> análise_tokenômica --deep
+                <span style={{ color: '#39d353' }}>&gt;</span> {t.tagline.replace('> ', '')}
               </p>
             </div>
           </div>
@@ -120,7 +122,7 @@ function App() {
                   : { backgroundColor: 'rgba(0,229,255,0.08)', color: '#00e5ff', border: '1px solid rgba(0,229,255,0.25)' }
               }
             >
-              🔮 Simulador de Market Cap
+              {t.btnSimulator}
             </button>
             {/* Compare toggle */}
             <button
@@ -132,8 +134,9 @@ function App() {
                   : { backgroundColor: 'rgba(57,211,83,0.08)', color: '#39d353', border: '1px solid rgba(57,211,83,0.25)' }
               }
             >
-              ⚖️ {compareMode ? 'Comparação ON' : 'Comparação de Tokens'}
+              {compareMode ? t.btnCompareOn : t.btnCompare}
             </button>
+            <LangToggle />
             <a
               href="https://github.com/occydefi/tokenomicsradar"
               target="_blank"
@@ -141,7 +144,7 @@ function App() {
               className="text-sm transition-colors hover:opacity-80 font-mono"
               style={{ color: '#a855f7' }}
             >
-              GitHub →
+              {t.btnGithub}
             </a>
           </div>
         </div>
@@ -162,12 +165,12 @@ function App() {
               letterSpacing: '-1px',
             }}
           >
-            {compareMode ? '⚖️ Comparar Tokens' : '> Análise Tokenômica_'}
+            {compareMode ? t.heroTitleCompare : t.heroTitle}
           </h2>
           <p className="text-lg font-mono" style={{ color: '#4a7a4a' }}>
             {compareMode
-              ? 'busque dois tokens para comparar lado a lado'
-              : 'insira o ticker de qualquer criptoativo // score 0-10 // DYOR'}
+              ? t.heroSubtitleCompare
+              : t.heroSubtitle}
           </p>
         </div>
 
@@ -211,7 +214,7 @@ function App() {
           <div className="mt-12 text-center">
             <div className="inline-flex flex-col items-center gap-4">
               <div className="w-16 h-16 rounded-full border-4 border-t-transparent animate-spin" style={{ borderColor: '#39d353', borderTopColor: 'transparent', boxShadow: '0 0 16px rgba(57,211,83,0.3)' }}></div>
-              <p className="font-mono" style={{ color: '#4a7a4a' }}>&gt; buscando dados na blockchain... 🔍</p>
+              <p className="font-mono" style={{ color: '#4a7a4a' }}>{t.loadingText}</p>
             </div>
           </div>
         )}
@@ -273,7 +276,7 @@ function App() {
               className="text-lg mb-2 font-mono"
               style={{ color: '#39d353', textShadow: '0 0 10px rgba(57,211,83,0.4)' }}
             >
-              &gt; sistema_pronto_
+              {t.systemReady}
             </p>
             <p className="font-mono text-sm" style={{ color: '#4a7a4a' }}>
               ex:{' '}
