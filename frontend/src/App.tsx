@@ -120,7 +120,7 @@ function App() {
                   : { backgroundColor: 'rgba(0,229,255,0.08)', color: '#00e5ff', border: '1px solid rgba(0,229,255,0.25)' }
               }
             >
-              🔮 Simulador
+              🔮 Simulador de Market Cap
             </button>
             {/* Compare toggle */}
             <button
@@ -132,7 +132,7 @@ function App() {
                   : { backgroundColor: 'rgba(57,211,83,0.08)', color: '#39d353', border: '1px solid rgba(57,211,83,0.25)' }
               }
             >
-              ⚖️ {compareMode ? 'COMPARAR ON' : 'COMPARAR'}
+              ⚖️ {compareMode ? 'Comparação ON' : 'Comparação de Tokens'}
             </button>
             <a
               href="https://github.com/occydefi/tokenomicsradar"
