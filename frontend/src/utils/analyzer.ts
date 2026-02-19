@@ -34,6 +34,7 @@ export const TOKEN_METADATA: Record<string, {
   centralizedControl?: boolean;  // true when team+treasury >40% AND same entity controls both
   executionRisk?: boolean;       // true when project has significant execution gap (promised >> delivered)
   weakValueAccrual?: boolean;    // true when ecosystem grows but token doesn't capture value (e.g. ATOM — IBC doesn't require ATOM)
+  hasVeTokenomics?: boolean;     // true when protocol uses ve-locking (veCRV, vePENDLE, etc.) — affects staking display
 }> = {
   // ── Layer 1 — Bitcoin & forks ────────────────────────────────────────────
   'bitcoin': { team: 0, investors: 0, community: 100, treasury: 0, stakingAvailable: false, governancePower: false, feeBurning: true, neededToUse: true, vestingYears: 0, treasuryUSD: 0, note: 'Já deflacionário na prática: emissão pós-halving 2024 caiu para ~0.85% ao ano, e moedas perdidas (Satoshi + wallets inacessíveis) superam a emissão nova. Supply efetivo diminui. Cap fixo de 21M — caso único de escassez programada.', teamTransparency: 'anonymous', teamNote: 'Satoshi Nakamoto é anônimo. O protocolo é 100% open source e descentralizado — caso único no mercado.', sources: [{ label: 'Bitcoin Whitepaper', url: 'https://bitcoin.org/bitcoin.pdf' }, { label: 'bitcoin.org', url: 'https://bitcoin.org' }] },
@@ -94,7 +95,7 @@ export const TOKEN_METADATA: Record<string, {
   'aave': { team: 13, investors: 7, community: 47, treasury: 23, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: false, vestingYears: 0, treasuryUSD: 400000000, note: 'Safety Module staking for protocol risk cover. Ecosystem Reserve funds grants.' },
   'chainlink': { team: 30, investors: 5, community: 35, treasury: 30, stakingAvailable: true, governancePower: false, feeBurning: false, neededToUse: true, vestingYears: 0, treasuryUSD: 600000000, note: 'SmartCon Foundation controls 35% node operator reserves. Staking v0.2 live. Oracle leader.', teamTransparency: 'high', teamNote: 'Sergey Nazarov (co-fundador) é público e verificável. Chainlink Labs tem equipe amplamente identificada e histórico verificável.' },
   'maker': { team: 10, investors: 10, community: 50, treasury: 30, stakingAvailable: true, governancePower: true, feeBurning: true, neededToUse: true, vestingYears: 0, treasuryUSD: 8000000000, note: 'DAI stablecoin issuer. MKR burns via stability fee revenue. Protocol surplus ~$8B+.' },
-  'curve-dao-token': { team: 10, investors: 5, community: 62, treasury: 3, stakingAvailable: true, governancePower: true, feeBurning: true, neededToUse: false, vestingYears: 4, treasuryUSD: 100000000, note: 'veCRV locking (4 year max) for governance. bribe economy around gauge voting. DEX stablecoin specialist.' },
+  'curve-dao-token': { team: 10, investors: 5, community: 62, treasury: 3, stakingAvailable: true, hasVeTokenomics: true, governancePower: true, feeBurning: true, neededToUse: false, vestingYears: 4, treasuryUSD: 100000000, note: 'veCRV locking (4 year max) for governance. bribe economy around gauge voting. DEX stablecoin specialist.', sources: [{ label: 'Curve Tokenomics', url: 'https://resources.curve.fi/crv-token/overview' }] },
   'lido-dao': { team: 20, investors: 22, community: 36, treasury: 22, stakingAvailable: false, governancePower: true, feeBurning: false, neededToUse: false, vestingYears: 4, treasuryUSD: 300000000, note: 'LDO controls stETH protocol. High insider concentration concerns. Largest liquid staking protocol.' },
   'havven': { team: 25, investors: 0, community: 60, treasury: 15, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 0, treasuryUSD: 100000000, note: 'SNX — Synthetix staking mints sUSD synthetic assets. Debt pooling mechanism. sDAO controls treasury.' },
   'compound-governance-token': { team: 26, investors: 25, community: 42, treasury: 7, stakingAvailable: false, governancePower: true, feeBurning: false, neededToUse: false, vestingYears: 4, treasuryUSD: 100000000, note: 'COMP — Compound Finance governance. High insider allocation (51%). Compound protocol lending.' },
@@ -125,6 +126,32 @@ export const TOKEN_METADATA: Record<string, {
   'pyth-network': { team: 22, investors: 26, community: 52, treasury: 0, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 3, treasuryUSD: 50000000, note: 'PYTH — High-frequency oracle for DeFi. Publishers stake PYTH for data integrity. Solana-native, multi-chain.' },
   // ── Governance/DAO tokens ─────────────────────────────────────────────────
   'ethereum-name-service': { team: 19, investors: 0, community: 75, treasury: 6, stakingAvailable: false, governancePower: true, feeBurning: false, neededToUse: false, vestingYears: 4, treasuryUSD: 500000000, note: 'ENS — 25% airdrop to .eth holders, 50% DAO treasury. No VC investors. ENS DAO controls protocol.' },
+  // ── DeFi Yield / veTokenomics ─────────────────────────────────────────────
+  'pendle': {
+    team: 15, investors: 7, community: 65, treasury: 13,
+    stakingAvailable: true, hasVeTokenomics: true, governancePower: true, feeBurning: false,
+    neededToUse: false, vestingYears: 2, treasuryUSD: 80000000,
+    note: 'PENDLE — Protocolo de yield tokenization. veTokenomics robusto: lock PENDLE por até 2 anos → vePENDLE recebe 80% das fees de yield dos pools votados + 3% dos swaps. Receita real distribuída diretamente aos holders. Baixa alocação de investidores (~7%) — raro no DeFi. Supply: ~258M com emissões declinantes (curva similar à CRV). Maior protocolo de fixed-rate yield em DeFi com $5B+ TVL.',
+    teamTransparency: 'high',
+    teamNote: 'TN Lee (fundador) e time são públicos no Twitter/LinkedIn. Time com histórico sólido no DeFi. Desenvolvimento consistente desde 2021.',
+    sources: [
+      { label: 'Pendle Docs — Tokenomics', url: 'https://docs.pendle.finance/ProtocolMechanics/Tokenomics' },
+      { label: 'Pendle Finance', url: 'https://www.pendle.finance' },
+    ],
+  },
+  'ethena': {
+    team: 30, investors: 25, community: 30, treasury: 15,
+    stakingAvailable: true, governancePower: true, feeBurning: false,
+    neededToUse: false, vestingYears: 4, treasuryUSD: 200000000,
+    weakValueAccrual: true,
+    note: 'ENA — Token de governança da Ethena. USDe é o stablecoin sintético lastreado em hedge delta-neutral (ETH staking yield + short perp funding). sUSDe gera yield REAL mas esse yield vai para holders de sUSDe, NÃO para holders de ENA. ENA tem governança mas captura de valor fraca. Alto insider: 55% (time 30% + investors 25% — a16z, Binance Labs, Dragonfly). Risco estrutural: funding rates negativos em bear market destroem o modelo de yield. ENA stake periódico (seasons) dá rewards mas não é compartilhamento permanente de revenue.',
+    teamTransparency: 'high',
+    teamNote: 'Guy Young (fundador) e equipe são públicos. Respaldados por a16z, Binance Labs, Dragonfly. Time com credenciais verificáveis no TradFi e DeFi.',
+    sources: [
+      { label: 'Ethena Docs — Tokenomics', url: 'https://docs.ethena.fi/token/ena-token' },
+      { label: 'Ethena Labs', url: 'https://www.ethena.fi' },
+    ],
+  },
   // ── DeFi Derivatives ──────────────────────────────────────────────────────
   'blur': { team: 15, investors: 14, community: 60, treasury: 11, stakingAvailable: false, governancePower: false, feeBurning: false, neededToUse: false, vestingYears: 4, treasuryUSD: 50000000, note: 'BLUR — NFT marketplace token. 60% community incentive airdrops. Trading rewards drove initial adoption.' },
   'jupiter-exchange-solana': { team: 50, investors: 10, community: 40, treasury: 0, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: false, vestingYears: 2, treasuryUSD: 100000000, note: 'JUP — Solana DEX aggregator. 40% community (airdrop series). High team allocation (50%).' },

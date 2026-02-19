@@ -1,6 +1,7 @@
 import type { AnalysisResult } from '../types';
 import { useLanguage } from '../contexts/LanguageContext';
 import { translateProsCons } from '../i18n/proscons.en';
+import ScoreFeedback from './ScoreFeedback';
 
 interface Props {
   analysis: AnalysisResult;
@@ -139,6 +140,11 @@ export default function TLDRCard({ analysis }: Props) {
             </ul>
           </div>
         </div>
+      </div>
+
+      {/* User challenge panel */}
+      <div className="mt-4">
+        <ScoreFeedback analysis={analysis} />
       </div>
     </div>
   );
