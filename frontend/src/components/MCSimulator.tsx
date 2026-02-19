@@ -407,7 +407,7 @@ export default function MCSimulator() {
                   {mode === 'ath' && <span style={{ color: '#00e5ff' }}> (ATH)</span>}
                 </p>
                 <p
-                  className="font-bold font-mono text-3xl mb-3"
+                  className="font-bold font-mono text-2xl sm:text-3xl mb-3"
                   style={{
                     color: '#ffffff',
                     textShadow: `0 0 20px ${isGain ? 'rgba(57,211,83,0.4)' : 'rgba(255,109,0,0.4)'}`,
@@ -450,7 +450,7 @@ export default function MCSimulator() {
               </div>
 
               {/* Action buttons */}
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <a
                   href={twitterUrl}
                   target="_blank"
