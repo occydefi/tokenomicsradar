@@ -35,23 +35,42 @@ export function useLanguage() {
 export function LangToggle() {
   const { lang, setLang } = useLanguage();
 
+  const buttonStyle = (active: boolean) => ({
+    padding: '8px 12px',
+    borderRadius: '8px',
+    backgroundColor: active ? 'rgba(57,211,83,0.15)' : 'rgba(57,211,83,0.04)',
+    border: active ? '1.5px solid rgba(57,211,83,0.5)' : '1px solid rgba(57,211,83,0.15)',
+    cursor: 'pointer',
+    transition: 'all 0.2s',
+    opacity: active ? 1 : 0.5,
+    transform: active ? 'scale(1.05)' : 'scale(1)',
+    boxShadow: active ? '0 0 12px rgba(57,211,83,0.25)' : 'none',
+  });
+
   return (
-    <button
-      onClick={() => setLang(lang === 'pt' ? 'en' : 'pt')}
-      className="flex items-center gap-1.5 px-3 py-2 rounded-lg transition-all hover:opacity-90 font-mono text-sm font-bold"
+    <div
+      className="flex items-center gap-2"
       style={{
-        backgroundColor: 'rgba(57,211,83,0.08)',
-        border: '1px solid rgba(57,211,83,0.25)',
-        color: '#39d353',
+        backgroundColor: 'rgba(15,26,15,0.6)',
+        padding: '4px',
+        borderRadius: '10px',
+        border: '1px solid rgba(57,211,83,0.2)',
       }}
-      title={lang === 'pt' ? 'Switch to English' : 'Mudar para Português'}
     >
-      <span style={{ fontSize: '18px', lineHeight: 1 }}>
-        {lang === 'pt' ? '🇧🇷' : '🇺🇸'}
-      </span>
-      <span style={{ fontSize: '11px', letterSpacing: '1px' }}>
-        {lang === 'pt' ? 'PT' : 'EN'}
-      </span>
-    </button>
+      <button
+        onClick={() => setLang('pt')}
+        style={buttonStyle(lang === 'pt')}
+        title="Português"
+      >
+        <span style={{ fontSize: '20px', lineHeight: 1 }}>🇧🇷</span>
+      </button>
+      <button
+        onClick={() => setLang('en')}
+        style={buttonStyle(lang === 'en')}
+        title="English"
+      >
+        <span style={{ fontSize: '20px', lineHeight: 1 }}>🇺🇸</span>
+      </button>
+    </div>
   );
 }
