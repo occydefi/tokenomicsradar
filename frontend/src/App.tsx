@@ -96,7 +96,16 @@ function App() {
       >
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="text-2xl sm:text-3xl flex-shrink-0" style={{ filter: 'drop-shadow(0 0 8px rgba(57,211,83,0.6))' }}>📡</span>
+            <img 
+              src="/logo-satellite.png" 
+              alt="TokenomicsRadar"
+              className="flex-shrink-0"
+              style={{ 
+                width: '32px', 
+                height: '32px',
+                filter: 'drop-shadow(0 0 8px rgba(57,211,83,0.6))' 
+              }}
+            />
             <div className="min-w-0">
               <h1
                 className="text-base sm:text-xl font-bold font-mono tracking-tight truncate"
@@ -127,7 +136,12 @@ function App() {
               }
             >
               <span className="hidden sm:inline">{t.btnSimulator}</span>
-              <span className="sm:hidden">🔮</span>
+              <img 
+                src="/icon-simulator.png" 
+                alt="Sim"
+                className="sm:hidden"
+                style={{ width: '20px', height: '20px' }}
+              />
             </button>
             {/* Compare toggle */}
             <button
@@ -140,7 +154,12 @@ function App() {
               }
             >
               <span className="hidden sm:inline">{compareMode ? t.btnCompareOn : t.btnCompare}</span>
-              <span className="sm:hidden">⚖️</span>
+              <img 
+                src="/icon-compare.png" 
+                alt="Compare"
+                className="sm:hidden"
+                style={{ width: '20px', height: '20px' }}
+              />
             </button>
             <LangToggle />
             <a
