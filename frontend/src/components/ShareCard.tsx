@@ -111,9 +111,9 @@ function drawCard(
   ctx.font = '16px "Courier New", monospace';
   ctx.textAlign = 'center';
   const qY = 172;
-  const ePart = 'E se ';
+  const ePart = 'E se $';
   const symXPart = tokenX.symbol;
-  const midPart = ` tivesse o MC${mode === 'ath' ? ' (ATH)' : ''} de `;
+  const midPart = ` tivesse o Market Cap${mode === 'ath' ? ' (ATH)' : ''} de $`;
   const symYPart = tokenY.symbol;
   const endPart = '?';
   ctx.fillStyle = '#9ca3af';
@@ -259,7 +259,7 @@ export default function ShareCard({
           </div>
           <div style={{ height:1, background:`linear-gradient(90deg,transparent,${accent}40,transparent)`, marginBottom:12 }} />
           <div style={{ textAlign:'center', marginBottom:10, fontSize:12, color:'#9ca3af' }}>
-            E se <strong style={{ color:'#39d353' }}>{tokenX.symbol}</strong> tivesse o MC{mode==='ath'?' (ATH)':''} de <strong style={{ color:'#00e5ff' }}>{tokenY.symbol}</strong>?
+            E se <strong style={{ color:'#39d353' }}>${tokenX.symbol}</strong> tivesse o Market Cap{mode==='ath'?' (ATH)':''} de <strong style={{ color:'#00e5ff' }}>${tokenY.symbol}</strong>?
           </div>
           <div style={{ textAlign:'center', marginBottom:6 }}>
             <div style={{ fontSize:'clamp(1.8rem,8vw,2.8rem)', fontWeight:900, color:'#fff', letterSpacing:'-2px', lineHeight:1, textShadow:`0 0 35px ${accent}60` }}>{fmt(projectedPrice)}</div>
