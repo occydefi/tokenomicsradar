@@ -136,13 +136,13 @@ export default function CompareView({ analysis1, analysis2 }: Props) {
   };
 
   return (
-    <div className="rounded-2xl border p-6" style={{ backgroundColor: '#111827', borderColor: '#1e2a45' }}>
-      <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+    <div className="rounded-2xl border p-3 sm:p-6" style={{ backgroundColor: '#111827', borderColor: '#1e2a45' }}>
+      <h3 className="text-base sm:text-lg font-bold text-white mb-4 sm:mb-6 flex items-center gap-2">
         {t.compareSectionTitle}
       </h3>
 
       {/* Token Headers */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6">
         <div />
         {[analysis1, analysis2].map((a) => (
           <div key={a.token.id} className="text-center">
@@ -186,12 +186,12 @@ export default function CompareView({ analysis1, analysis2 }: Props) {
           return (
             <div
               key={row.label}
-              className="grid grid-cols-3 gap-4 items-center py-2 px-3 rounded-lg"
+              className="grid grid-cols-3 gap-1 sm:gap-4 items-center py-2 px-2 sm:px-3 rounded-lg"
               style={{ backgroundColor: 'rgba(30,42,69,0.4)' }}
             >
               {/* Label */}
-              <div className="text-sm flex items-center gap-2" style={{ color: '#9ca3af' }}>
-                <span>{row.icon}</span>
+              <div className="text-xs sm:text-sm flex items-center gap-1 sm:gap-2" style={{ color: '#9ca3af' }}>
+                <span className="hidden sm:inline">{row.icon}</span>
                 <span>{row.label}</span>
               </div>
 

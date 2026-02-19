@@ -60,7 +60,7 @@ export default function OccyWidget() {
       {open && (
         <div
           style={{
-            width: 300,
+            width: 'min(300px, calc(100vw - 48px))',
             backgroundColor: '#1e2a45',
             border: '1px solid #2d3f6b',
             borderRadius: 16,
