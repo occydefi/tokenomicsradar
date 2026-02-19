@@ -1,4 +1,5 @@
 import TLDRCard from './TLDRCard';
+import TokenAbout from './TokenAbout';
 import ScoreSection from './ScoreSection';
 import ProsConsSection from './ProsConsSection';
 import AIAnalysisSection from './AIAnalysisSection';
@@ -106,6 +107,7 @@ export default function AnalysisTabs({ analysis, activeTab, onTabChange }: Props
         {/* Aba 1: Visão Geral */}
         {activeTab === 'overview' && (
           <>
+            <TokenAbout analysis={analysis} />
             <TLDRCard analysis={analysis} />
             <ScoreSection analysis={analysis} />
             <ProsConsSection analysis={analysis} />
