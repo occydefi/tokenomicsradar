@@ -203,7 +203,7 @@ export default function ShareCard({
   const shareText =
     `🔮 Se $${tokenX.symbol} tivesse o Market Cap ${mode === 'ath' ? 'na máxima histórica ' : ''}de $${tokenY.symbol}:\n` +
     `💰 ${fmt(projectedPrice)}  ${multiplier.toFixed(2)}X (${sign}${pctChange.toFixed(1)}%)\n\n` +
-    `tokenomicsradar.vercel.app`;
+    `https://tokenomicsradar.vercel.app`;
 
   // Generate canvas PNG → Blob
   const generateBlob = useCallback((): Promise<Blob> => {
