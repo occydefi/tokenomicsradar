@@ -120,7 +120,7 @@ function App() {
                   : { backgroundColor: 'rgba(0,229,255,0.08)', color: '#00e5ff', border: '1px solid rgba(0,229,255,0.25)' }
               }
             >
-              🔮 MC SIM
+              🔮 Simulador
             </button>
             {/* Compare toggle */}
             <button
