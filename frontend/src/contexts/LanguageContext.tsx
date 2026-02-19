@@ -35,41 +35,33 @@ export function useLanguage() {
 export function LangToggle() {
   const { lang, setLang } = useLanguage();
 
-  const buttonStyle = (active: boolean) => ({
-    padding: '6px 10px',
-    borderRadius: '6px',
-    backgroundColor: active ? 'rgba(57,211,83,0.15)' : 'rgba(57,211,83,0.04)',
-    border: active ? '1.5px solid rgba(57,211,83,0.5)' : '1px solid rgba(57,211,83,0.15)',
-    cursor: 'pointer',
-    transition: 'all 0.2s',
-    opacity: active ? 1 : 0.5,
-    transform: active ? 'scale(1.05)' : 'scale(1)',
-    boxShadow: active ? '0 0 12px rgba(57,211,83,0.25)' : 'none',
-  });
-
   return (
-    <div
-      className="flex items-center gap-1.5"
-      style={{
-        backgroundColor: 'rgba(15,26,15,0.6)',
-        padding: '3px',
-        borderRadius: '8px',
-        border: '1px solid rgba(57,211,83,0.2)',
-      }}
-    >
+    <div className="flex items-center gap-1">
       <button
         onClick={() => setLang('pt')}
-        style={buttonStyle(lang === 'pt')}
+        className="px-2 py-1.5 sm:py-2 rounded-lg transition-all"
+        style={{
+          backgroundColor: lang === 'pt' ? 'rgba(57,211,83,0.15)' : 'rgba(57,211,83,0.04)',
+          border: lang === 'pt' ? '1.5px solid rgba(57,211,83,0.5)' : '1px solid rgba(57,211,83,0.15)',
+          opacity: lang === 'pt' ? 1 : 0.5,
+          boxShadow: lang === 'pt' ? '0 0 12px rgba(57,211,83,0.25)' : 'none',
+        }}
         title="Português"
       >
-        <span style={{ fontSize: '18px', lineHeight: 1 }}>🇧🇷</span>
+        <span style={{ fontSize: '16px', lineHeight: 1 }}>🇧🇷</span>
       </button>
       <button
         onClick={() => setLang('en')}
-        style={buttonStyle(lang === 'en')}
+        className="px-2 py-1.5 sm:py-2 rounded-lg transition-all"
+        style={{
+          backgroundColor: lang === 'en' ? 'rgba(57,211,83,0.15)' : 'rgba(57,211,83,0.04)',
+          border: lang === 'en' ? '1.5px solid rgba(57,211,83,0.5)' : '1px solid rgba(57,211,83,0.15)',
+          opacity: lang === 'en' ? 1 : 0.5,
+          boxShadow: lang === 'en' ? '0 0 12px rgba(57,211,83,0.25)' : 'none',
+        }}
         title="English"
       >
-        <span style={{ fontSize: '18px', lineHeight: 1 }}>🇺🇸</span>
+        <span style={{ fontSize: '16px', lineHeight: 1 }}>🇺🇸</span>
       </button>
     </div>
   );
