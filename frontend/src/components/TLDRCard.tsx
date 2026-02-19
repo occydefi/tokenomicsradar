@@ -75,21 +75,36 @@ export default function TLDRCard({ analysis }: Props) {
         <button
           onClick={() => speak(buildSpeechText())}
           title={ttsState === 'playing' ? 'Parar' : lang === 'en' ? 'Listen to analysis' : 'Ouvir análise'}
-          className="flex flex-col items-center justify-center px-4 py-2 rounded-xl font-mono font-bold transition-all hover:opacity-90"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-full font-mono font-bold transition-all hover:opacity-90"
           style={{
-            backgroundColor: ttsState !== 'idle' ? `${c.text}20` : '#0f1a0f',
+            background: ttsState !== 'idle'
+              ? `linear-gradient(135deg, ${c.text}30, ${c.text}15)`
+              : 'rgba(15, 26, 15, 0.7)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
             color: ttsState === 'error' ? '#ff4444' : c.text,
-            border: `1.5px solid ${ttsState !== 'idle' ? c.text : c.border}`,
-            boxShadow: ttsState === 'loading' ? `0 0 20px ${c.glow}` : ttsState === 'playing' ? `0 0 14px ${c.glow}` : 'none',
-            animation: ttsState !== 'idle' ? 'pulse 1s ease-in-out infinite' : 'none',
-            minWidth: 56,
+            border: `1.5px solid ${ttsState !== 'idle' ? c.text : 'rgba(57,211,83,0.3)'}`,
+            boxShadow: ttsState === 'loading'
+              ? `0 0 20px ${c.glow}`
+              : ttsState === 'playing'
+              ? `0 0 16px ${c.glow}, inset 0 0 10px ${c.text}20`
+              : `0 2px 8px rgba(0,0,0,0.3)`,
+            animation: ttsState === 'loading' ? 'pulse 1.2s ease-in-out infinite' : 'none',
           }}
         >
-          <span style={{ fontSize: 22, lineHeight: 1 }}>
-            {ttsState === 'loading' ? '⏳' : ttsState === 'playing' ? '⏹' : ttsState === 'error' ? '⚠️' : '🧌'}
+          <span style={{ fontSize: 20, lineHeight: 1 }}>
+            {ttsState === 'loading' ? '⏳' : ttsState === 'playing' ? '⏸' : ttsState === 'error' ? '⚠️' : '🧌'}
           </span>
-          <span style={{ fontSize: 10, marginTop: 2, letterSpacing: 1 }}>
-            {ttsState === 'loading' ? '...' : ttsState === 'playing' ? 'PARAR' : ttsState === 'error' ? 'ERRO' : lang === 'en' ? 'LISTEN' : 'OUVIR'}
+          <span style={{ fontSize: 11, letterSpacing: 0.5, fontWeight: 700 }}>
+            {ttsState === 'loading'
+              ? (lang === 'en' ? 'Loading...' : 'Carregando...')
+              : ttsState === 'playing'
+              ? (lang === 'en' ? 'Pause' : 'Pausar')
+              : ttsState === 'error'
+              ? 'ERRO'
+              : lang === 'en'
+              ? 'Listen'
+              : 'Ouvir'}
           </span>
         </button>
       </div>
