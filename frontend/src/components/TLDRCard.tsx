@@ -92,9 +92,20 @@ export default function TLDRCard({ analysis }: Props) {
             animation: ttsState === 'loading' ? 'pulse 1.2s ease-in-out infinite' : 'none',
           }}
         >
-          <span style={{ fontSize: 20, lineHeight: 1 }}>
-            {ttsState === 'loading' ? '⏳' : ttsState === 'playing' ? '⏸' : ttsState === 'error' ? '⚠️' : '🧌'}
-          </span>
+          {ttsState === 'loading' ? (
+            <span style={{ fontSize: 20, lineHeight: 1 }}>⏳</span>
+          ) : ttsState === 'playing' ? (
+            <span style={{ fontSize: 20, lineHeight: 1 }}>⏸</span>
+          ) : ttsState === 'error' ? (
+            <span style={{ fontSize: 20, lineHeight: 1 }}>⚠️</span>
+          ) : (
+            <img
+              src="/occy-avatar.jpg"
+              alt="Occy"
+              className="rounded-full"
+              style={{ width: 28, height: 28, objectFit: 'cover' }}
+            />
+          )}
           <span style={{ fontSize: 11, letterSpacing: 0.5, fontWeight: 700 }}>
             {ttsState === 'loading'
               ? (lang === 'en' ? 'Loading...' : 'Carregando...')
