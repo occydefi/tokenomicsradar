@@ -190,18 +190,18 @@ export default function MCSimulator() {
           &gt; simulador_de_market_cap.sh
         </p>
         <h2
-          className="text-3xl font-bold font-mono mb-2"
+          className="text-xl sm:text-3xl font-bold font-mono mb-2"
           style={{ color: '#39d353', textShadow: '0 0 20px rgba(57,211,83,0.4)', letterSpacing: '-1px' }}
         >
           🔮 Simulador de Market Cap
         </h2>
-        <p className="font-mono text-sm" style={{ color: '#4a7a4a' }}>
+        <p className="font-mono text-xs sm:text-sm" style={{ color: '#4a7a4a' }}>
           E se o Token X tivesse o market cap do Token Y? Quanto valeria?
         </p>
       </div>
 
       {/* Token selectors */}
-      <div className="flex items-center gap-12 mb-6">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 sm:gap-12 mb-6">
         <TokenInput
           slot={tokenX}
           label="TOKEN X  [ALVO]"
@@ -246,7 +246,7 @@ export default function MCSimulator() {
       {/* Result card */}
       {hasResult ? (
         <div
-          className="rounded-2xl border p-8 text-center relative overflow-hidden"
+          className="rounded-2xl border p-4 sm:p-8 text-center relative overflow-hidden"
           style={{
             backgroundColor: '#060d06',
             borderColor: isGain ? '#39d35340' : '#ff6d0040',
@@ -290,7 +290,7 @@ export default function MCSimulator() {
           </div>
 
           {/* Stats row */}
-          <div className="grid grid-cols-4 gap-4 relative z-10">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 relative z-10">
             {[
               { label: 'Preço Atual', value: formatPrice(currentPriceX), color: '#9ca3af' },
               {
@@ -332,7 +332,7 @@ export default function MCSimulator() {
         </div>
       ) : (
         /* Empty state */
-        <div className="rounded-2xl border p-12 text-center" style={{ backgroundColor: '#060d06', borderColor: '#1a2e1a' }}>
+        <div className="rounded-2xl border p-8 sm:p-12 text-center" style={{ backgroundColor: '#060d06', borderColor: '#1a2e1a' }}>
           <p className="text-4xl mb-4" style={{ filter: 'drop-shadow(0 0 10px rgba(57,211,83,0.4))' }}>🔮</p>
           <p className="font-mono text-sm" style={{ color: '#39d353' }}>&gt; aguardando tokens...</p>
           <p className="font-mono text-xs mt-2" style={{ color: '#2a4a2a' }}>busque o Token X e o Token Y para simular</p>
