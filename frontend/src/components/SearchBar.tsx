@@ -25,8 +25,8 @@ export default function SearchBar({ onSearch, loading, placeholder }: Props) {
   return (
     <div className="max-w-2xl mx-auto">
       {/* Terminal prompt line */}
-      <div className="flex items-center gap-2 mb-2 px-1">
-        <span className="font-mono text-xs" style={{ color: '#2a4a2a' }}>root@tokenomicsradar:~#</span>
+      <div className="flex items-center gap-2 mb-2 px-1 overflow-hidden">
+        <span className="font-mono text-xs hidden sm:inline" style={{ color: '#2a4a2a' }}>root@tokenomicsradar:~#</span>
         <span className="font-mono text-xs" style={{ color: '#39d35360' }}>scan_token --ticker=</span>
       </div>
 
@@ -65,8 +65,8 @@ export default function SearchBar({ onSearch, loading, placeholder }: Props) {
           onKeyDown={handleKey}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          placeholder={placeholder ?? "TICKER... (BTC, ETH, SOL, HYPE)"}
-          className="flex-1 bg-transparent text-lg outline-none font-mono relative z-10"
+          placeholder={placeholder ?? "TICKER... (BTC, ETH, SOL)"}
+          className="flex-1 bg-transparent text-base sm:text-lg outline-none font-mono relative z-10 min-w-0"
           style={{
             color: '#39d353',
             caretColor: '#39d353',
@@ -80,7 +80,7 @@ export default function SearchBar({ onSearch, loading, placeholder }: Props) {
         <button
           onClick={handleSubmit}
           disabled={loading || !value.trim()}
-          className="px-6 py-3 rounded-lg font-bold text-sm tracking-widest transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed font-mono uppercase relative z-10 flex-shrink-0"
+          className="px-3 sm:px-6 py-2 sm:py-3 rounded-lg font-bold text-sm tracking-wide sm:tracking-widest transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed font-mono uppercase relative z-10 flex-shrink-0"
           style={{
             background: loading
               ? '#0d1a0d'
@@ -97,7 +97,7 @@ export default function SearchBar({ onSearch, loading, placeholder }: Props) {
               scan...
             </span>
           ) : (
-            <>🧌 SCAN</>
+            <><span className="hidden sm:inline">🧌 </span>SCAN</>
           )}
         </button>
       </div>
