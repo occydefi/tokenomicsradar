@@ -90,12 +90,12 @@ function App() {
         className="border-b sticky top-0 z-50 backdrop-blur-sm"
         style={{ borderColor: '#1a2e1a', backgroundColor: 'rgba(7,13,7,0.97)' }}
       >
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-3xl" style={{ filter: 'drop-shadow(0 0 8px rgba(57,211,83,0.6))' }}>📡</span>
-            <div>
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-2xl sm:text-3xl flex-shrink-0" style={{ filter: 'drop-shadow(0 0 8px rgba(57,211,83,0.6))' }}>📡</span>
+            <div className="min-w-0">
               <h1
-                className="text-xl font-bold font-mono tracking-tight"
+                className="text-base sm:text-xl font-bold font-mono tracking-tight truncate"
                 style={{
                   background: 'linear-gradient(135deg, #39d353, #a855f7)',
                   WebkitBackgroundClip: 'text',
@@ -106,42 +106,44 @@ function App() {
               >
                 TokenomicsRadar
               </h1>
-              <p className="text-xs font-mono" style={{ color: '#4a7a4a' }}>
+              <p className="text-xs font-mono hidden sm:block" style={{ color: '#4a7a4a' }}>
                 <span style={{ color: '#39d353' }}>&gt;</span> {t.tagline.replace('> ', '')}
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
             {/* MC Sim toggle */}
             <button
               onClick={toggleMcSim}
-              className="text-sm px-3 py-2 rounded-lg font-semibold transition-all hover:opacity-90 font-mono"
+              className="text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg font-semibold transition-all hover:opacity-90 font-mono"
               style={
                 mcSimMode
                   ? { backgroundColor: '#00e5ff', color: '#060d06', boxShadow: '0 0 12px rgba(0,229,255,0.4)' }
                   : { backgroundColor: 'rgba(0,229,255,0.08)', color: '#00e5ff', border: '1px solid rgba(0,229,255,0.25)' }
               }
             >
-              {t.btnSimulator}
+              <span className="hidden sm:inline">{t.btnSimulator}</span>
+              <span className="sm:hidden">🔮</span>
             </button>
             {/* Compare toggle */}
             <button
               onClick={toggleCompareMode}
-              className="text-sm px-3 py-2 rounded-lg font-semibold transition-all hover:opacity-90 font-mono"
+              className="text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg font-semibold transition-all hover:opacity-90 font-mono"
               style={
                 compareMode
                   ? { backgroundColor: '#39d353', color: '#070d07', boxShadow: '0 0 12px rgba(57,211,83,0.4)' }
                   : { backgroundColor: 'rgba(57,211,83,0.08)', color: '#39d353', border: '1px solid rgba(57,211,83,0.25)' }
               }
             >
-              {compareMode ? t.btnCompareOn : t.btnCompare}
+              <span className="hidden sm:inline">{compareMode ? t.btnCompareOn : t.btnCompare}</span>
+              <span className="sm:hidden">⚖️</span>
             </button>
             <LangToggle />
             <a
               href="https://github.com/occydefi/tokenomicsradar"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm transition-colors hover:opacity-80 font-mono"
+              className="text-sm transition-colors hover:opacity-80 font-mono hidden md:block"
               style={{ color: '#a855f7' }}
             >
               {t.btnGithub}
@@ -155,10 +157,10 @@ function App() {
 
       {/* Hero / Search */}
       {!mcSimMode && (
-      <div className="max-w-6xl mx-auto px-4 py-12">
-        <div className="text-center mb-10">
+      <div className="max-w-6xl mx-auto px-4 py-8 sm:py-12">
+        <div className="text-center mb-8 sm:mb-10">
           <h2
-            className="text-4xl font-bold mb-3 font-mono"
+            className="text-2xl sm:text-4xl font-bold mb-2 sm:mb-3 font-mono"
             style={{
               color: '#39d353',
               textShadow: '0 0 20px rgba(57,211,83,0.4)',
@@ -167,7 +169,7 @@ function App() {
           >
             {compareMode ? t.heroTitleCompare : t.heroTitle}
           </h2>
-          <p className="text-lg font-mono" style={{ color: '#4a7a4a' }}>
+          <p className="text-sm sm:text-lg font-mono" style={{ color: '#4a7a4a' }}>
             {compareMode
               ? t.heroSubtitleCompare
               : t.heroSubtitle}

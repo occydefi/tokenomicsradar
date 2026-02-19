@@ -47,8 +47,8 @@ export default function TokenHeader({ analysis }: Props) {
         }}
       />
 
-      <div className="relative p-6">
-        <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+      <div className="relative p-4 sm:p-6">
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-4 sm:gap-6">
 
           {/* ── Token Identity ── */}
           <div className="flex items-center gap-4 flex-1">
@@ -175,7 +175,7 @@ export default function TokenHeader({ analysis }: Props) {
           </div>
 
           {/* ── Market Data ── */}
-          <div className="grid grid-cols-3 gap-4 text-sm">
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 text-sm w-full md:w-auto">
             {/* Price */}
             <div
               className="p-3 rounded-xl"
