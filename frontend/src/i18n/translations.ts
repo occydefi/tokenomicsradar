@@ -359,6 +359,25 @@ export const translations = {
 
     // AnalysisTabs
     tabRiskLabel: 'RISCO',
+
+    // OccyWidget
+    occyRole: 'Analista de Tokenomics',
+    occyPlay: '▶ Ouvir explicação',
+    occyStop: '⏹ Parar',
+    occyClose: 'Fechar',
+    occyTitle: 'Occy — Seu analista de tokenomics',
+    occyIntro1: 'Antes de comprar qualquer altcoin — leia isso.',
+    occyIntro2: 'A maioria das pessoas analisa gráfico. Poucos analisam tokenomics. É justamente aí que os projetos te passam pra trás.',
+    occyIntro3: 'Equipe com 40% do supply sem lock? Dump garantido.',
+    occyIntro4: 'VC com cliff de 1 ano? Espera a venda em massa.',
+    occyIntro5: 'FDV 10x maior que o Market Cap? Você tá pagando o pico.',
+    occyIntro6: 'O TokenomicsRadar analisa tudo isso em segundos:',
+    occyIntro7: 'Distribuição real do supply',
+    occyIntro8: 'Red flags automáticos',
+    occyIntro9: 'Comparação entre 2 tokens lado a lado',
+    occyIntro10: 'Links para TokenUnlocks, Messari e DeFiLlama',
+    occyIntro11: 'Análise em português gerada automaticamente',
+    occyIntro12: 'Gratuito. Sem cadastro. Funciona no celular.',
   },
 
   en: {
@@ -719,6 +738,25 @@ export const translations = {
 
     // AnalysisTabs
     tabRiskLabel: 'RISK',
+
+    // OccyWidget
+    occyRole: 'Tokenomics Analyst',
+    occyPlay: '▶ Listen to intro',
+    occyStop: '⏹ Stop',
+    occyClose: 'Close',
+    occyTitle: 'Occy — Your tokenomics analyst',
+    occyIntro1: 'Before buying any altcoin — read this.',
+    occyIntro2: 'Most people analyze charts. Few analyze tokenomics. That\'s exactly where projects screw you over.',
+    occyIntro3: 'Team with 40% of supply unlocked? Guaranteed dump.',
+    occyIntro4: 'VC with 1-year cliff? Expect mass selling.',
+    occyIntro5: 'FDV 10x higher than Market Cap? You\'re buying the top.',
+    occyIntro6: 'TokenomicsRadar analyzes all of this in seconds:',
+    occyIntro7: 'Real supply distribution',
+    occyIntro8: 'Automatic red flags',
+    occyIntro9: 'Side-by-side token comparison',
+    occyIntro10: 'Links to TokenUnlocks, Messari and DeFiLlama',
+    occyIntro11: 'Analysis auto-generated in English or Portuguese',
+    occyIntro12: 'Free. No signup. Works on mobile.',
   },
 } as const;
 

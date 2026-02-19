@@ -1,24 +1,26 @@
 import { useState, useRef } from 'react';
-
-const INTRO_LINES = [
-  { icon: '🚨', text: 'Antes de comprar qualquer altcoin — leia isso.' },
-  { icon: '📊', text: 'A maioria das pessoas analisa gráfico. Poucos analisam tokenomics. É justamente aí que os projetos te passam pra trás.' },
-  { icon: '⚠️', text: 'Equipe com 40% do supply sem lock? Dump garantido.' },
-  { icon: '⚠️', text: 'VC com cliff de 1 ano? Espera a venda em massa.' },
-  { icon: '⚠️', text: 'FDV 10x maior que o Market Cap? Você tá pagando o pico.' },
-  { icon: '📡', text: 'O TokenomicsRadar analisa tudo isso em segundos:' },
-  { icon: '📊', text: 'Distribuição real do supply' },
-  { icon: '🚩', text: 'Red flags automáticos' },
-  { icon: '⚖️', text: 'Comparação entre 2 tokens lado a lado' },
-  { icon: '🔗', text: 'Links para TokenUnlocks, Messari e DeFiLlama' },
-  { icon: '🤖', text: 'Análise em português gerada automaticamente' },
-  { icon: '✅', text: 'Gratuito. Sem cadastro. Funciona no celular.' },
-];
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function OccyWidget() {
+  const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const INTRO_LINES = [
+    { icon: '🚨', text: t.occyIntro1 },
+    { icon: '📊', text: t.occyIntro2 },
+    { icon: '⚠️', text: t.occyIntro3 },
+    { icon: '⚠️', text: t.occyIntro4 },
+    { icon: '⚠️', text: t.occyIntro5 },
+    { icon: '📡', text: t.occyIntro6 },
+    { icon: '📊', text: t.occyIntro7 },
+    { icon: '🚩', text: t.occyIntro8 },
+    { icon: '⚖️', text: t.occyIntro9 },
+    { icon: '🔗', text: t.occyIntro10 },
+    { icon: '🤖', text: t.occyIntro11 },
+    { icon: '✅', text: t.occyIntro12 },
+  ];
 
   const handlePlay = () => {
     if (isPlaying) {
@@ -88,11 +90,11 @@ export default function OccyWidget() {
               <p style={{ margin: 0, fontWeight: 700, color: '#c8d4f0', fontSize: 15 }}>
                 Occy 🧌
               </p>
-              <p style={{ margin: 0, fontSize: 11, color: '#6b7280' }}>Analista de Tokenomics</p>
+              <p style={{ margin: 0, fontSize: 11, color: '#6b7280' }}>{t.occyRole}</p>
             </div>
             <button
               onClick={handleClose}
-              title="Fechar"
+              title={t.occyClose}
               style={{
                 background: 'none',
                 border: 'none',
@@ -131,7 +133,7 @@ export default function OccyWidget() {
             }}
           >
             <img src="/occy-avatar.jpg" alt="" style={{ width: 20, height: 20, borderRadius: '50%', objectFit: 'cover' }} />
-            {isPlaying ? '⏹ Parar' : '▶ Ouvir explicação'}
+            {isPlaying ? t.occyStop : t.occyPlay}
           </button>
 
           {/* Intro content */}
@@ -159,7 +161,7 @@ export default function OccyWidget() {
       {/* Floating avatar button */}
       <button
         onClick={() => setOpen((prev) => !prev)}
-        title="Occy — Seu analista de tokenomics"
+        title={t.occyTitle}
         style={{
           position: 'relative',
           width: 56,

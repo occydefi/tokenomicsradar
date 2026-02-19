@@ -162,7 +162,7 @@ export async function searchToken(query: string): Promise<TokenData> {
   const coinId = await getCoinIdByTicker(query.trim());
   
   if (!coinId) {
-    throw new Error(`Token "${query}" não encontrado. Tente o símbolo exato (ex: BTC, ETH, SOL).`);
+    throw new Error(`Token "${query}" not found. Try the exact symbol (e.g. BTC, ETH, SOL).`);
   }
 
   return getTokenData(coinId);
