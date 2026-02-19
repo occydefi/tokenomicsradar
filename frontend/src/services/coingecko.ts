@@ -56,7 +56,7 @@ export async function getCoinIdByTicker(ticker: string): Promise<string | null> 
     'MKR': 'maker',
     'ATOM': 'cosmos',
     'PEPE': 'pepe',
-    'DOG': 'dog-bitcoin',
+    'DOG': 'dog-go-to-the-moon-rune',
     'MEW': 'cat-in-a-dogs-world',
     'POPCAT': 'popcat',
     'BRETT': 'brett-2',
