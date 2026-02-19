@@ -153,16 +153,17 @@ export default function CompareView({ analysis1, analysis2 }: Props) {
             const loser = analysis1.scores.total > analysis2.scores.total ? sym2 : sym1;
             speak(`Comparação: ${sym1} versus ${sym2}. ${sym1} tem score ${s1} de 10, veredicto ${analysis1.verdict}. ${sym2} tem score ${s2} de 10, veredicto ${analysis2.verdict}. Vencedor em tokenomics: ${winner} com vantagem sobre ${loser}.`);
           }}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-mono text-xs font-bold transition-all hover:opacity-90"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl font-mono text-sm font-bold transition-all hover:opacity-90"
           style={{
             backgroundColor: ttsState === 'playing' ? 'rgba(57,211,83,0.15)' : '#0f1a0f',
             color: '#39d353',
-            border: `1px solid ${ttsState === 'playing' ? '#39d353' : '#39d35340'}`,
+            border: `1.5px solid ${ttsState === 'playing' ? '#39d353' : '#39d35340'}`,
+            boxShadow: ttsState === 'playing' ? '0 0 14px rgba(57,211,83,0.3)' : 'none',
             animation: ttsState === 'playing' ? 'pulse 1.5s ease-in-out infinite' : 'none',
           }}
         >
-          {ttsState === 'loading' ? '⏳' : ttsState === 'playing' ? '⏹' : '🔊'}
-          <span className="hidden sm:inline">{ttsState === 'playing' ? 'Parar' : 'Ouvir'}</span>
+          <span style={{ fontSize: 18 }}>{ttsState === 'loading' ? '⏳' : ttsState === 'playing' ? '⏹' : '🔊'}</span>
+          {ttsState === 'playing' ? 'Parar' : ttsState === 'loading' ? '...' : 'Ouvir'}
         </button>
       </div>
 

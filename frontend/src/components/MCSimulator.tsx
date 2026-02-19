@@ -348,11 +348,13 @@ export default function MCSimulator() {
               style={{
                 backgroundColor: ttsState === 'playing' ? 'rgba(57,211,83,0.15)' : '#0f1a0f',
                 color: '#39d353',
-                border: `1px solid ${ttsState === 'playing' ? '#39d353' : '#39d35340'}`,
+                border: `1.5px solid ${ttsState === 'playing' ? '#39d353' : '#39d35340'}`,
+                boxShadow: ttsState === 'playing' ? '0 0 14px rgba(57,211,83,0.3)' : 'none',
                 animation: ttsState === 'playing' ? 'pulse 1.5s ease-in-out infinite' : 'none',
               }}
             >
-              {ttsState === 'loading' ? '⏳' : ttsState === 'playing' ? '⏹' : '🔊'}
+              <span style={{ fontSize: 20 }}>{ttsState === 'loading' ? '⏳' : ttsState === 'playing' ? '⏹' : '🔊'}</span>
+              <span style={{ fontSize: 12 }}>{ttsState === 'playing' ? 'Parar' : ttsState === 'loading' ? '...' : 'Ouvir'}</span>
             </button>
           </div>
         </div>
