@@ -344,17 +344,18 @@ export default function MCSimulator() {
                 const symY = y!.symbol?.toUpperCase();
                 speak(`Se ${symX} tivesse o Market Cap ${mode === 'ath' ? 'na máxima histórica ' : ''}de ${symY}, o preço seria ${formatPrice(projectedPrice)}, uma variação de ${sign}${pctChange.toFixed(1)} porcento, multiplicador de ${multiplier.toFixed(2)} vezes.`);
               }}
-              className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-mono font-bold text-sm transition-all hover:opacity-90"
+              className="flex flex-col items-center justify-center px-4 py-2 rounded-xl font-mono font-bold transition-all hover:opacity-90"
               style={{
-                backgroundColor: ttsState === 'playing' ? 'rgba(57,211,83,0.15)' : '#0f1a0f',
+                backgroundColor: ttsState !== 'idle' ? 'rgba(57,211,83,0.15)' : '#0f1a0f',
                 color: '#39d353',
-                border: `1.5px solid ${ttsState === 'playing' ? '#39d353' : '#39d35340'}`,
-                boxShadow: ttsState === 'playing' ? '0 0 14px rgba(57,211,83,0.3)' : 'none',
-                animation: ttsState === 'playing' ? 'pulse 1.5s ease-in-out infinite' : 'none',
+                border: `1.5px solid ${ttsState !== 'idle' ? '#39d353' : '#39d35340'}`,
+                boxShadow: ttsState !== 'idle' ? '0 0 14px rgba(57,211,83,0.3)' : 'none',
+                animation: ttsState !== 'idle' ? 'pulse 1s ease-in-out infinite' : 'none',
+                minWidth: 56,
               }}
             >
-              <span style={{ fontSize: 20 }}>{ttsState === 'loading' ? '⏳' : ttsState === 'playing' ? '⏹' : '🔊'}</span>
-              <span style={{ fontSize: 12 }}>{ttsState === 'playing' ? 'Parar' : ttsState === 'loading' ? '...' : 'Ouvir'}</span>
+              <span style={{ fontSize: 22, lineHeight: 1 }}>{ttsState === 'loading' ? '⏳' : ttsState === 'playing' ? '⏹' : '🧌'}</span>
+              <span style={{ fontSize: 10, marginTop: 2, letterSpacing: 1 }}>{ttsState === 'playing' ? 'PARAR' : ttsState === 'loading' ? '...' : 'OUVIR'}</span>
             </button>
           </div>
         </div>

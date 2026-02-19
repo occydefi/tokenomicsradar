@@ -75,23 +75,22 @@ export default function TLDRCard({ analysis }: Props) {
         <button
           onClick={() => speak(buildSpeechText())}
           title={ttsState === 'playing' ? 'Parar' : lang === 'en' ? 'Listen to analysis' : 'Ouvir análise'}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl font-mono text-sm font-bold transition-all hover:opacity-90"
+          className="flex flex-col items-center justify-center px-4 py-2 rounded-xl font-mono font-bold transition-all hover:opacity-90"
           style={{
             backgroundColor: ttsState !== 'idle' ? `${c.text}20` : '#0f1a0f',
             color: ttsState === 'error' ? '#ff4444' : c.text,
             border: `1.5px solid ${ttsState !== 'idle' ? c.text : c.border}`,
             boxShadow: ttsState === 'loading' ? `0 0 20px ${c.glow}` : ttsState === 'playing' ? `0 0 14px ${c.glow}` : 'none',
             animation: ttsState !== 'idle' ? 'pulse 1s ease-in-out infinite' : 'none',
-            fontSize: 14,
+            minWidth: 56,
           }}
         >
-          <span style={{ fontSize: 18 }}>
-            {ttsState === 'loading' ? '⏳' : ttsState === 'playing' ? '⏹' : ttsState === 'error' ? '⚠️' : '🔊'}
+          <span style={{ fontSize: 22, lineHeight: 1 }}>
+            {ttsState === 'loading' ? '⏳' : ttsState === 'playing' ? '⏹' : ttsState === 'error' ? '⚠️' : '🧌'}
           </span>
-          {ttsState === 'loading' ? (lang === 'en' ? 'gerando...' : 'gerando...') :
-           ttsState === 'playing' ? (lang === 'en' ? 'Stop' : 'Parar') :
-           ttsState === 'error' ? 'Erro' :
-           lang === 'en' ? 'Listen' : 'Ouvir'}
+          <span style={{ fontSize: 10, marginTop: 2, letterSpacing: 1 }}>
+            {ttsState === 'loading' ? '...' : ttsState === 'playing' ? 'PARAR' : ttsState === 'error' ? 'ERRO' : lang === 'en' ? 'LISTEN' : 'OUVIR'}
+          </span>
         </button>
       </div>
 
