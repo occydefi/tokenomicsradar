@@ -42,19 +42,19 @@ export default function AnalysisTabs({ analysis, activeTab, onTabChange }: Props
           boxShadow: 'inset 0 0 20px #00000060',
         }}
       >
-        <div className="flex min-w-max">
+        <div className="flex w-full sm:min-w-max">
           {TABS.map((tab, i) => {
             const isActive = activeTab === tab.id;
             return (
               <button
                 key={tab.id}
                 onClick={() => onTabChange(tab.id)}
-                className="group flex flex-col items-start px-5 py-3 transition-all whitespace-nowrap relative"
+                className="group flex flex-col items-start px-3 sm:px-5 py-2 sm:py-3 transition-all whitespace-nowrap relative flex-1 sm:flex-none"
                 style={{
                   backgroundColor: isActive ? 'rgba(57,211,83,0.06)' : 'transparent',
                   borderRight: i < 3 ? '1px solid #1a2e1a' : 'none',
                   borderBottom: isActive ? '2px solid #39d353' : '2px solid transparent',
-                  minWidth: 120,
+                  minWidth: 0,
                 }}
                 onMouseEnter={(e) => {
                   if (!isActive) (e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(57,211,83,0.03)';
@@ -63,23 +63,23 @@ export default function AnalysisTabs({ analysis, activeTab, onTabChange }: Props
                   if (!isActive) (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
                 }}
               >
-                {/* Command label */}
+                {/* Command label — hidden on mobile */}
                 <span
-                  className="text-xs font-mono mb-1"
+                  className="text-xs font-mono mb-1 hidden sm:block"
                   style={{ color: isActive ? '#39d35360' : '#1a2e1a', letterSpacing: '0.5px' }}
                 >
                   &gt; {tab.cmd}
                 </span>
                 {/* Icon + label */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 sm:gap-2 justify-center sm:justify-start w-full">
                   <span
-                    className="text-lg"
+                    className="text-base sm:text-lg"
                     style={{ filter: isActive ? 'drop-shadow(0 0 6px #39d353)' : 'none' }}
                   >
                     {tab.icon}
                   </span>
                   <span
-                    className="text-sm font-bold font-mono tracking-widest"
+                    className="text-xs sm:text-sm font-bold font-mono tracking-wide sm:tracking-widest"
                     style={{
                       color: isActive ? '#39d353' : '#4a7a4a',
                       textShadow: isActive ? '0 0 8px rgba(57,211,83,0.6)' : 'none',
