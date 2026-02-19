@@ -37,7 +37,7 @@ export const TOKEN_METADATA: Record<string, {
 }> = {
   // ── Layer 1 — Bitcoin & forks ────────────────────────────────────────────
   'bitcoin': { team: 0, investors: 0, community: 100, treasury: 0, stakingAvailable: false, governancePower: false, feeBurning: true, neededToUse: true, vestingYears: 0, treasuryUSD: 0, note: 'Já deflacionário na prática: emissão pós-halving 2024 caiu para ~0.85% ao ano, e moedas perdidas (Satoshi + wallets inacessíveis) superam a emissão nova. Supply efetivo diminui. Cap fixo de 21M — caso único de escassez programada.', teamTransparency: 'anonymous', teamNote: 'Satoshi Nakamoto é anônimo. O protocolo é 100% open source e descentralizado — caso único no mercado.', sources: [{ label: 'Bitcoin Whitepaper', url: 'https://bitcoin.org/bitcoin.pdf' }, { label: 'bitcoin.org', url: 'https://bitcoin.org' }] },
-  'litecoin': { team: 0, investors: 0, community: 100, treasury: 0, stakingAvailable: false, governancePower: false, feeBurning: false, neededToUse: true, vestingYears: 0, treasuryUSD: 0, note: 'Fair launch Bitcoin fork. Fixed 84M supply with halving cycle.' },
+  'litecoin': { team: 0, investors: 0, community: 100, treasury: 0, stakingAvailable: false, governancePower: false, feeBurning: false, neededToUse: true, vestingYears: 0, treasuryUSD: 0, weakValueAccrual: true, note: 'Fork do Bitcoin com cap de 84M. ⚠️ Charlie Lee (criador) vendeu TODOS os seus LTC no ATH de 2017 — sinal claro de falta de convicção. Sem DeFi, sem smart contracts, sem inovação desde o halving. Bitcoin dominou completamente a narrativa de reserva de valor. LTC sobrevive pela liquidez histórica, não por fundamentos.', teamTransparency: 'high', teamNote: 'Charlie Lee é público e identificado, mas vendeu todo seu LTC no pico de 2017. Atualmente tem papel consultivo limitado no projeto.' },
   'bitcoin-cash': { team: 0, investors: 0, community: 100, treasury: 0, stakingAvailable: false, governancePower: false, feeBurning: false, neededToUse: true, vestingYears: 0, treasuryUSD: 0, note: 'Bitcoin fork (2017). No pre-mine; miner-secured PoW chain.' },
   'ethereum-classic': { team: 0, investors: 5, community: 95, treasury: 0, stakingAvailable: false, governancePower: false, feeBurning: false, neededToUse: true, vestingYears: 0, treasuryUSD: 0, note: 'Original Ethereum chain (pre-DAO fork). PoW with fixed 210.7M cap.' },
   'zcash': { team: 6, investors: 0, community: 87, treasury: 7, stakingAvailable: false, governancePower: false, feeBurning: false, neededToUse: true, vestingYears: 4, treasuryUSD: 20000000, note: 'Founders reward (20% of block rewards for 4 years ~5.8% of total). Privacy-focused PoW chain.' },
@@ -241,7 +241,9 @@ export function analyzeToken(token: TokenData): AnalysisResult {
   
   // Utility scoring: 4 standard dimensions + store-of-value bonus for monetary assets
   // Standard DeFi framework doesn't capture BTC/LTC-style monetary utility
-  const storeOfValueTokens = ['bitcoin', 'litecoin', 'bitcoin-cash', 'monero', 'zcash'];
+  // Only BTC and XMR qualify as genuine store-of-value assets with proven adoption
+  // LTC, BCH lost to BTC; ZCash has minimal adoption
+  const storeOfValueTokens = ['bitcoin', 'monero'];
   const isStoreOfValue = storeOfValueTokens.includes(token.id);
   // isStablecoin early check (before cgCats is declared) — uses id list only
   const isStablecoinEarly = ['tether', 'usd-coin', 'dai', 'true-usd', 'frax', 'usdd', 'first-digital-usd'].includes(token.id);
