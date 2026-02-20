@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { AnalysisResult } from '../types';
 import { formatNumber, getScoreColor } from '../utils/analyzer';
 import { getRedFlags } from './RedFlagsSection';
 import { useTTS } from '../hooks/useTTS';
+import CompareShareCard from './CompareShareCard';
 
 interface Props {
   analysis1: AnalysisResult;
@@ -37,6 +39,7 @@ function Winner({ wins, color }: { wins: boolean; color: string }) {
 export default function CompareView({ analysis1, analysis2 }: Props) {
   const { t } = useLanguage();
   const { state: ttsState, speak } = useTTS();
+  const [showShareCard, setShowShareCard] = useState(false);
   const t1 = analysis1.token;
   const t2 = analysis2.token;
   const md1 = t1.market_data;
@@ -143,7 +146,21 @@ export default function CompareView({ analysis1, analysis2 }: Props) {
         <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
           {t.compareSectionTitle}
         </h3>
-        <button
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowShareCard(true)}
+            className="flex flex-col items-center justify-center px-4 py-2 rounded-xl font-mono font-bold transition-all hover:opacity-90"
+            style={{
+              backgroundColor: '#0f1a0f',
+              color: '#a855f7',
+              border: '1.5px solid #a855f740',
+              minWidth: 56,
+            }}
+          >
+            <span style={{ fontSize: 22, lineHeight: 1 }}>📤</span>
+            <span style={{ fontSize: 10, marginTop: 2, letterSpacing: 1 }}>SHARE</span>
+          </button>
+          <button
           onClick={() => {
             const sym1 = t1.symbol?.toUpperCase();
             const sym2 = t2.symbol?.toUpperCase();
@@ -166,6 +183,7 @@ export default function CompareView({ analysis1, analysis2 }: Props) {
           <span style={{ fontSize: 22, lineHeight: 1 }}>{ttsState === 'loading' ? '⏳' : ttsState === 'playing' ? '⏹' : '🧌'}</span>
           <span style={{ fontSize: 10, marginTop: 2, letterSpacing: 1 }}>{ttsState === 'playing' ? 'PARAR' : ttsState === 'loading' ? '...' : 'OUVIR'}</span>
         </button>
+        </div>
       </div>
 
       {/* Token Headers */}
@@ -391,6 +409,62 @@ export default function CompareView({ analysis1, analysis2 }: Props) {
           </p>
         </div>
       )}
+
+      {/* Share Card Modal */}
+      {showShareCard && (() => {
+        // Prepare metrics for share card (top 5)
+        const shareMetrics: { label: string; val1: string; val2: string; winner: 1 | 2 | null }[] = [
+          {
+            label: 'Score Total',
+            val1: analysis1.scores.total.toFixed(1) + '/10',
+            val2: analysis2.scores.total.toFixed(1) + '/10',
+            winner: analysis1.scores.total > analysis2.scores.total ? 1 : analysis1.scores.total < analysis2.scores.total ? 2 : null,
+          },
+          {
+            label: 'Distribuição',
+            val1: analysis1.utilityData.community + '%',
+            val2: analysis2.utilityData.community + '%',
+            winner: analysis1.utilityData.community > analysis2.utilityData.community ? 1 : analysis1.utilityData.community < analysis2.utilityData.community ? 2 : null,
+          },
+          {
+            label: 'Vesting',
+            val1: analysis1.utilityData.vestingYears ? analysis1.utilityData.vestingYears + ' anos' : 'N/A',
+            val2: analysis2.utilityData.vestingYears ? analysis2.utilityData.vestingYears + ' anos' : 'N/A',
+            winner: analysis1.utilityData.vestingYears && analysis2.utilityData.vestingYears
+              ? (analysis1.utilityData.vestingYears > analysis2.utilityData.vestingYears ? 1 : analysis1.utilityData.vestingYears < analysis2.utilityData.vestingYears ? 2 : null)
+              : null,
+          },
+          {
+            label: 'Fee Burn',
+            val1: analysis1.utilityData.feeBurning ? 'Sim' : 'Não',
+            val2: analysis2.utilityData.feeBurning ? 'Sim' : 'Não',
+            winner: analysis1.utilityData.feeBurning && !analysis2.utilityData.feeBurning ? 1 : !analysis1.utilityData.feeBurning && analysis2.utilityData.feeBurning ? 2 : null,
+          },
+          {
+            label: 'Staking',
+            val1: analysis1.utilityData.stakingAvailable ? 'Sim' : 'Não',
+            val2: analysis2.utilityData.stakingAvailable ? 'Sim' : 'Não',
+            winner: analysis1.utilityData.stakingAvailable && !analysis2.utilityData.stakingAvailable ? 1 : !analysis1.utilityData.stakingAvailable && analysis2.utilityData.stakingAvailable ? 2 : null,
+          },
+        ];
+
+        return (
+          <CompareShareCard
+            token1={{
+              name: t1.name,
+              symbol: t1.symbol?.toUpperCase() || '',
+              score: analysis1.scores.total,
+            }}
+            token2={{
+              name: t2.name,
+              symbol: t2.symbol?.toUpperCase() || '',
+              score: analysis2.scores.total,
+            }}
+            metrics={shareMetrics}
+            onClose={() => setShowShareCard(false)}
+          />
+        );
+      })()}
     </div>
   );
 }
