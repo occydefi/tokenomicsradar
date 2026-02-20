@@ -52,7 +52,7 @@ export const TOKEN_METADATA: Record<string, {
   'binancecoin': { dataQuality: 'verified', team: 40, investors: 10, community: 50, treasury: 0, stakingAvailable: true, governancePower: false, feeBurning: true, neededToUse: true, vestingYears: 1, treasuryUSD: 0, centralizedControl: true, note: 'Quarterly BNB Auto-Burn targets 100M total burned (half of 200M initial). Team held 40% initially. Binance/CZ controls majority of supply.', teamTransparency: 'high', teamNote: 'CZ (Changpeng Zhao) era extremamente público. Reputação comprometida após condenação criminal em 2023. Richard Teng assumiu como CEO.', sources: [{ label: 'BNB Whitepaper', url: 'https://www.binance.com/en/bnb' }, { label: 'BNB Auto-Burn', url: 'https://www.binance.com/en/blog/ecosystem/bnb-auto-burn-421499824684902657' }] },
   'solana': { dataQuality: 'verified', team: 13, investors: 37, community: 38, treasury: 12, stakingAvailable: true, governancePower: false, feeBurning: false, neededToUse: true, vestingYears: 4, treasuryUSD: 800000000, note: 'High VC concentration (~37% to insiders). Solana Foundation holds 12%.', teamTransparency: 'high', teamNote: 'Anatoly Yakovenko (co-fundador) é público e ativo. Equipe da Solana Labs amplamente verificável no LinkedIn e GitHub.', sources: [{ label: 'Solana Tokenomics', url: 'https://solana.com/news/solana-token-distribution' }, { label: 'Solana Foundation', url: 'https://solana.org' }] },
   'cardano': { dataQuality: 'verified', team: 9, investors: 7, community: 64, treasury: 20, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 0, treasuryUSD: 1000000000, executionRisk: true, note: '~80% supply already circulating. On-chain treasury (20%) but Cardano Foundation retains significant influence. ⚠️ Execution gap: smart contracts (Plutus) launched 2021 but DeFi ecosystem still lags ETH/SOL significantly. Voltaire governance still maturing.', teamTransparency: 'high', teamNote: 'Charles Hoskinson é público e muito ativo. IOHK, Emurgo e Cardano Foundation têm equipes identificadas e histórico verificável.', sources: [{ label: 'Cardano Docs', url: 'https://docs.cardano.org/explore-cardano/monetary-policy/ada-distribution' }, { label: 'Cardano Foundation', url: 'https://cardanofoundation.org' }] },
-  'avalanche-2': { team: 10, investors: 9, community: 50, treasury: 31, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 4, treasuryUSD: 1200000000, note: 'Fixed 720M max supply. ⚠️ Ava Labs (a private company) controls 31% treasury — this is CENTRALIZATION disguised as "ecosystem fund". Combined Ava Labs control (team 10% + treasury 31%) = 41% under single entity. Comparable to VC-backed projects.', teamTransparency: 'high', teamNote: 'Emin Gün Sirer (professor Cornell) é público e verificável. Ava Labs tem equipe amplamente identificada e acadêmica.' },
+  'avalanche-2': { team: 10, investors: 9, community: 50, treasury: 31, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 4, treasuryUSD: 1200000000, centralizedControl: true, note: 'Fixed 720M max supply. ⚠️ Ava Labs (a private company) controls 31% treasury — this is CENTRALIZATION disguised as "ecosystem fund". Combined Ava Labs control (team 10% + treasury 31%) = 41% under single entity. Comparable to VC-backed projects.', teamTransparency: 'high', teamNote: 'Emin Gün Sirer (professor Cornell) é público e verificável. Ava Labs tem equipe amplamente identificada e acadêmica.' },
   'tron': { team: 34, investors: 16, community: 40, treasury: 10, stakingAvailable: true, governancePower: true, feeBurning: true, neededToUse: true, vestingYears: 2, treasuryUSD: 200000000, centralizedControl: true, note: 'Justin Sun / Tron Foundation holds ~34% of supply. Treasury controlled by same entity. High insider concentration — effectively a single-entity controlled chain.', teamTransparency: 'high', teamNote: 'Justin Sun é extremamente público mas controverso. Múltiplos processos regulatórios e acusações de manipulação de mercado.' },
   'cosmos': { team: 10, investors: 5, community: 67, treasury: 18, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: false, vestingYears: 4, treasuryUSD: 500000000, weakValueAccrual: true, note: 'IBC protocol hub com problema crítico de captura de valor: as appchains do Cosmos NÃO precisam usar ATOM — o protocolo IBC é agnóstico ao token. ATOM 2.0 (proposta de reforma econômica) foi parcialmente rejeitado pela comunidade. Inflação histórica alta (até 20% a.a., reduzida via prop 848 mas sem mecanismo de burn). "Cosmos é um sucesso técnico, ATOM é um fracasso como ativo" — consenso crescente entre analistas.', teamTransparency: 'high', teamNote: 'Interchain Foundation tem equipe identificada. Jae Kwon (fundador original) saiu em 2020. Ethan Buchman lidera. Múltiplos times contribuindo (Informal Systems, Strangelove, etc.).' },
   'polkadot': { team: 30, investors: 10, community: 50, treasury: 10, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 2, treasuryUSD: 500000000, executionRisk: true, note: 'W3F/Parity hold ~30%. ⚠️ Execution gap crítico: sistema de parachain auction não gerou adoção esperada. Gavin Wood saiu da Parity Technologies em 2022. Alta inflação (~8-10%/ano via staking) dilui holders. Pivotando para "Agile Coretime" mas sem tração clara. Perdeu narrativa para Solana, L2s Ethereum e Cosmos.', teamTransparency: 'high', teamNote: 'Gavin Wood (co-fundador Ethereum) é público mas saiu da Parity em 2022. Web3 Foundation e Parity Technologies ainda têm equipes identificadas, mas liderança técnica principal se dispersou.' },
@@ -457,14 +457,24 @@ export function analyzeToken(token: TokenData): AnalysisResult {
   let distScore = 10;
   distScore -= Math.max(0, (distribution.team - 10) * 0.3);
   distScore -= Math.max(0, (distribution.investors - 15) * 0.3);
-  if (distribution.community > 50) distScore += 1;
+  
+  // Community bonus escalado: distribuição real para a comunidade
+  if (distribution.community >= 70) distScore += 2; // Bitcoin, HYPE, ETH level
+  else if (distribution.community >= 50) distScore += 1;
+  else if (distribution.community < 40) distScore -= 1; // Heavy VC/insider concentration
+  
   if (distribution.investors === 0 && !isMemeToken) distScore += 1; // No VC = genuine bonus for real projects
   if (distribution.team === 0 && distribution.investors === 0 && !isMemeToken) {
     distScore = 10; // Bitcoin-like fair launch for real projects
   }
   // ─── Centralization Penalty ───────────────────────────────────
-  // Same entity controls team + treasury (e.g. Ripple, Justin Sun, Binance)
-  if (meta?.centralizedControl) distScore = Math.max(0, distScore - 2);
+  // Same entity controls team + treasury (e.g. Ripple, Justin Sun, Binance, Ava Labs)
+  if (meta?.centralizedControl) distScore = Math.max(0, distScore - 2.5);
+  
+  // Treasury centralizado em empresa privada (não DAO on-chain)
+  if (meta?.centralizedControl && distribution.treasury > 25) {
+    distScore = Math.max(0, distScore - 1.5); // Penalty adicional: "ecosystem fund" controlado privadamente
+  }
   distScore = Math.max(0, Math.min(10, distScore));
 
   // Vesting score (20%)
