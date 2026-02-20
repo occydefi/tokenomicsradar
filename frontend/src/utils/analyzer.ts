@@ -37,23 +37,26 @@ export const TOKEN_METADATA: Record<string, {
   weakValueAccrual?: boolean;    // true when ecosystem grows but token doesn't capture value (e.g. ATOM — IBC doesn't require ATOM)
   hasVeTokenomics?: boolean;     // true when protocol uses ve-locking (veCRV, vePENDLE, etc.) — affects staking display
   dataQuality?: 'verified' | 'estimated'; // 'verified' = sourced + manually reviewed; omit = 'estimated'
+  // Scoring V2 fields
+  launchYear?: number;           // Year the network/token launched (for Lindy Effect scoring)
+  innovationLevel?: 'pioneer' | 'major' | 'incremental' | 'clone'; // Innovation classification
 }> = {
   // ── Layer 1 — Bitcoin & forks ────────────────────────────────────────────
-  'bitcoin': { team: 0, investors: 0, community: 100, treasury: 0, stakingAvailable: false, governancePower: false, feeBurning: true, neededToUse: true, vestingYears: 0, treasuryUSD: 0, dataQuality: 'verified', note: 'Já deflacionário na prática: emissão pós-halving 2024 caiu para ~0.85% ao ano, e moedas perdidas (Satoshi + wallets inacessíveis) superam a emissão nova. Supply efetivo diminui. Cap fixo de 21M — caso único de escassez programada.', teamTransparency: 'anonymous', teamNote: 'Satoshi Nakamoto é anônimo. O protocolo é 100% open source e descentralizado — caso único no mercado.', sources: [{ label: 'Bitcoin Whitepaper', url: 'https://bitcoin.org/bitcoin.pdf' }, { label: 'bitcoin.org', url: 'https://bitcoin.org' }] },
-  'litecoin': { team: 0, investors: 0, community: 100, treasury: 0, stakingAvailable: false, governancePower: false, feeBurning: false, neededToUse: true, vestingYears: 0, treasuryUSD: 0, weakValueAccrual: true, note: 'Fork do Bitcoin com cap de 84M. ⚠️ Charlie Lee (criador) vendeu TODOS os seus LTC no ATH de 2017 — sinal claro de falta de convicção. Sem DeFi, sem smart contracts, sem inovação desde o halving. Bitcoin dominou completamente a narrativa de reserva de valor. LTC sobrevive pela liquidez histórica, não por fundamentos.', teamTransparency: 'high', teamNote: 'Charlie Lee é público e identificado, mas vendeu todo seu LTC no pico de 2017. Atualmente tem papel consultivo limitado no projeto.' },
+  'bitcoin': { launchYear: 2009, innovationLevel: 'pioneer', team: 0, investors: 0, community: 100, treasury: 0, stakingAvailable: false, governancePower: false, feeBurning: true, neededToUse: true, vestingYears: 0, treasuryUSD: 0, dataQuality: 'verified', note: 'Já deflacionário na prática: emissão pós-halving 2024 caiu para ~0.85% ao ano, e moedas perdidas (Satoshi + wallets inacessíveis) superam a emissão nova. Supply efetivo diminui. Cap fixo de 21M — caso único de escassez programada.', teamTransparency: 'anonymous', teamNote: 'Satoshi Nakamoto é anônimo. O protocolo é 100% open source e descentralizado — caso único no mercado.', sources: [{ label: 'Bitcoin Whitepaper', url: 'https://bitcoin.org/bitcoin.pdf' }, { label: 'bitcoin.org', url: 'https://bitcoin.org' }] },
+  'litecoin': { launchYear: 2011, innovationLevel: 'clone', team: 0, investors: 0, community: 100, treasury: 0, stakingAvailable: false, governancePower: false, feeBurning: false, neededToUse: true, vestingYears: 0, treasuryUSD: 0, weakValueAccrual: true, note: 'Fork do Bitcoin com cap de 84M. ⚠️ Charlie Lee (criador) vendeu TODOS os seus LTC no ATH de 2017 — sinal claro de falta de convicção. Sem DeFi, sem smart contracts, sem inovação desde o halving. Bitcoin dominou completamente a narrativa de reserva de valor. LTC sobrevive pela liquidez histórica, não por fundamentos.', teamTransparency: 'high', teamNote: 'Charlie Lee é público e identificado, mas vendeu todo seu LTC no pico de 2017. Atualmente tem papel consultivo limitado no projeto.' },
   'bitcoin-cash': { team: 0, investors: 0, community: 100, treasury: 0, stakingAvailable: false, governancePower: false, feeBurning: false, neededToUse: true, vestingYears: 0, treasuryUSD: 0, note: 'Bitcoin fork (2017). No pre-mine; miner-secured PoW chain.' },
   'ethereum-classic': { team: 0, investors: 5, community: 95, treasury: 0, stakingAvailable: false, governancePower: false, feeBurning: false, neededToUse: true, vestingYears: 0, treasuryUSD: 0, note: 'Original Ethereum chain (pre-DAO fork). PoW with fixed 210.7M cap.' },
   'zcash': { team: 6, investors: 0, community: 87, treasury: 7, stakingAvailable: false, governancePower: false, feeBurning: false, neededToUse: true, vestingYears: 4, treasuryUSD: 20000000, note: 'Founders reward (20% of block rewards for 4 years ~5.8% of total). Privacy-focused PoW chain.' },
   'dash': { team: 0, investors: 0, community: 90, treasury: 10, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 0, treasuryUSD: 50000000, note: '10% of block rewards go to governance treasury (superblock). Masternodes provide governance & mixing.' },
   'decred': { team: 8, investors: 0, community: 84, treasury: 8, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 0, treasuryUSD: 80000000, note: '8% of block rewards to treasury, 8% to original devs. Hybrid PoW/PoS governance.' },
-  'dogecoin': { team: 0, investors: 0, community: 100, treasury: 0, stakingAvailable: false, governancePower: false, feeBurning: false, neededToUse: false, vestingYears: 0, treasuryUSD: 0, note: 'Memecoin — inflationary with ~5B DOGE minted annually forever. No hard cap.', teamTransparency: 'medium', teamNote: 'Projeto comunitário sem time central. Billy Markus e Jackson Palmer (co-criadores) são públicos mas não envolvidos ativamente.' },
-  'dog-go-to-the-moon-rune': { team: 0, investors: 0, community: 100, treasury: 0, stakingAvailable: false, governancePower: false, feeBurning: false, neededToUse: false, vestingYears: 0, treasuryUSD: 0, note: 'Memecoin — DOG•GO•TO•THE•MOON (Rune #3). Bitcoin Runes protocol lançado no halving 2024. Supply fixo de 100B. Distribuição 100% via airdrop/mint para a comunidade Bitcoin.', teamTransparency: 'anonymous', teamNote: 'Time anônimo. Runes é um protocolo descentralizado na rede Bitcoin — sem empresa ou fundação central.' },
+  'dogecoin': { launchYear: 2013, innovationLevel: 'clone', team: 0, investors: 0, community: 100, treasury: 0, stakingAvailable: false, governancePower: false, feeBurning: false, neededToUse: false, vestingYears: 0, treasuryUSD: 0, note: 'Memecoin — inflationary with ~5B DOGE minted annually forever. No hard cap.', teamTransparency: 'medium', teamNote: 'Projeto comunitário sem time central. Billy Markus e Jackson Palmer (co-criadores) são públicos mas não envolvidos ativamente.' },
+  'dog-go-to-the-moon-rune': { launchYear: 2024, innovationLevel: 'incremental', team: 0, investors: 0, community: 100, treasury: 0, stakingAvailable: false, governancePower: false, feeBurning: false, neededToUse: false, vestingYears: 0, treasuryUSD: 0, note: 'Memecoin — DOG•GO•TO•THE•MOON (Rune #3). Bitcoin Runes protocol lançado no halving 2024. Supply fixo de 100B. Distribuição 100% via airdrop/mint para a comunidade Bitcoin.', teamTransparency: 'anonymous', teamNote: 'Time anônimo. Runes é um protocolo descentralizado na rede Bitcoin — sem empresa ou fundação central.' },
   // ── Layer 1 — Smart contract platforms ───────────────────────────────────
-  'ethereum': { dataQuality: 'verified', team: 12, investors: 8, community: 55, treasury: 25, stakingAvailable: true, governancePower: false, feeBurning: true, verifiedFeeBurn: true, neededToUse: true, vestingYears: 0, treasuryUSD: 1500000000, note: 'EIP-1559 base fee burn. ~72M ETH pre-mine (ICO 2014). EF holds ~$1.5B treasury.', teamTransparency: 'high', teamNote: 'Vitalik Buterin é público e altamente visível. Ethereum Foundation tem equipe amplamente identificada e verificável.', sources: [{ label: 'Ethereum Docs', url: 'https://ethereum.org/en/developers/docs/' }, { label: 'EF Allocation Report', url: 'https://ethereum.foundation/report-2022.pdf' }] },
-  'binancecoin': { dataQuality: 'verified', team: 40, investors: 10, community: 50, treasury: 0, stakingAvailable: true, governancePower: false, feeBurning: true, verifiedFeeBurn: true, neededToUse: true, vestingYears: 1, treasuryUSD: 0, centralizedControl: true, controlledPct: 40, note: 'Quarterly BNB Auto-Burn targets 100M total burned (half of 200M initial). Team held 40% initially. Binance/CZ controls majority of supply.', teamTransparency: 'high', teamNote: 'CZ (Changpeng Zhao) era extremamente público. Reputação comprometida após condenação criminal em 2023. Richard Teng assumiu como CEO.', sources: [{ label: 'BNB Whitepaper', url: 'https://www.binance.com/en/bnb' }, { label: 'BNB Auto-Burn', url: 'https://www.binance.com/en/blog/ecosystem/bnb-auto-burn-421499824684902657' }] },
-  'solana': { dataQuality: 'verified', team: 13, investors: 37, community: 38, treasury: 12, stakingAvailable: true, governancePower: false, feeBurning: false, neededToUse: true, vestingYears: 4, treasuryUSD: 800000000, note: 'High VC concentration (~37% to insiders). Solana Foundation holds 12%.', teamTransparency: 'high', teamNote: 'Anatoly Yakovenko (co-fundador) é público e ativo. Equipe da Solana Labs amplamente verificável no LinkedIn e GitHub.', sources: [{ label: 'Solana Tokenomics', url: 'https://solana.com/news/solana-token-distribution' }, { label: 'Solana Foundation', url: 'https://solana.org' }] },
+  'ethereum': { launchYear: 2015, innovationLevel: 'pioneer', dataQuality: 'verified', team: 12, investors: 8, community: 55, treasury: 25, stakingAvailable: true, governancePower: false, feeBurning: true, verifiedFeeBurn: true, neededToUse: true, vestingYears: 0, treasuryUSD: 1500000000, note: 'EIP-1559 base fee burn. ~72M ETH pre-mine (ICO 2014). EF holds ~$1.5B treasury.', teamTransparency: 'high', teamNote: 'Vitalik Buterin é público e altamente visível. Ethereum Foundation tem equipe amplamente identificada e verificável.', sources: [{ label: 'Ethereum Docs', url: 'https://ethereum.org/en/developers/docs/' }, { label: 'EF Allocation Report', url: 'https://ethereum.foundation/report-2022.pdf' }] },
+  'binancecoin': { launchYear: 2017, innovationLevel: 'incremental', dataQuality: 'verified', team: 40, investors: 10, community: 50, treasury: 0, stakingAvailable: true, governancePower: false, feeBurning: true, verifiedFeeBurn: true, neededToUse: true, vestingYears: 1, treasuryUSD: 0, centralizedControl: true, controlledPct: 40, note: 'Quarterly BNB Auto-Burn targets 100M total burned (half of 200M initial). Team held 40% initially. Binance/CZ controls majority of supply.', teamTransparency: 'high', teamNote: 'CZ (Changpeng Zhao) era extremamente público. Reputação comprometida após condenação criminal em 2023. Richard Teng assumiu como CEO.', sources: [{ label: 'BNB Whitepaper', url: 'https://www.binance.com/en/bnb' }, { label: 'BNB Auto-Burn', url: 'https://www.binance.com/en/blog/ecosystem/bnb-auto-burn-421499824684902657' }] },
+  'solana': { launchYear: 2020, innovationLevel: 'major', dataQuality: 'verified', team: 13, investors: 37, community: 38, treasury: 12, stakingAvailable: true, governancePower: false, feeBurning: false, neededToUse: true, vestingYears: 4, treasuryUSD: 800000000, note: 'High VC concentration (~37% to insiders). Solana Foundation holds 12%.', teamTransparency: 'high', teamNote: 'Anatoly Yakovenko (co-fundador) é público e ativo. Equipe da Solana Labs amplamente verificável no LinkedIn e GitHub.', sources: [{ label: 'Solana Tokenomics', url: 'https://solana.com/news/solana-token-distribution' }, { label: 'Solana Foundation', url: 'https://solana.org' }] },
   'cardano': { dataQuality: 'verified', team: 9, investors: 7, community: 64, treasury: 20, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 0, treasuryUSD: 1000000000, executionRisk: true, note: '~80% supply already circulating. On-chain treasury (20%) but Cardano Foundation retains significant influence. ⚠️ Execution gap: smart contracts (Plutus) launched 2021 but DeFi ecosystem still lags ETH/SOL significantly. Voltaire governance still maturing.', teamTransparency: 'high', teamNote: 'Charles Hoskinson é público e muito ativo. IOHK, Emurgo e Cardano Foundation têm equipes identificadas e histórico verificável.', sources: [{ label: 'Cardano Docs', url: 'https://docs.cardano.org/explore-cardano/monetary-policy/ada-distribution' }, { label: 'Cardano Foundation', url: 'https://cardanofoundation.org' }] },
-  'avalanche-2': { team: 10, investors: 9, community: 50, treasury: 31, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 4, treasuryUSD: 1200000000, centralizedControl: true, controlledPct: 41, note: 'Fixed 720M max supply. ⚠️ Ava Labs (a private company) controls 31% treasury — this is CENTRALIZATION disguised as "ecosystem fund". Combined Ava Labs control (team 10% + treasury 31%) = 41% under single entity. Comparable to VC-backed projects.', teamTransparency: 'high', teamNote: 'Emin Gün Sirer (professor Cornell) é público e verificável. Ava Labs tem equipe amplamente identificada e acadêmica.' },
+  'avalanche-2': { launchYear: 2020, innovationLevel: 'incremental', team: 10, investors: 9, community: 50, treasury: 31, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 4, treasuryUSD: 1200000000, centralizedControl: true, controlledPct: 41, note: 'Fixed 720M max supply. ⚠️ Ava Labs (a private company) controls 31% treasury — this is CENTRALIZATION disguised as "ecosystem fund". Combined Ava Labs control (team 10% + treasury 31%) = 41% under single entity. Comparable to VC-backed projects.', teamTransparency: 'high', teamNote: 'Emin Gün Sirer (professor Cornell) é público e verificável. Ava Labs tem equipe amplamente identificada e acadêmica.' },
   'tron': { team: 34, investors: 16, community: 40, treasury: 10, stakingAvailable: true, governancePower: true, feeBurning: true, neededToUse: true, vestingYears: 2, treasuryUSD: 200000000, centralizedControl: true, controlledPct: 44, note: 'Justin Sun / Tron Foundation holds ~34% of supply. Treasury controlled by same entity. High insider concentration — effectively a single-entity controlled chain.', teamTransparency: 'high', teamNote: 'Justin Sun é extremamente público mas controverso. Múltiplos processos regulatórios e acusações de manipulação de mercado.' },
   'cosmos': { team: 10, investors: 5, community: 67, treasury: 18, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: false, vestingYears: 4, treasuryUSD: 500000000, weakValueAccrual: true, note: 'IBC protocol hub com problema crítico de captura de valor: as appchains do Cosmos NÃO precisam usar ATOM — o protocolo IBC é agnóstico ao token. ATOM 2.0 (proposta de reforma econômica) foi parcialmente rejeitado pela comunidade. Inflação histórica alta (até 20% a.a., reduzida via prop 848 mas sem mecanismo de burn). "Cosmos é um sucesso técnico, ATOM é um fracasso como ativo" — consenso crescente entre analistas.', teamTransparency: 'high', teamNote: 'Interchain Foundation tem equipe identificada. Jae Kwon (fundador original) saiu em 2020. Ethan Buchman lidera. Múltiplos times contribuindo (Informal Systems, Strangelove, etc.).' },
   'polkadot': { team: 30, investors: 10, community: 50, treasury: 10, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 2, treasuryUSD: 500000000, executionRisk: true, note: 'W3F/Parity hold ~30%. ⚠️ Execution gap crítico: sistema de parachain auction não gerou adoção esperada. Gavin Wood saiu da Parity Technologies em 2022. Alta inflação (~8-10%/ano via staking) dilui holders. Pivotando para "Agile Coretime" mas sem tração clara. Perdeu narrativa para Solana, L2s Ethereum e Cosmos.', teamTransparency: 'high', teamNote: 'Gavin Wood (co-fundador Ethereum) é público mas saiu da Parity em 2022. Web3 Foundation e Parity Technologies ainda têm equipes identificadas, mas liderança técnica principal se dispersou.' },
@@ -125,7 +128,7 @@ export const TOKEN_METADATA: Record<string, {
   'sei-network': { team: 20, investors: 20, community: 40, treasury: 20, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 3, treasuryUSD: 100000000, note: 'SEI — Exchange-optimized L1 with parallelized EVM. Fast finality for trading use cases.' },
   'celestia': { team: 26, investors: 27, community: 47, treasury: 0, stakingAvailable: true, governancePower: true, feeBurning: false, neededToUse: true, vestingYears: 4, treasuryUSD: 100000000, note: 'TIA — Modular blockchain for data availability. High insider allocation (53%). Pioneered data availability sampling.' },
   'wormhole': { team: 12, investors: 17, community: 47, treasury: 24, stakingAvailable: false, governancePower: true, feeBurning: false, neededToUse: false, vestingYears: 4, treasuryUSD: 150000000, weakValueAccrual: true, note: 'W — Cross-chain messaging protocol. ~47% to community via airdrop and ecosystem grants. ⚠️ Weak value accrual: Wormhole bridge is widely used but W token is pure governance — protocol usage does NOT require holding W. Similar to ATOM/IBC problem — infrastructure succeeds, token holders don\'t capture value directly.' },
-  'hyperliquid': { team: 24, investors: 0, community: 76, treasury: 0, stakingAvailable: true, governancePower: true, feeBurning: true, verifiedFeeBurn: true, neededToUse: true, vestingYears: 4, treasuryUSD: 200000000, note: 'HYPE — L1 blockchain completo. HyperBFT consensus (0.2s latência). HyperCore (perp DEX nativa) + HyperEVM (smart contracts EVM-compatible). HYPE = gas token HyperEVM + fee burn + staking. Maior airdrop sem VC da história (76% comunidade). Zero investidores externos. ~$500M+ revenue do protocolo.', teamTransparency: 'medium', teamNote: 'Jeff Yan (fundador) usa pseudônimo mas tem reputação forte. Time pseudônimo com histórico de execução técnica verificável pelo produto.' },
+  'hyperliquid': { launchYear: 2024, innovationLevel: 'major', team: 24, investors: 0, community: 76, treasury: 0, stakingAvailable: true, governancePower: true, feeBurning: true, verifiedFeeBurn: true, neededToUse: true, vestingYears: 4, treasuryUSD: 200000000, note: 'HYPE — L1 blockchain completo. HyperBFT consensus (0.2s latência). HyperCore (perp DEX nativa) + HyperEVM (smart contracts EVM-compatible). HYPE = gas token HyperEVM + fee burn + staking. Maior airdrop sem VC da história (76% comunidade). Zero investidores externos. ~$500M+ revenue do protocolo.', teamTransparency: 'medium', teamNote: 'Jeff Yan (fundador) usa pseudônimo mas tem reputação forte. Time pseudônimo com histórico de execução técnica verificável pelo produto.' },
   'filecoin': { team: 15, investors: 10, community: 70, treasury: 5, stakingAvailable: true, governancePower: false, feeBurning: false, neededToUse: true, vestingYears: 6, treasuryUSD: 50000000, note: 'FIL — Required to pay for decentralized storage. 6-year vesting for team. Protocol Labs controls 15%.' },
   'blockstack': { team: 30, investors: 25, community: 45, treasury: 0, stakingAvailable: true, governancePower: false, feeBurning: false, neededToUse: true, vestingYears: 2, treasuryUSD: 50000000, note: 'STX — Stacks blockchain; BTC-anchored smart contracts. "Stacking" earns BTC rewards. High insider share.' },
   // ── Oracle / Infrastructure ───────────────────────────────────────────────
@@ -226,6 +229,142 @@ export const TOKEN_METADATA: Record<string, {
 
 function getTokenMeta(id: string) {
   return TOKEN_METADATA[id] || null;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SCORING V2: New Category Scoring Functions
+// ═══════════════════════════════════════════════════════════════
+
+/**
+ * Calculate Lindy Effect Score (Network Age / Resilience)
+ * Tokens with longer track record have higher probability of future survival
+ * @param launchYear - Year the network/token launched
+ * @returns Score 0-10
+ */
+function calculateLindyScore(launchYear: number | undefined): number {
+  if (!launchYear) return 0.5; // Unknown launch = assume very new
+  
+  const currentYear = 2026;
+  const yearsLive = currentYear - launchYear;
+  
+  // Base formula: ~0.67 points per year, capped at 10
+  let lindyScore = Math.min(10, yearsLive * 0.67);
+  
+  // Penalty for very young tokens (<2 years)
+  if (yearsLive < 1) lindyScore = Math.min(lindyScore, 2.0);
+  else if (yearsLive < 2) lindyScore = Math.min(lindyScore, 4.0);
+  
+  // Special adjustment: ETH and other dominant L1s get bonus
+  // BTC (17y) → 10.0
+  // ETH (11y) → 7.4 → adjusted to 9.0 (proven L1 dominance)
+  // This adjustment happens in analyzeToken based on token.id
+  
+  return Math.round(lindyScore * 10) / 10;
+}
+
+/**
+ * Calculate Network Effect / Adoption Score
+ * Real adoption metrics vs promises
+ * @param token - Token data from CoinGecko
+ * @param meta - Token metadata
+ * @returns Score 0-10
+ */
+function calculateNetworkEffectScore(token: TokenData, meta: any): number {
+  // Metrics weighted average approach:
+  // - Active addresses (30%)
+  // - Transaction count (25%)
+  // - Developer activity (20%)
+  // - Exchange listings (10%)
+  // - Institutional adoption (15%)
+  
+  let score = 0;
+  
+  // Developer activity (20% weight) — available from CoinGecko
+  const commits = token.developer_data?.commit_count_4_weeks ?? 0;
+  let devScore = 0;
+  if (commits > 500) devScore = 10;
+  else if (commits > 100) devScore = 8;
+  else if (commits > 20) devScore = 5;
+  else if (commits === 0) devScore = 0;
+  else devScore = 3;
+  score += devScore * 0.20;
+  
+  // Active addresses / Transaction count — hardcoded for known tokens
+  // BTC: ~1M+ daily addresses, ~300K+ daily tx
+  // ETH: ~400K+ daily addresses, ~1.2M+ daily tx
+  // SOL: ~5M+ daily addresses, ~30M+ daily tx
+  // HYPE: Growing but much lower (~50K addresses)
+  const id = token.id;
+  let networkScore = 3; // default for unknown tokens
+  
+  if (id === 'bitcoin') networkScore = 10; // BTC: king of adoption
+  else if (id === 'ethereum') networkScore = 9.5;
+  else if (id === 'solana') networkScore = 7.5;
+  else if (id === 'binancecoin') networkScore = 8;
+  else if (id === 'ripple') networkScore = 6;
+  else if (id === 'cardano') networkScore = 5;
+  else if (id === 'avalanche-2') networkScore = 5;
+  else if (id === 'polkadot') networkScore = 4;
+  else if (id === 'near') networkScore = 4;
+  else if (id === 'hyperliquid') networkScore = 3; // New but growing fast
+  else if (token.market_data?.market_cap?.usd && token.market_data.market_cap.usd > 10e9) {
+    networkScore = 6; // Top-20 tokens likely have decent adoption
+  } else if (token.market_data?.market_cap?.usd && token.market_data.market_cap.usd > 1e9) {
+    networkScore = 4;
+  }
+  
+  score += networkScore * 0.55; // Combined weight for addresses (30%) + tx (25%)
+  
+  // Exchange listings (10%) — inferred from market cap as proxy
+  // High market cap tokens are typically listed on all major exchanges
+  let exchangeScore = 5; // default
+  if (token.market_data?.market_cap?.usd && token.market_data.market_cap.usd > 10e9) {
+    exchangeScore = 10; // Top 20 = all major exchanges
+  } else if (token.market_data?.market_cap?.usd && token.market_data.market_cap.usd > 1e9) {
+    exchangeScore = 7; // Top 100 = most major exchanges
+  } else if (token.market_data?.market_cap?.usd && token.market_data.market_cap.usd > 100e6) {
+    exchangeScore = 5; // Mid-tier exchanges
+  } else {
+    exchangeScore = 3; // Small exchanges
+  }
+  score += exchangeScore * 0.10;
+  
+  // Institutional adoption (15%) — hardcoded for known cases
+  let institutionalScore = 3; // default
+  if (id === 'bitcoin') institutionalScore = 10; // ETFs, MicroStrategy, nation-states
+  else if (id === 'ethereum') institutionalScore = 9; // ETFs, major institutions
+  else if (id === 'solana') institutionalScore = 7; // Major VC backing, growing institutional
+  else if (id === 'ripple') institutionalScore = 7; // Banking partnerships (but controversial)
+  else if (['binancecoin', 'cardano', 'avalanche-2', 'polkadot'].includes(id)) institutionalScore = 5;
+  else if (meta?.investors && meta.investors > 15) institutionalScore = 4; // VC-backed
+  score += institutionalScore * 0.15;
+  
+  return Math.round(Math.max(0, Math.min(10, score)) * 10) / 10;
+}
+
+/**
+ * Calculate Innovation Score
+ * Technical differentiation and proven adoption of innovation
+ * @param token - Token data
+ * @param meta - Token metadata
+ * @returns Score 0-10
+ */
+function calculateInnovationScore(token: TokenData, meta: any): number {
+  const innovationLevel = meta?.innovationLevel;
+  
+  let baseScore = 5; // default for unknown
+  
+  if (innovationLevel === 'pioneer') baseScore = 10; // BTC, ETH
+  else if (innovationLevel === 'major') baseScore = 8; // SOL, HYPE, major tech innovation
+  else if (innovationLevel === 'incremental') baseScore = 5; // Improvements on existing tech
+  else if (innovationLevel === 'clone') baseScore = 2; // Fork/clone with minimal changes
+  
+  // Penalty for innovation without adoption (execution risk)
+  if (meta?.executionRisk) {
+    baseScore = Math.max(0, baseScore - 3);
+  }
+  
+  return Math.round(Math.max(0, Math.min(10, baseScore)) * 10) / 10;
 }
 
 export function analyzeToken(token: TokenData): AnalysisResult {
@@ -517,16 +656,35 @@ export function analyzeToken(token: TokenData): AnalysisResult {
     treasScore = Math.min(treasScore, 3);
   }
 
+  // ─── SCORING V2: New Categories ──────────────────────────────
+  // Calculate Lindy Effect score (Network Age)
+  const lindyScore = calculateLindyScore(meta?.launchYear);
+  // Special adjustment for ETH: 11 years → 9.0 (proven dominant L1)
+  const adjustedLindyScore = token.id === 'ethereum' ? 9.0 : lindyScore;
+  
+  // Calculate Network Effect / Adoption score
+  const networkEffectScore = calculateNetworkEffectScore(token, meta);
+  
+  // Calculate Innovation score
+  const innovationScore = calculateInnovationScore(token, meta);
+
   // ─── Regulatory / Team / Community are informational ONLY ────
   // They appear as visual sections but do NOT affect the tokenomics score.
   // The platform focus is pure tokenomics quality, not external risk factors.
 
+  // ─── SCORING V2: Updated Weights ─────────────────────────────
+  // Old weights: Supply 25%, Distribution 25%, Vesting 20%, Utility 20%, Treasury 10%
+  // New weights: Supply 15%, Distribution 25%, Utility 15%, Sustainability 15%,
+  //              Innovation 10%, Lindy 10%, Network Effect 10%
+  // (Vesting removed as separate category — integrated into Distribution)
   let totalScore = Math.max(0, Math.min(10,
-    supplyScore * 0.25 +
-    distScore * 0.25 +
-    vestingScore * 0.20 +
-    utilScore * 0.20 +
-    treasScore * 0.10
+    supplyScore * 0.15 +          // Supply Dynamics (reduced from 25% to 15%)
+    distScore * 0.25 +             // Distribution (maintained at 25%)
+    utilScore * 0.15 +             // Utility (reduced from 20% to 15%)
+    treasScore * 0.15 +            // Sustainability (increased from 10% to 15%)
+    innovationScore * 0.10 +       // Innovation (NEW - 10%)
+    adjustedLindyScore * 0.10 +    // Network Age / Lindy (NEW - 10%)
+    networkEffectScore * 0.10      // Network Effect / Adoption (NEW - 10%)
   ));
 
   // ─── Category Score Cap ───────────────────────────────────────
@@ -545,9 +703,12 @@ export function analyzeToken(token: TokenData): AnalysisResult {
   const scores = {
     supply: Math.round(supplyScore * 10) / 10,
     distribution: Math.round(distScore * 10) / 10,
-    vesting: Math.round(vestingScore * 10) / 10,
+    vesting: Math.round(vestingScore * 10) / 10, // Kept for legacy UI compatibility
     utility: Math.round(utilScore * 10) / 10,
-    treasury: Math.round(treasScore * 10) / 10,
+    treasury: Math.round(treasScore * 10) / 10, // Renamed to "Sustainability" in display
+    innovation: Math.round(innovationScore * 10) / 10, // NEW
+    lindy: adjustedLindyScore, // NEW (already rounded)
+    networkEffect: networkEffectScore, // NEW (already rounded)
     total: Math.round(totalScore * 10) / 10,
   };
 

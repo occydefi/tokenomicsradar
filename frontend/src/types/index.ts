@@ -58,6 +58,9 @@ export interface AnalysisResult {
     vesting: number;
     utility: number;
     treasury: number;
+    innovation: number;        // NEW: Technical innovation score
+    lindy: number;             // NEW: Network age / resilience score
+    networkEffect: number;     // NEW: Adoption / network effect score
     total: number;
   };
   supplyMetrics: SupplyMetrics;
