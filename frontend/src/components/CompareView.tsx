@@ -180,8 +180,21 @@ export default function CompareView({ analysis1, analysis2 }: Props) {
             minWidth: 56,
           }}
         >
-          <span style={{ fontSize: 22, lineHeight: 1 }}>{ttsState === 'loading' ? '⏳' : ttsState === 'playing' ? '⏹' : '🧌'}</span>
-          <span style={{ fontSize: 10, marginTop: 2, letterSpacing: 1 }}>{ttsState === 'playing' ? 'PARAR' : ttsState === 'loading' ? '...' : 'OUVIR'}</span>
+          {ttsState === 'loading' ? (
+            <span style={{ fontSize: 22, lineHeight: 1 }}>⏳</span>
+          ) : ttsState === 'playing' ? (
+            <span style={{ fontSize: 22, lineHeight: 1 }}>⏸</span>
+          ) : (
+            <img
+              src="/occy-avatar.jpg"
+              alt="Occy"
+              className="rounded-full"
+              style={{ width: 28, height: 28, objectFit: 'cover' }}
+            />
+          )}
+          <span style={{ fontSize: 10, marginTop: 2, letterSpacing: 1 }}>
+            {ttsState === 'loading' ? 'Carregando...' : ttsState === 'playing' ? 'Pausar' : 'Ouvir'}
+          </span>
         </button>
         </div>
       </div>
