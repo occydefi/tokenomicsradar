@@ -35,11 +35,18 @@ async function speakGlobal(text: string) {
 
   setGlobalState('loading');
   try {
+    // Frontend timeout: 35s (API has 30s, add 5s buffer)
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 35000);
+
     const res = await fetch('/api/tts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text: trimmed, voice: 'nova' }),
+      signal: controller.signal,
     });
+
+    clearTimeout(timeoutId);
 
     if (!res.ok) throw new Error('TTS failed');
 
@@ -71,7 +78,8 @@ async function speakGlobal(text: string) {
 
     await audio.play();
     setGlobalState('playing');
-  } catch {
+  } catch (err: any) {
+    console.error('TTS error:', err.name, err.message);
     stopGlobal();
     setGlobalState('error');
     setTimeout(() => { if (globalState === 'error') setGlobalState('idle'); }, 2000);
