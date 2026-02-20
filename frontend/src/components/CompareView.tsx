@@ -428,10 +428,10 @@ export default function CompareView({ analysis1, analysis2 }: Props) {
           },
           {
             label: 'Vesting',
-            val1: analysis1.utilityData.vestingYears ? analysis1.utilityData.vestingYears + ' anos' : 'N/A',
-            val2: analysis2.utilityData.vestingYears ? analysis2.utilityData.vestingYears + ' anos' : 'N/A',
-            winner: analysis1.utilityData.vestingYears && analysis2.utilityData.vestingYears
-              ? (analysis1.utilityData.vestingYears > analysis2.utilityData.vestingYears ? 1 : analysis1.utilityData.vestingYears < analysis2.utilityData.vestingYears ? 2 : null)
+            val1: analysis1.vestingYears ? analysis1.vestingYears + ' anos' : 'N/A',
+            val2: analysis2.vestingYears ? analysis2.vestingYears + ' anos' : 'N/A',
+            winner: analysis1.vestingYears && analysis2.vestingYears
+              ? (analysis1.vestingYears > analysis2.vestingYears ? 1 : analysis1.vestingYears < analysis2.vestingYears ? 2 : null)
               : null,
           },
           {
