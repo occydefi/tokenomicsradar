@@ -9,27 +9,43 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'No API key' });
 
-  const response = await fetch('https://api.openai.com/v1/audio/speech', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: 'tts-1',
-      input: text,
-      voice, // nova, shimmer, alloy, echo, fable, onyx
-      response_format: 'mp3',
-    }),
-  });
+  try {
+    // 30s timeout to prevent infinite loading
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
 
-  if (!response.ok) {
-    const err = await response.text();
-    return res.status(500).json({ error: err });
+    const response = await fetch('https://api.openai.com/v1/audio/speech', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'tts-1',
+        input: text,
+        voice, // nova, shimmer, alloy, echo, fable, onyx
+        response_format: 'mp3',
+      }),
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      const err = await response.text();
+      console.error('OpenAI TTS error:', err);
+      return res.status(500).json({ error: 'TTS generation failed' });
+    }
+
+    const audioBuffer = await response.arrayBuffer();
+    res.setHeader('Content-Type', 'audio/mpeg');
+    res.setHeader('Cache-Control', 'public, max-age=300');
+    res.status(200).send(Buffer.from(audioBuffer));
+  } catch (error: any) {
+    console.error('TTS error:', error.message);
+    if (error.name === 'AbortError') {
+      return res.status(504).json({ error: 'TTS generation timeout' });
+    }
+    return res.status(500).json({ error: 'TTS generation failed' });
   }
-
-  const audioBuffer = await response.arrayBuffer();
-  res.setHeader('Content-Type', 'audio/mpeg');
-  res.setHeader('Cache-Control', 'public, max-age=300');
-  res.status(200).send(Buffer.from(audioBuffer));
 }
