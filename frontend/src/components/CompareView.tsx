@@ -435,9 +435,9 @@ export default function CompareView({ analysis1, analysis2 }: Props) {
           },
           {
             label: 'Distribuição',
-            val1: analysis1.utilityData.community + '%',
-            val2: analysis2.utilityData.community + '%',
-            winner: analysis1.utilityData.community > analysis2.utilityData.community ? 1 : analysis1.utilityData.community < analysis2.utilityData.community ? 2 : null,
+            val1: analysis1.distribution.community + '%',
+            val2: analysis2.distribution.community + '%',
+            winner: analysis1.distribution.community > analysis2.distribution.community ? 1 : analysis1.distribution.community < analysis2.distribution.community ? 2 : null,
           },
           {
             label: 'Vesting',
