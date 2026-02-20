@@ -146,21 +146,7 @@ export default function CompareView({ analysis1, analysis2 }: Props) {
         <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
           {t.compareSectionTitle}
         </h3>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setShowShareCard(true)}
-            className="flex flex-col items-center justify-center px-4 py-2 rounded-xl font-mono font-bold transition-all hover:opacity-90"
-            style={{
-              backgroundColor: '#0f1a0f',
-              color: '#a855f7',
-              border: '1.5px solid #a855f740',
-              minWidth: 56,
-            }}
-          >
-            <span style={{ fontSize: 22, lineHeight: 1 }}>📤</span>
-            <span style={{ fontSize: 10, marginTop: 2, letterSpacing: 1 }}>SHARE</span>
-          </button>
-          <button
+        <button
           onClick={() => {
             const sym1 = t1.symbol?.toUpperCase();
             const sym2 = t2.symbol?.toUpperCase();
@@ -196,7 +182,6 @@ export default function CompareView({ analysis1, analysis2 }: Props) {
             {ttsState === 'loading' ? 'Carregando...' : ttsState === 'playing' ? 'Pausar' : 'Ouvir'}
           </span>
         </button>
-        </div>
       </div>
 
       {/* Token Headers */}
@@ -422,6 +407,23 @@ export default function CompareView({ analysis1, analysis2 }: Props) {
           </p>
         </div>
       )}
+
+      {/* Share Button */}
+      <div className="mt-6 flex justify-center">
+        <button
+          onClick={() => setShowShareCard(true)}
+          className="flex items-center gap-3 px-6 py-3 rounded-xl font-mono font-bold transition-all hover:opacity-90 hover:scale-105"
+          style={{
+            background: 'linear-gradient(135deg, #a855f7, #7c3aed)',
+            color: 'white',
+            border: '1.5px solid #a855f760',
+            boxShadow: '0 4px 20px rgba(168, 85, 247, 0.3)',
+          }}
+        >
+          <span style={{ fontSize: 20 }}>📤</span>
+          <span style={{ fontSize: 14, letterSpacing: 1 }}>Compartilhar Comparação</span>
+        </button>
+      </div>
 
       {/* Share Card Modal */}
       {showShareCard && (() => {
