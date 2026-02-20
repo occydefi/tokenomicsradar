@@ -30,8 +30,8 @@ async function speakGlobal(text: string) {
   // Always stop any existing audio first
   stopGlobal();
 
-  // Trim text to 400 chars max to reduce generation time
-  const trimmed = text.length > 400 ? text.slice(0, 397) + '...' : text;
+  // Trim text to 4000 chars max (API limit is 4096)
+  const trimmed = text.length > 4000 ? text.slice(0, 3997) + '...' : text;
 
   setGlobalState('loading');
   try {
