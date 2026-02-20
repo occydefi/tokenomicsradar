@@ -21,6 +21,7 @@ export const TOKEN_METADATA: Record<string, {
   stakingAvailable?: boolean;
   governancePower?: boolean;
   feeBurning?: boolean;
+  verifiedFeeBurn?: boolean;     // true when fee burn is massive and verified (ETH EIP-1559, BNB auto-burn, HYPE protocol burn)
   neededToUse?: boolean;
   vestingYears?: number;
   treasuryUSD?: number;
