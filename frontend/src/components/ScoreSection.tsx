@@ -34,17 +34,21 @@ export default function ScoreSection({ analysis }: Props) {
   const radarData = [
     { subject: t.radarSupply, score: scores.supply, fullMark: 10 },
     { subject: t.radarDist, score: scores.distribution, fullMark: 10 },
-    { subject: t.radarVesting, score: scores.vesting, fullMark: 10 },
     { subject: t.radarUtility, score: scores.utility, fullMark: 10 },
-    { subject: t.radarTreasury, score: scores.treasury, fullMark: 10 },
+    { subject: t.radarSustainability, score: scores.treasury, fullMark: 10 },
+    { subject: t.radarInnovation, score: scores.innovation, fullMark: 10 },
+    { subject: t.radarLindy, score: scores.lindy, fullMark: 10 },
+    { subject: t.radarNetwork, score: scores.networkEffect, fullMark: 10 },
   ];
 
   const scoreItems = [
-    { label: t.scoreItemSupply, score: scores.supply, weight: '25%', icon: '📦' },
+    { label: t.scoreItemSupply, score: scores.supply, weight: '15%', icon: '📦' },
     { label: t.scoreItemDist, score: scores.distribution, weight: '25%', icon: '🥧' },
-    { label: t.scoreItemVesting, score: scores.vesting, weight: '20%', icon: '🔐' },
-    { label: t.scoreItemUtility, score: scores.utility, weight: '20%', icon: '⚡' },
-    { label: t.scoreItemTreasury, score: scores.treasury, weight: '10%', icon: '🏦' },
+    { label: t.scoreItemUtility, score: scores.utility, weight: '15%', icon: '⚡' },
+    { label: t.scoreItemSustainability, score: scores.treasury, weight: '15%', icon: '🏦' },
+    { label: t.scoreItemInnovation, score: scores.innovation, weight: '10%', icon: '🔬' },
+    { label: t.scoreItemLindy, score: scores.lindy, weight: '10%', icon: '⏳' },
+    { label: t.scoreItemNetwork, score: scores.networkEffect, weight: '10%', icon: '🌐' },
   ];
 
   return (
