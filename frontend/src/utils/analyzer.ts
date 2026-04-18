@@ -11,7 +11,7 @@ import { REGULATORY_DATA } from './regulatoryData';
 
 // Known token metadata for better analysis
 // Date of the last manual review of the entire token database
-export const DATA_LAST_UPDATED = '2026-04-01';
+export const DATA_LAST_UPDATED = '2026-04-18';
 
 export const TOKEN_METADATA: Record<string, {
   team?: number;
